@@ -1,4 +1,21 @@
-# Design Overview
+## Overview
+
+Below is a high level overview of darglint.
+
+![High-level overview](static/Overview.png)
+
+A source file is first parsed by darglint's parser (described below), and also
+parsed by Python's `ast` module in the wrapper class, `FunctionDefinition`.
+The resulting docstring AST and the `FunctionDefinition` are passed to the class,
+`IntegrityChecker`, which checks the integrity of the docstring against the
+actual function, and issues a resulting `ErrorReport`.
+
+### Scheduling
+
+The `IntegrityChecker` can have multiple functions passed to it from multiple
+files.  To increase throughput, `IntegrityChecker` runs checks against the
+`FunctionDescription` asynchronously using a `ThreadPoolExecutor`.  When
+`IntegrityChecker.get_error_report` is called, the async tasks are executed.
 
 ## Parsing
 
@@ -14,7 +31,7 @@ be automatically converted to CNF.  Darglint's `bin/` folder contains a utility,
 `bnf_to_cnf` which takes a custom BNF representation and converts it to a Python
 source file containing grammars.
 
-![Parsing Overview](static/Overview.png)
+![Parsing Overview](static/Parsing.png)
 
 ### Optimising CYK
 

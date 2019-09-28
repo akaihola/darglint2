@@ -1,4 +1,4 @@
-dotfiles = Overview.png ExampleAST.png
+dotfiles = Parsing.png Overview.png ExampleAST.png
 
 all: $(dotfiles)
 
