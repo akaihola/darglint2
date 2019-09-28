@@ -14,7 +14,7 @@ be automatically converted to CNF.  Darglint's `bin/` folder contains a utility,
 `bnf_to_cnf` which takes a custom BNF representation and converts it to a Python
 source file containing grammars.
 
-![Parsing Overview](Overview.png)
+![Parsing Overview](static/Overview.png)
 
 ### Optimising CYK
 
@@ -39,7 +39,7 @@ has to be expanded during the conversion to CNF, it's not easy to know
 which specific node type will be associated with a desired target.  For that
 reason, an extension to BNF was added to annotate a given branch.
 
-![Example AST](ExampleAST.png)
+![Example AST](static/ExampleAST.png)
 
 For example, an annotation was added to the head of an argument description
 in the Google arguments grammar:
