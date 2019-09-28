@@ -1,0 +1,87 @@
+digraph G {
+    label="Darglint Parsing\n ";
+    labelloc="top";
+
+    /* ============= GRAMMAR GENERATION =========================== */
+    node [shape="rect", style="filled", fillcolor="#f5f5f5"];
+    bnf_to_cnf [shape="none", fontcolor="#9f0000", style=""];
+    subgraph bnf_cluster {
+        google_arguments_section [shape="tab", label=<
+        <table border="0" cellborder="0" cellspacing="0">
+          <tr><td>google_arguments_grammar.bnf</td></tr>
+          <tr><td border="1" bgcolor="#ffffff">ArgumentsGrammar</td></tr>
+        </table>>];
+
+        sphinx_arguments_section [shape="tab", label=<
+        <table border="0" cellborder="0" cellspacing="0">
+          <tr><td>sphinx_arguments_grammar.bnf</td></tr>
+          <tr><td border="1" bgcolor="#ffffff">ArgumentsGrammar</td></tr>
+        </table>>];
+
+        dots [style="", label="...", shape="none", height="0.1", width="0.1"];
+    }
+    subgraph cnf_cluster {
+        google_arguments_section1 [shape="tab", label=<
+        <table border="0" cellborder="0" cellspacing="0">
+          <tr><td>google_arguments_grammar.py</td></tr>
+          <tr><td border="1" bgcolor="#ffffff">ArgumentsGrammar</td></tr>
+        </table>>];
+
+        sphinx_arguments_section1 [shape="tab", label=<
+        <table border="0" cellborder="0" cellspacing="0">
+          <tr><td>sphinx_arguments_grammar.py</td></tr>
+          <tr><td border="1" bgcolor="#ffffff">ArgumentsGrammar</td></tr>
+        </table>>];
+
+        dots1 [style="", label="...", shape="none", height="0.1", width="0.1"];
+    }
+
+    /* ============= LEXING ======================================= */
+    node [fillcolor="#ffffff"];
+    source [shape="tab", label="source.py"];
+    lex [shape="none", label="lex()"];
+    condense [shape="none", label="condense()"];
+
+    /* ============= PARSING ====================================== */
+    parse [shape="none", label="parse()"];
+
+    BaseGrammar;
+    Identifier;
+    Token;
+    CykNode;
+
+    // Input-Output
+    edge [style="dashed", arrowhead="vee"];
+    { BaseGrammar, Token } -> parse -> CykNode;
+
+    _blank0 [shape="none", label="", width="0.1", height="0.1"];
+    { google_arguments_section, sphinx_arguments_section, dots } -> _blank0 [arrowhead="none"];
+    _blank0 -> bnf_to_cnf;
+
+    _blank1 [shape="none", label="", width="0.1", height="0.1"];
+    bnf_to_cnf -> _blank1 [arrowhead="none"];
+    _blank1 -> {google_arguments_section1, sphinx_arguments_section1, dots1};
+
+    source -> lex -> condense -> Token;
+
+    // Is-a
+    edge [style="solid", arrowhead="onormal"];
+    { dots1, google_arguments_section1, sphinx_arguments_section1 } -> BaseGrammar;
+    // Has-a
+    edge [dir="both", arrowhead="none", arrowtail="odiamond"];
+    BaseGrammar -> Identifier;
+
+    // Association
+    edge [style="dotted", arrowhead="none", arrowtail="none"];
+    Identifier -> CykNode;
+
+    // Misc Shaping. (Delete after every addition/removal above.)
+
+    {
+        rank="same";
+        node [label="", shape="none"];
+        edge [color="white"];
+        // Force token to be in line with the source, lex, condense chain.
+        Token -> empty0 -> empty1 -> empty2 -> empty3 -> BaseGrammar;
+    }
+}
