@@ -27,11 +27,10 @@ would like a feature in *darglint2*.
 
 ## Project Status
 
-I no longer work with Python regularly, and I'd like to spend some more
-time on other projects.  So while I'll continue to maintain darglint,
-I likely won't be adding significant new features.  That said, I will
-try to accept pull requests.  See the contribution section for more
-information.  Consider it in maintenance mode.
+This is a renamed fork of the original
+[darglint](https://github.com/terrencepreilly/darglint) by
+[@terrencepreilly](https://github.com/terrencepreilly), and I'm maintaining it
+and accepting bugfixes.
 
 
 ## Installation
