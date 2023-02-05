@@ -542,9 +542,9 @@ test using something like
 
 ```bash
 pushd docker-build
-docker build -t darglint-34 -f Dockerfile.test34 .
+docker build -t darglint2-34 -f Dockerfile.test34 .
 popd
-docker run -it --rm -v $(pwd):/code darglint-34 pytest
+docker run -it --rm -v $(pwd):/code darglint2-34 pytest
 ```
 
 ### Contribution
