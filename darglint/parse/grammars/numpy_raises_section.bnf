@@ -2,14 +2,14 @@ import numpy.bnf
 import terminals.bnf
 import noqa_statement.bnf
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ExceptionItemIdentifier,
 )
-from darglint.errors import (
+from darglint2.errors import (
     EmptyDescriptionError,
     EmptyTypeError,
 )

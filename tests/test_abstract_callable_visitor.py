@@ -2,10 +2,10 @@ import ast
 from unittest import (
     TestCase,
 )
-from darglint.analysis.abstract_callable_visitor import (
+from darglint2.analysis.abstract_callable_visitor import (
     AbstractCallableVisitor,
 )
-from darglint.analysis.analysis_visitor import (
+from darglint2.analysis.analysis_visitor import (
     AnalysisVisitor
 )
 from .utils import (

@@ -1,29 +1,29 @@
-# Generated on 2020-05-31 10:21:20.274591
+# Generated on 2023-02-05 17:17:11.854917
 
-from darglint.errors import (
+from darglint2.errors import (
     ParameterMalformedError,
 )
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )
 
-from darglint.token import (
+from darglint2.token import (
     TokenType,
 )
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     NoqaIdentifier,
 )
 
-from darglint.errors import (
+from darglint2.errors import (
     EmptyDescriptionError,
     EmptyTypeError,
     IndentError,
 )
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ArgumentIdentifier,
     ArgumentItemIdentifier,
     ArgumentTypeIdentifier,

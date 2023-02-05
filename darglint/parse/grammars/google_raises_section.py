@@ -1,24 +1,24 @@
-# Generated on 2020-04-23 21:45:16.239170
+# Generated on 2023-02-05 17:17:12.506905
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )
 
-from darglint.token import (
+from darglint2.token import (
     TokenType,
 )
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     NoqaIdentifier,
 )
 
-from darglint.errors import (
+from darglint2.errors import (
     EmptyDescriptionError,
     IndentError,
 )
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ExceptionIdentifier,
     ExceptionItemIdentifier,
 )

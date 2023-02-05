@@ -1,11 +1,11 @@
 import google_base.bnf
 import google_types.bnf
 
-from darglint.errors import (
+from darglint2.errors import (
     IndentError,
     EmptyDescriptionError,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ExceptionIdentifier,
     ExceptionItemIdentifier,
 )

@@ -13,9 +13,9 @@ from random import (
     shuffle,
 )
 
-from darglint.strictness import Strictness
-from darglint.docstring.sections import Sections
-from darglint.docstring.docstring import Docstring
+from darglint2.strictness import Strictness
+from darglint2.docstring.sections import Sections
+from darglint2.docstring.docstring import Docstring
 
 
 class DocstringBaseMethodTests(TestCase):

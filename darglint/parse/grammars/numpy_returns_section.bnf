@@ -1,11 +1,11 @@
 import numpy.bnf
 import terminals.bnf
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ReturnTypeIdentifier,
 )
 

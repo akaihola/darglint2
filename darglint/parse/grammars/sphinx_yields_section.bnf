@@ -1,6 +1,6 @@
 import sphinx_base.bnf
 
-from darglint.errors import (
+from darglint2.errors import (
     EmptyDescriptionError,
 )
 

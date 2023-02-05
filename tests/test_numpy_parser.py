@@ -4,26 +4,26 @@ from unittest import (
     TestCase,
     skip,
 )
-from darglint.docstring.style import DocstringStyle
-from darglint.strictness import Strictness
-from darglint.lex import (
+from darglint2.docstring.style import DocstringStyle
+from darglint2.strictness import Strictness
+from darglint2.lex import (
     condense,
     lex,
 )
-from darglint.parse.numpy import (
+from darglint2.parse.numpy import (
     parse,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ArgumentItemIdentifier,
     ArgumentTypeIdentifier,
     NoqaIdentifier,
     ExceptionIdentifier,
     ExceptionItemIdentifier,
 )
-from darglint.errors import (
+from darglint2.errors import (
     EmptyTypeError,
 )
-from darglint.utils import (
+from darglint2.utils import (
     ConfigurationContext,
     CykNodeUtils,
 )

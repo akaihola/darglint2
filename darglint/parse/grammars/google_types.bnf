@@ -1,7 +1,7 @@
 import google_base.bnf
 import terminals.bnf
 
-from darglint.errors import (
+from darglint2.errors import (
     ParameterMalformedError,
 )
 

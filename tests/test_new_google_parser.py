@@ -4,30 +4,30 @@ from random import (
     randint,
 )
 
-from darglint.parse.google import (
+from darglint2.parse.google import (
     top_parse,
     lookup,
     parse,
 )
-from darglint.token import (
+from darglint2.token import (
     Token,
     TokenType,
 )
-from darglint.lex import (
+from darglint2.lex import (
     lex,
     condense,
 )
-from darglint.parse.cyk import (
+from darglint2.parse.cyk import (
     parse as cyk_parse,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     ArgumentIdentifier,
     ExceptionIdentifier,
 )
 from .utils import (
     random_tokens,
 )
-from darglint.utils import (
+from darglint2.utils import (
     CykNodeUtils,
 )
 

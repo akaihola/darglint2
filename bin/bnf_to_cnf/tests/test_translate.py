@@ -389,7 +389,7 @@ class TranslatorTestCase(TestCase):
 
     def test_external_imports_transferred_verbatim(self):
         grammar = r'''
-            from darglint.errors import (
+            from darglint2.errors import (
                 ItemIndentationError,
             )
 

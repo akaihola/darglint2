@@ -3,7 +3,7 @@ import noqa_statement.bnf
 
 # The base grammar could be different for different docstrings.
 # So we import it here.
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )

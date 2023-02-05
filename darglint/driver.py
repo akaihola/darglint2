@@ -21,8 +21,8 @@ from .config import (
 )
 from .docstring.style import DocstringStyle
 from .strictness import Strictness
-import darglint.errors
-from darglint.error_report import ErrorReport
+import darglint2.errors
+from darglint2.error_report import ErrorReport
 
 
 # ---------------------- ARGUMENT PARSER -----------------------------
@@ -224,16 +224,16 @@ def get_error_report(filename,
             message_template=message_template,
         )
     except SyntaxError as e:
-        error = darglint.errors.PythonSyntaxError(e)
+        error = darglint2.errors.PythonSyntaxError(e)
         report = ErrorReport([error], filename, verbosity, message_template)
         return str(report)
 
 
 def print_error_list():
     errors = list()  # type: List[str]
-    for name, obj in inspect.getmembers(darglint.errors, inspect.isclass):
-        if (issubclass(obj, darglint.errors.DarglintError)
-                and obj != darglint.errors.DarglintError):
+    for name, obj in inspect.getmembers(darglint2.errors, inspect.isclass):
+        if (issubclass(obj, darglint2.errors.DarglintError)
+                and obj != darglint2.errors.DarglintError):
             errors.append('{}: {}'.format(obj.error_code, obj.description))
     errors.sort()
     print('\n'.join(errors))

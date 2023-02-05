@@ -2,10 +2,10 @@ from unittest import TestCase
 
 from flake8.options.manager import OptionManager
 
-from darglint.config import get_config
-from darglint.docstring.style import DocstringStyle
-from darglint.flake8_entry import DarglintChecker
-from darglint.strictness import Strictness
+from darglint2.config import get_config
+from darglint2.docstring.style import DocstringStyle
+from darglint2.flake8_entry import DarglintChecker
+from darglint2.strictness import Strictness
 
 class Flake8TestCase(TestCase):
     """Tests that flake8 config is parsed correctly."""

@@ -4,7 +4,7 @@ import inspect
 import os
 import importlib
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
 )
 
@@ -15,13 +15,13 @@ def convert_filename_to_module(filename):
 
 def get_python_modules_in_grammars():
     basepath = os.path.join(
-        os.getcwd(), 'darglint/parse/grammars'
+        os.getcwd(), "darglint2/parse/grammars"
     )
     return [
         (
             x,
             convert_filename_to_module(
-                os.path.join('darglint/parse/grammars', x)
+                os.path.join("darglint2/parse/grammars", x)
             )
         )
         for x in os.listdir(basepath)

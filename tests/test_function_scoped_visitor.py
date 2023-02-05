@@ -2,13 +2,13 @@ import ast
 from unittest import (
     TestCase,
 )
-from darglint.analysis.return_visitor import (
+from darglint2.analysis.return_visitor import (
     ReturnVisitor,
 )
-from darglint.analysis.function_scoped_visitor import (
+from darglint2.analysis.function_scoped_visitor import (
     FunctionScopedVisitorMixin,
 )
-from darglint.analysis.argument_visitor import (
+from darglint2.analysis.argument_visitor import (
     ArgumentVisitor,
 )
 from .utils import (

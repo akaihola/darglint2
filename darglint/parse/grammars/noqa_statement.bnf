@@ -1,6 +1,6 @@
 import terminals.bnf
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     NoqaIdentifier,
 )
 

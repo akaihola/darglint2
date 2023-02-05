@@ -62,10 +62,10 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={
         'console_scripts': [
-            'darglint = darglint.driver:main',
+            "darglint = darglint2.driver:main",
         ],
         flake8_entry_point: [
-            'DAR = darglint.flake8_entry:DarglintChecker',
+            "DAR = darglint2.flake8_entry:DarglintChecker",
         ],
     },
     install_requires=requirements,

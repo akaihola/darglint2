@@ -1,7 +1,7 @@
 import numpy.bnf
 import terminals.bnf
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )

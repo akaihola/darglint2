@@ -4,13 +4,13 @@ from unittest.mock import (
     Mock,
 )
 
-from darglint.custom_assert import (
+from darglint2.custom_assert import (
     Assert,
 )
-from darglint.config import (
+from darglint2.config import (
     AssertStyle,
 )
-from darglint.utils import (
+from darglint2.utils import (
     ConfigurationContext,
 )
 
@@ -26,7 +26,7 @@ class AssertTestCase(TestCase):
                 Assert(False, message)
             self.assertTrue(message in str(exc.exception))
 
-    @patch('darglint.custom_assert.get_logger')
+    @patch("darglint2.custom_assert.get_logger")
     def test_logs_by_default(self, mock_get_logger):
         mock_logger = Mock()
         mock_logger.error = Mock()

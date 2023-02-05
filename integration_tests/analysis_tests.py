@@ -6,17 +6,17 @@ from unittest.mock import (
 )
 
 import ast
-from darglint.analysis.raise_visitor import (
+from darglint2.analysis.raise_visitor import (
     RaiseVisitor,
 )
-from darglint.config import (
+from darglint2.config import (
     AssertStyle,
 )
-from darglint.function_description import (
+from darglint2.function_description import (
     read_program,
     get_function_descriptions,
 )
-from darglint.utils import (
+from darglint2.utils import (
     ConfigurationContext,
 )
 
@@ -32,7 +32,7 @@ def yield_modules():
 
 class RaiseAnalysisTest(TestCase):
 
-    @patch('darglint.analysis.raise_visitor.logger')
+    @patch("darglint2.analysis.raise_visitor.logger")
     def test_no_errors_logged_ever(self, mock_logger):
         """Make sure that no functions kill the analysis.
 

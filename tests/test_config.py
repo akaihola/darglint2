@@ -10,14 +10,14 @@ from unittest import (
     TestCase,
 )
 
-from darglint.config import (
+from darglint2.config import (
     walk_path,
     POSSIBLE_CONFIG_FILENAMES,
     find_config_file_in_path,
     get_logger,
     LogLevel,
 )
-from darglint.utils import (
+from darglint2.utils import (
     ConfigurationContext,
 )
 
@@ -25,7 +25,7 @@ from darglint.utils import (
 class WalkPathTestCase(TestCase):
     """Tests the walk_path function."""
 
-    @mock.patch('darglint.config.os.getcwd')
+    @mock.patch("darglint2.config.os.getcwd")
     def test_at_root_yields_only_once(self, mock_getcwd):
         """We should only get root once. # noqa"""
         mock_getcwd.return_value = '/'
@@ -34,7 +34,7 @@ class WalkPathTestCase(TestCase):
         with self.assertRaises(StopIteration):
             next(path_walker)
 
-    @mock.patch('darglint.config.os.getcwd')
+    @mock.patch("darglint2.config.os.getcwd")
     def test_really_long_path(self, mock_getcwd):
         directories = [
             ''.join([
@@ -60,8 +60,8 @@ class WalkPathTestCase(TestCase):
 class FindConfigFileInPathTestCase(TestCase):
     """Test that the config file is being found."""
 
-    @mock.patch('darglint.config.configparser.ConfigParser')
-    @mock.patch('darglint.config.os.listdir')
+    @mock.patch("darglint2.config.configparser.ConfigParser")
+    @mock.patch("darglint2.config.os.listdir")
     def test_filename_checked(self, mock_listdir, mock_ConfigParser):
         """Check that only the necessary filenames are identified.  # noqa """
         fake_files = [

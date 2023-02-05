@@ -1,18 +1,18 @@
 import ast
 from unittest import TestCase
 
-from darglint.lex import (
+from darglint2.lex import (
     condense,
     lex,
 )
-from darglint.parse.sphinx import (
+from darglint2.parse.sphinx import (
     parse,
 )
 from .sphinx_docstrings import docstrings
-from darglint.utils import (
+from darglint2.utils import (
     CykNodeUtils,
 )
-from darglint.errors import (
+from darglint2.errors import (
     IndentError,
 )
 

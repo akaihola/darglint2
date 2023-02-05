@@ -9,11 +9,11 @@ from typing import (
 )
 from unittest import skip
 
-from darglint.token import (
+from darglint2.token import (
     TokenType,
     Token,
 )
-from darglint.config import (
+from darglint2.config import (
     get_config,
     Configuration,
 )

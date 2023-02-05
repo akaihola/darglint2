@@ -1,15 +1,15 @@
-# Generated on 2020-04-04 11:23:41.567044
+# Generated on 2023-02-05 17:17:14.242316
 
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
     P,
 )
 
-from darglint.token import (
+from darglint2.token import (
     TokenType,
 )
 
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     NoqaIdentifier,
 )
 

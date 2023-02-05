@@ -1,20 +1,20 @@
 from unittest import (
     TestCase,
 )
-from darglint.parse.grammar import (
+from darglint2.parse.grammar import (
     BaseGrammar,
 )
-from darglint.parse.combinator import (
+from darglint2.parse.combinator import (
     parser_combinator,
 )
-from darglint.parse.cyk import (
+from darglint2.parse.cyk import (
     parse,
 )
-from darglint.node import (
+from darglint2.node import (
     CykNode,
 )
-from darglint.parse.grammar import Production as P
-from darglint.token import (
+from darglint2.parse.grammar import Production as P
+from darglint2.token import (
     BaseTokenType,
     Token,
 )

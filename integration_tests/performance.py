@@ -26,13 +26,13 @@ from unittest import (
     TestCase,
 )
 
-from darglint.docstring.base import (
+from darglint2.docstring.base import (
     BaseDocstring,
 )
-from darglint.docstring.docstring import (
+from darglint2.docstring.docstring import (
     Docstring,
 )
-from darglint.driver import (
+from darglint2.driver import (
     print_version,
 )
 from statistics import (

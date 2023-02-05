@@ -4,11 +4,11 @@ from unittest import (
     TestCase,
 )
 
-from darglint.function_description import get_function_descriptions
-from darglint.integrity_checker import IntegrityChecker
-from darglint.docstring.style import DocstringStyle
-from darglint.strictness import Strictness
-from darglint.utils import (
+from darglint2.function_description import get_function_descriptions
+from darglint2.integrity_checker import IntegrityChecker
+from darglint2.docstring.style import DocstringStyle
+from darglint2.strictness import Strictness
+from darglint2.utils import (
     ConfigurationContext,
 )
 
