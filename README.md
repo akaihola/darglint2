@@ -227,7 +227,7 @@ darglint2 -m "{path}:{line} -> {msg_id}" darglint2/driver.py
 Then we would get back error messages like
 
 ```bash
-darglint/driver.py :61 -> DAR101
+darglint2/driver.py :61 -> DAR101
 ```
 
 The following attributes can be passed to the format string:
