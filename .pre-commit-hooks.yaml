@@ -1,6 +1,6 @@
 -   id: darglint
     name: darglint
-    description: '`darglint` is a tool for linting python docstrings.'
+    description: '`darglint2` is a tool for linting python docstrings.'
     entry: darglint
     language: python
     types: [python]

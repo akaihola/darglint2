@@ -6,7 +6,7 @@ which CYK can handle without devolving into a terrible
 complexity. (It has a worst case of O(n^3).
 
 There are faster, on average, algorithms, which might
-be better suited to the average task of Darglint.
+be better suited to the average task of Darglint2.
 However, CYK is relatively simple, and is well documented.
 (Others, like chart parsing, are much more difficult
 to find examples of.)

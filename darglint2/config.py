@@ -26,10 +26,10 @@ from .strictness import Strictness
 
 
 def get_logger():  # type: () -> Logger
-    """Get the default logger for darglint.
+    """Get the default logger for darglint2.
 
     Returns:
-        The default logger for darglint.
+        The default logger for darglint2.
 
     """
     return logging.getLogger("darglint2")

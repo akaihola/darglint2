@@ -1,4 +1,4 @@
-"""This module describes all errors which can be reported by Darglint.
+"""This module describes all errors which can be reported by Darglint2.
 
 Errors can be anything from being unable to parse a docstring,
 to having docstring arguments out of sync with the function/method
@@ -28,7 +28,7 @@ from typing import (
 
 
 class DarglintError(BaseException):
-    """The base error class for any darglint error."""
+    """The base error class for any darglint2 error."""
 
     # The shortest error message possible.  Should use abbreviated
     # symbols.  Can be combined with the general message to give

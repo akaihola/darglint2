@@ -1,4 +1,4 @@
-"""A utility for measuring performance characteristics for darglint.
+"""A utility for measuring performance characteristics for darglint2.
 
 Performs performance tests at two levels: the individual docstring,
 and individual files.
@@ -164,7 +164,7 @@ class Chart(object):
 
 
 class Performance(object):
-    """Measure and report on performance of darglint."""
+    """Measure and report on performance of darglint2."""
 
     def __init__(self, stats=None, module_stats=None):
         # type: (Optional[Stats], Optional[Stats]) -> None

@@ -28,7 +28,7 @@ parser.add_argument(
     help=(
         'The output format.  Can be either "cyk" or "py".  "cyk" '
         'outputs the file in CYK format, as a .cyk file.  Py '
-        'generates a grammar which can be read by darglint.'
+        "generates a grammar which can be read by darglint2."
     ),
 )
 parser.add_argument(

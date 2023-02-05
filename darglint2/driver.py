@@ -1,4 +1,4 @@
-"""Defines the command line interface for darglint."""
+"""Defines the command line interface for darglint2."""
 import argparse
 import ast
 import pathlib
@@ -65,14 +65,14 @@ parser.add_argument(
     '-p',
     action="store_true",
     default=False,
-    help='Class property methods will be ignored by darglint',
+    help="Class property methods will be ignored by darglint2",
 )
 parser.add_argument(
     '--raise-syntax',
     action='store_true',
     help=(
         'When a docstring is incorrectly formatted, raise an exception '
-        'rather than storing the error.  Useful for debugging darglint.'
+        "rather than storing the error.  Useful for debugging darglint2."
     ),
 )
 parser.add_argument(
@@ -87,7 +87,7 @@ parser.add_argument(
     '--version',
     action='store_true',
     help=(
-        'Return the current version number of darglint.'
+        "Return the current version number of darglint2."
     ),
 )
 parser.add_argument(
@@ -103,7 +103,7 @@ parser.add_argument(
     '-x',
     action='store_true',
     help=(
-        'Exit with status 0, even on errors.  By default, darglint '
+        "Exit with status 0, even on errors.  By default, darglint2 "
         'exits with status 1 when errors are encountered.  Giving '
         'this flag prevents that.  Useful when invocating with xargs '
         'and you want to see all errors.  '
@@ -199,9 +199,9 @@ def get_error_report(filename,
         filename: The name of the module to check.
         verbosity: The level of verbosity, in the range [1, 3].
         raise_errors_for_syntax: True if we want parser errors
-            to propagate up (crashing darglint.)  This is useful
-            if we are developing on darglint -- we can get the stack
-            trace and know exactly where darglint failed.
+            to propagate up (crashing darglint2.)  This is useful
+            if we are developing on darglint2 -- we can get the stack
+            trace and know exactly where darglint2 failed.
         message_template: A python format string for specifying
             how the message should appear to the user.
 
@@ -245,7 +245,7 @@ def print_version():
 
 def main():
     # type: () -> None
-    """Run darglint.
+    """Run darglint2.
 
     Called as a script when setup.py is installed.
 
@@ -325,7 +325,7 @@ def main():
                 encountered_errors = True
     except Exception as exc:
         # Exit with status 129 regardless of whether user wants a
-        # exit code or not -- darglint failed, and it should
+        # exit code or not -- darglint2 failed, and it should
         # look like it failed.
         logger = get_logger()
         logger.critical(exc)

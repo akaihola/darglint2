@@ -53,7 +53,7 @@ class IntegrityChecker(object):
 
         Args:
             raise_errors: If true, we will allow ParserExceptions to
-                propagate, crashing darglint.  This is mostly useful
+                propagate, crashing darglint2.  This is mostly useful
                 for development.
 
         """

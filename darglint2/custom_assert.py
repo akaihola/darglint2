@@ -1,4 +1,4 @@
-"""Defines a custom assert function for darglint."""
+"""Defines a custom assert function for darglint2."""
 
 from .config import (
     get_logger,
@@ -23,7 +23,7 @@ def Assert(expr, message):  # type: (Any, Optional[str]) -> None
             or some other debugging information.
 
     Raises:
-        AssertionError: If darglint is configured to raise
+        AssertionError: If darglint2 is configured to raise
             on failed assertions, otherwise logs.
 
     """

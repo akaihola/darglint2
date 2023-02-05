@@ -1,6 +1,6 @@
-"""Utilities for debugging Darglint.
+"""Utilities for debugging Darglint2.
 
-This file should not be imported into Darglint,
+This file should not be imported into Darglint2,
 and should ideally be excluded from the sources.
 
 """
