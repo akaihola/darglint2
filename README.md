@@ -479,15 +479,18 @@ error formatting) in `.darglint2`, `.darglint`, `setup.cfg` or `tox.ini`.
 
 ## Roadmap
 
-Below are some of the current features or efforts.  Where a milestone or
+Below are some of the features or efforts from the original `darglint` project
+at the time of forking in February 2023.  Where a milestone or
 issue is associated with the idea, it will be mentioned.  Some of these
-ideas are moonshots and may not get implemented.  They are ordered
-roughly according to current priority/feasibility.
+ideas were moonshots and may not get implemented.  They are ordered
+roughly according to priority/feasibility stated by the original author.
 
 - [ ] Expose command-line options through sphinx.
-- [ ] Robust logging for errors caused/encountered by *darglint*.
-- [ ] Check class docstrings (See Issue #25).
-- [ ] Autoformatting docstrings.  (See Milestone #3).
+- [ ] Robust logging for errors caused/encountered by *darglint2*.
+- [ ] Check class docstrings (See
+      [darglint#25](https://github.com/terrencepreilly/darglint/issues/25)).
+- [ ] Autoformatting docstrings. (See
+      [darglint milestone #3](https://github.com/terrencepreilly/darglint/milestone/3)).
 - [ ] Optional aggressive style checking through command line flag.
 - [ ] ALE support.
 - [ ] Syntastic support. (Syntastic is not accepting new checkers until
