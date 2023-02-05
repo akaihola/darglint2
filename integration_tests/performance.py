@@ -427,7 +427,7 @@ def _record_historical(stats, module_stats, filename='.performance_history'):
 
 
 def _main():
-    print('DARGLINT STATS', end=' ')
+    print("DARGLINT2 STATS", end=" ")
     print_version()
     stats = _read_from_cache()
     perf = Performance(stats)
