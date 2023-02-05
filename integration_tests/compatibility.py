@@ -29,7 +29,7 @@ class CompatibilityTest(TestCase):
     def create_darglint_setup(self, strictness=None):
         try:
             with open('.darglint', 'w') as fout:
-                fout.write('[darglint]\n')
+                fout.write("[darglint2]\n")
                 if strictness:
                     fout.write('strictness={}\n'.format(strictness))
         except Exception:
@@ -49,7 +49,7 @@ class CompatibilityTest(TestCase):
     def create_no_darglint_setup(self):
         try:
             with open('.darglint', 'w') as fout:
-                fout.write('[darglint]\nignore=*\n')
+                fout.write("[darglint2]\nignore=*\n")
         except Exception:
             # Do Nothing.
             pass

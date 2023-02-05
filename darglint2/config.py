@@ -220,46 +220,46 @@ def load_config_file(filename):  # type: (str) -> Configuration
     strictness = Strictness.FULL_DESCRIPTION
     indentation = 4
     log_level = LogLevel.CRITICAL
-    if 'darglint' in config.sections():
-        if 'ignore' in config['darglint']:
-            errors = config['darglint']['ignore']
+    if "darglint2" in config.sections():
+        if "ignore" in config["darglint2"]:
+            errors = config["darglint2"]["ignore"]
             for error in errors.split(','):
                 ignore.append(error.strip())
-        if 'enable' in config['darglint']:
-            to_enable = config['darglint']['enable']
+        if "enable" in config["darglint2"]:
+            to_enable = config["darglint2"]["enable"]
             for error in to_enable.split(','):
                 enable.append(error.strip())
-        if 'message_template' in config['darglint']:
-            message_template = config['darglint']['message_template']
-        if 'ignore_regex' in config['darglint']:
-            ignore_regex = config['darglint']['ignore_regex']
-        if 'ignore_raise' in config['darglint']:
-            to_ignore_raise = config['darglint']['ignore_raise']
+        if "message_template" in config["darglint2"]:
+            message_template = config["darglint2"]["message_template"]
+        if "ignore_regex" in config["darglint2"]:
+            ignore_regex = config["darglint2"]["ignore_regex"]
+        if "ignore_raise" in config["darglint2"]:
+            to_ignore_raise = config["darglint2"]["ignore_raise"]
             for exception in to_ignore_raise.split(','):
                 ignore_raise.append(exception.strip())
-        if 'ignore_properties' in config['darglint']:
-            ignore_properties = bool(config['darglint']['ignore_properties'])
-        if 'docstring_style' in config['darglint']:
-            raw_style = config['darglint']['docstring_style']
+        if "ignore_properties" in config["darglint2"]:
+            ignore_properties = bool(config["darglint2"]["ignore_properties"])
+        if "docstring_style" in config["darglint2"]:
+            raw_style = config["darglint2"]["docstring_style"]
             style = DocstringStyle.from_string(raw_style)
 
-        if 'strictness' in config['darglint']:
-            raw_strictness = config['darglint']['strictness']
+        if "strictness" in config["darglint2"]:
+            raw_strictness = config["darglint2"]["strictness"]
             strictness = Strictness.from_string(raw_strictness)
 
-        if 'indentation' in config['darglint']:
+        if "indentation" in config["darglint2"]:
             try:
-                indentation = int(config['darglint']['indentation'])
+                indentation = int(config["darglint2"]["indentation"])
             except ValueError:
                 raise Exception(
                     'Unrecognized value for indentation.  Expected '
                     'a non-zero, positive integer, but received {}'.format(
-                        config['darglint']['indentation']
+                        config["darglint2"]["indentation"]
                     )
                 )
 
-        if 'log_level' in config['darglint']:
-            log_level = LogLevel.from_string(config['darglint']['log_level'])
+        if "log_level" in config["darglint2"]:
+            log_level = LogLevel.from_string(config["darglint2"]["log_level"])
     return Configuration(
         ignore=ignore,
         message_template=message_template,
@@ -315,7 +315,7 @@ def find_config_file_in_path(path):  # type: (str) -> Optional[str]
             fully_qualified_path = os.path.join(path, filename)
             try:
                 config.read(fully_qualified_path)
-                if 'darglint' in config.sections():
+                if "darglint2" in config.sections():
                     return fully_qualified_path
             except configparser.ParsingError:
                 get_logger().error('Unable to parse file {}'.format(

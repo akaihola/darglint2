@@ -54,7 +54,7 @@ pip install .
 
 *darglint* can be configured using a configuration file.  The configuration
 file must be named either *.darglint*, *setup.cfg*, or *tox.ini*.  It must
-also have a section starting with the section header, `[darglint]`.
+also have a section starting with the section header, `[darglint2]`.
 Finally, the configuration file must be located either in the directory
 *darglint* is called from, or from a parent directory of that working
 directory.
@@ -70,14 +70,14 @@ an underlying function will raise an exception), then we would add its
 error code to a file named *.darglint*:
 
 ```ini
-[darglint]
+[darglint2]
 ignore=DAR402
 ```
 
 We can ignore multiple errors by using a comma-separated list:
 
 ```ini
-[darglint]
+[darglint2]
 ignore=DAR402,DAR103
 ```
 
@@ -85,7 +85,7 @@ Instead of specifying error codes to ignore in general one can also specify a
 regex to exclude certain function names from tests. For example, the following 
 configuration would disable linting on all private methods.
 ```ini
-[darglint]
+[darglint2]
 ignore_regex=^_(.*)
 ```
 
@@ -95,7 +95,7 @@ If we would like to specify a message template, we may do so as
 follows:
 
 ```ini
-[darglint]
+[darglint2]
 message_template={msg_id}@{path}:{line}
 ```
 
@@ -105,7 +105,7 @@ Finally, we can specify the docstring style type using `docstring_style`
 ("google" by default):
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=sphinx
 ```
 
@@ -164,7 +164,7 @@ In short, if you want to be able to have single-line docstrings, and check
 all other docstrings against their described parameters, you would specify
 
 ```ini
-[darglint]
+[darglint2]
 strictness=short
 ```
 
@@ -176,7 +176,7 @@ We can specify a list of exceptions that don't need to be documented in the
 raises section of a docstring. For example,
 
 ```ini
-[darglint]
+[darglint2]
 ignore_raise=ValueError,MyCustomError
 ```
 
@@ -371,7 +371,7 @@ using the `enable` option.  It accepts a comma-separated list of error
 codes.
 
 ```ini
-[darglint]
+[darglint2]
 enable=DAR104
 ```
 
@@ -404,7 +404,7 @@ Alternatively, you can specify the style in the configuration file using
 the setting, "docstring\_style":
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=sphinx
 ```
 
@@ -422,7 +422,7 @@ darglint --docstring-style numpy example.py
 Or set it in a configuration file:
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=numpy
 ```
 
