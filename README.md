@@ -453,7 +453,9 @@ flake8 --help | grep --before-context=2 Darglint2
 
 ### SublimeLinter
 
-A plugin for SublimeLinter can be found [here](https://github.com/raddessi/SublimeLinter-contrib-darglint)
+A plugin for SublimeLinter can be found [here](https://github.com/raddessi/SublimeLinter-contrib-darglint).
+Note that it was built for the original `darglint`, not `darglint2`, and its
+compatibility with `darglint2` is yet to be verified.
 
 ### Pre-commit
 
