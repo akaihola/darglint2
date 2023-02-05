@@ -73,7 +73,7 @@ class Grammar(BaseGrammar):
         P("item-body7", ([], "newline", "block", 0)),
         P("block-indented0", ([], "split", "block-indented", 0)),
         P("block-indented1", ([], "split-indented", "block-indented", 0)),
-        P("split-indented0", ([], "indents", "newlines", 0), ([], "indent", "indents", 0), (TokenType.INDENT, 0), ([], "newline", "newlines", 0), (TokenType.NEWLINE, 0)),
+        P("split-indented0", ([], "indents", "newlines", 0), ([], "newline", "newlines", 0), (TokenType.NEWLINE, 0), ([], "indent", "indents", 0), (TokenType.INDENT, 0)),
         P("paragraph-indented0", ([], "line", "paragraph-indented1", 0)),
         P("paragraph-indented1", ([], "newline", "paragraph-indented", 0)),
         P("block0", ([], "split", "block", 0)),

@@ -1,5 +1,9 @@
 # Generated on 2023-02-05 17:17:12.506905
 
+from darglint2.errors import (
+    ParameterMalformedError,
+)
+
 from darglint2.parse.grammar import (
     BaseGrammar,
     P,

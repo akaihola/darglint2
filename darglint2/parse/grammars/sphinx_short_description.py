@@ -5,6 +5,10 @@ from darglint2.parse.grammar import (
     P,
 )
 
+from darglint2.errors import (
+    IndentError,
+)
+
 from darglint2.token import (
     TokenType,
 )
