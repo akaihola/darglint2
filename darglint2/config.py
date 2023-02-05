@@ -32,7 +32,7 @@ def get_logger():  # type: () -> Logger
         The default logger for darglint.
 
     """
-    return logging.getLogger('darglint')
+    return logging.getLogger("darglint2")
 
 
 POSSIBLE_CONFIG_FILENAMES = (
