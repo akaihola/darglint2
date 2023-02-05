@@ -23,7 +23,7 @@ __version__ = '1.8.1'
 
 class DarglintChecker(object):
 
-    name = 'flake8-darglint'
+    name = "flake8-darglint2"
     version = __version__
     config = get_config()
 
