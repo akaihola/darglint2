@@ -1,0 +1,33 @@
+# From:
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#running-tests-with-tox
+#
+# Adapted original `darglint/.travis.yml`, see
+# https://github.com/akaihola/darglint2/blob/abc26b768cd7135d848223ba53f68323593c33d5/.travis.yml
+
+name: Run Pytest using Tox
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python: ["3.7", "3.8", "3.9"]
+        include:
+          - os: "ubuntu-20.04"
+            python: "3.6"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install tox and any other packages
+        run: pip install pytest tox
+      - name: Run tox
+        # Run tox using the version of Python in `PATH`
+        run: tox -e py
