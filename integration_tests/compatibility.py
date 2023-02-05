@@ -28,7 +28,7 @@ class CompatibilityTest(TestCase):
 
     def create_darglint_setup(self, strictness=None):
         try:
-            with open('.darglint', 'w') as fout:
+            with open(".darglint2", "w") as fout:
                 fout.write("[darglint2]\n")
                 if strictness:
                     fout.write('strictness={}\n'.format(strictness))
@@ -48,7 +48,7 @@ class CompatibilityTest(TestCase):
 
     def create_no_darglint_setup(self):
         try:
-            with open('.darglint', 'w') as fout:
+            with open(".darglint2", "w") as fout:
                 fout.write("[darglint2]\nignore=*\n")
         except Exception:
             # Do Nothing.
@@ -57,7 +57,7 @@ class CompatibilityTest(TestCase):
     @classmethod
     def remove_configs(cls):
         try:
-            os.remove('.darglint')
+            os.remove(".darglint2")
             os.remove('.flake8')
         except Exception:
             # Do Nothing.

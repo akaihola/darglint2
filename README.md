@@ -53,7 +53,7 @@ pip install .
 ## Configuration
 
 *darglint* can be configured using a configuration file.  The configuration
-file must be named either *.darglint*, *setup.cfg*, or *tox.ini*.  It must
+file must be named either *.darglint2*, *.darglint*, *setup.cfg*, or *tox.ini*.  It must
 also have a section starting with the section header, `[darglint2]`.
 Finally, the configuration file must be located either in the directory
 *darglint* is called from, or from a parent directory of that working
@@ -67,7 +67,7 @@ exceptions.
 
 If we would like to ignore `ExcessRaiseError`s (because we know that
 an underlying function will raise an exception), then we would add its
-error code to a file named *.darglint*:
+error code to a file named *.darglint2*:
 
 ```ini
 [darglint2]
@@ -475,7 +475,7 @@ repos:
 Then run `pre-commit install` and you're ready to go. Before commiting,
 `darglint` will be run on the staged files. If it finds any errors, the user
 is notified and the commit is aborted. Store necessary configuration (such as
-error formatting) in `.darglint`, `setup.cfg` or `tox.ini`.
+error formatting) in `.darglint2`, `.darglint`, `setup.cfg` or `tox.ini`.
 
 
 ## Roadmap

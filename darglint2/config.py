@@ -36,6 +36,7 @@ def get_logger():  # type: () -> Logger
 
 
 POSSIBLE_CONFIG_FILENAMES = (
+    ".darglint2",
     '.darglint',
     'setup.cfg',
     'tox.ini',
