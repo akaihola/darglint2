@@ -6,7 +6,7 @@ class SourceFileTestCase(TestCase):
 
     def assertWorks(self, filename):
         proc = subprocess.run([
-            'darglint', filename
+            "darglint2", filename
         ])
         self.assertTrue(
             proc.returncode in {0, 1},

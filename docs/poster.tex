@@ -145,7 +145,7 @@
             parameter:
 
 \begin{minted}{bash}
-  > darglint -v 2 base_error.py
+  > darglint2 -v 2 base_error.py
   base_error.py:message:4: I101: Missing parameter(s)
       in Docstring: - raises
 \end{minted}
@@ -183,7 +183,7 @@
             example, the below call only prints the error number:
 
 \begin{minted}{bash}
-  darglint --message-template "{msg_id}" *.py
+  darglint2 --message-template "{msg_id}" *.py
 \end{minted}
 
         \subsection{Syntax errors}
@@ -203,10 +203,10 @@
             Will produce the following output from darglint:
 
             \begin{minted}{bash}
-  > darglint -v 1 binary_tree.py
+  > darglint2 -v 1 binary_tree.py
   binary_tree.py:insert:11: I101: - item
 
-  > darglint -v 2 binary_tree.py
+  > darglint2 -v 2 binary_tree.py
   binary_tree.py:insert:11: I101: Missing parameter(s) in
       Docstring: - item
 

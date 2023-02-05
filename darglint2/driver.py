@@ -107,7 +107,7 @@ parser.add_argument(
         'exits with status 1 when errors are encountered.  Giving '
         'this flag prevents that.  Useful when invocating with xargs '
         'and you want to see all errors.  '
-        'Ex: `find . -name "*.py" | xargs darglint -x`'
+        'Ex: `find . -name "*.py" | xargs darglint2 -x`'
     ),
 )
 parser.add_argument(

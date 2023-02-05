@@ -284,7 +284,7 @@ class Performance(object):
         start = time.time()
         try:
             completed_process = subprocess.run([
-                'darglint',
+                "darglint2",
                 filename
             ], stdout=subprocess.PIPE)
             value = completed_process.stdout.decode('utf8')

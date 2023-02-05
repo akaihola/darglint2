@@ -6,7 +6,7 @@ import subprocess
 class EndToEndTest(TestCase):
 
     def get_errors(self, filename, *args):
-        invocation = ['darglint', *args]
+        invocation = ["darglint2", *args]
         invocation.append(filename)
         proc = subprocess.run(
             invocation,

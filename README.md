@@ -187,7 +187,7 @@ information when submitting a bug by running with logging.
 For example,
 
 ```bash
-darglint --log-level=INFO unexpected_failures.py
+darglint2 --log-level=INFO unexpected_failures.py
 ```
 
 *Darglint* accepts the levels, `DEBUG`, `INFO`, `WARNING`, `ERROR`, and
@@ -203,13 +203,13 @@ Given a python source file, `serializers.py`, you would check the docstrings
 as follows:
 
 ```bash
-darglint serializers.py
+darglint2 serializers.py
 ```
 
 You can give an optional verbosity setting to *darglint*.  For example,
 
 ```bash
-darglint -v 2 *.py
+darglint2 -v 2 *.py
 ```
 
 Would give a description of the error along with information as to this
@@ -221,7 +221,7 @@ is a python format string.  For example, if we pass the message
 template
 
 ```bash
-darglint -m "{path}:{line} -> {msg_id}" darglint/driver.py
+darglint2 -m "{path}:{line} -> {msg_id}" darglint2/driver.py
 ```
 
 Then we would get back error messages like
@@ -245,7 +245,7 @@ This allows us to check all of the files in our project at once.  For example,
 when eating my own dogfood (as I tend to do), I invoke *darglint* as follows:
 
 ```bash
-find . -name "*.py" | xargs darglint
+find . -name "*.py" | xargs darglint2
 ```
 
 Where I'm searching all files ending in ".py" recursively from the
@@ -396,8 +396,8 @@ later date.
 To analyze Sphinx-style docstrings, pass the style flag to the command:
 
 ```bash
-darglint -s sphinx example.py
-darglint --docstring-style sphinx example.py
+darglint2 -s sphinx example.py
+darglint2 --docstring-style sphinx example.py
 ```
 
 Alternatively, you can specify the style in the configuration file using
@@ -415,8 +415,8 @@ Similarly to Sphinx-style docstrings, you can pass a style flag to the
 command:
 
 ```bash
-darglint -s numpy example.py
-darglint --docstring-style numpy example.py
+darglint2 -s numpy example.py
+darglint2 --docstring-style numpy example.py
 ```
 
 Or set it in a configuration file:

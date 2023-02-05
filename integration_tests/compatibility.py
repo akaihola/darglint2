@@ -102,7 +102,7 @@ class CompatibilityTest(TestCase):
 
     def record_darglint_errors(self, collection, filename):
         proc = subprocess.run([
-            'darglint',
+            "darglint2",
             filename,
         ], stdout=subprocess.PIPE)
         result = proc.stdout.decode('utf8')

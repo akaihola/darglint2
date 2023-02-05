@@ -30,7 +30,7 @@ pydocstyle = "^4.0"
 twine = "^3.1"
 
 [tool.poetry.scripts]
-darglint = "darglint2.driver:main"
+darglint2 = "darglint2.driver:main"
 
 [tool.poetry.plugins."flake8.extension"]
 "DAR" = "darglint2.flake8_entry:DarglintChecker"
