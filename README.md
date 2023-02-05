@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/terrencepreilly/darglint.svg?branch=develop)](https://travis-ci.com/terrencepreilly/darglint)
-
 # Darglint2
 
 A functional docstring linter which checks whether a docstring's
