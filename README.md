@@ -41,7 +41,7 @@ information.  Consider it in maintenance mode.
 To install *darglint*, use pip.
 
 ```bash
-pip install darglint
+pip install darglint2
 ```
 
 Or, clone the repository, `cd` to the directory, and
@@ -466,10 +466,10 @@ to `.pre-commit-config.yaml` in your repository:
 
 ```yaml
 repos:
--   repo: https://github.com/terrencepreilly/darglint
+-   repo: https://github.com/akaihola/darglint2
     rev: master
     hooks:
-    - id: darglint
+    - id: darglint2
 ```
 
 Then run `pre-commit install` and you're ready to go. Before commiting,
@@ -502,13 +502,13 @@ their next API stabilizes, so this may take some time.)
 Install `darglint`. First, clone the repository:
 
 ```bash
-git clone https://github.com/terrencepreilly/darglint.git
+git clone https://github.com/akaihola/darglint2.git
 ```
 
 `cd` into the directory, create a virtual environment (optional), then setup:
 
 ```bash
-cd darglint/
+cd darglint2/
 virtualenv -p python3.6 .env
 source .env/bin/activate
 pip install -e .

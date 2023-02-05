@@ -48,7 +48,7 @@ flake8_entry_point = 'flake8.extension'
 
 
 setup(
-    name="darglint",
+    name="darglint2",
     version="1.8.1",
     author="Terrence Reilly",
     author_email="terrencepreilly@gmail.com",
@@ -56,7 +56,7 @@ setup(
                  "stay up to date with the source code."),
     license="MIT",
     keywords="documentation linter development",
-    url="http://github.com/terrencepreilly/darglint",
+    url="http://github.com/akaihola/darglint2",
     packages=find_packages(exclude=('tests', 'docs')),
     long_description=read_full_documentation('README.md'),
     long_description_content_type="text/markdown",
