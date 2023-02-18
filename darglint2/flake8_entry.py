@@ -85,7 +85,7 @@ class DarglintChecker(object):
         )
 
         option_manager.add_option(
-            '--darglint-ignore-regex',
+            '--darglint2-ignore-regex',
             type=str,
             help=(
                 'Methods/function names matching this regex will be skipped '
@@ -97,4 +97,4 @@ class DarglintChecker(object):
     def parse_options(cls, options):
         cls.config.style = DocstringStyle.from_string(options.docstring_style)
         cls.config.strictness = Strictness.from_string(options.strictness)
-        cls.config.ignore_regex = options.darglint_ignore_regex
+        cls.config.ignore_regex = options.darglint2_ignore_regex
