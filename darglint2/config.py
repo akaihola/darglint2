@@ -216,7 +216,7 @@ def load_config_file(filename: str) -> Configuration:
     style = DocstringStyle.GOOGLE
     strictness = Strictness.FULL_DESCRIPTION
     indentation = 4
-    # log_level = LogLevel.CRITICAL
+    log_level = LogLevel.CRITICAL
     if "darglint2" in config.sections():
         if "ignore" in config["darglint2"]:
             errors = config["darglint2"]["ignore"]
@@ -255,8 +255,8 @@ def load_config_file(filename: str) -> Configuration:
                     )
                 )
 
-        # if "log_level" in config["darglint2"]:
-        #     log_level = LogLevel.from_string(config["darglint2"]["log_level"])
+        if "log_level" in config["darglint2"]:
+            log_level = LogLevel.from_string(config["darglint2"]["log_level"])
     return Configuration(
         ignore=ignore,
         message_template=message_template,
@@ -267,6 +267,7 @@ def load_config_file(filename: str) -> Configuration:
         ignore_properties=ignore_properties,
         enable=enable,
         indentation=indentation,
+        log_level=log_level,
     )
 
 
