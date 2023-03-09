@@ -1,0 +1,5 @@
+# Run pre-commit formatters on repository.
+90cbf9794a32b105e362d7df136654f09f04f952
+
+# Convert type comments to type annotations.
+8c5661bdad41c9f9d9e5c3e8545c1e3d08b6fe00
