@@ -1,50 +1,37 @@
 import argparse
-from typing import (
-    Dict,
-    Optional,
-    Iterator,
-)
-from .parser import Parser
-from .validate import Validator
-from .translator import Translator
-from .node import Node
+from typing import Dict, Iterator, Optional
 
-parser = argparse.ArgumentParser(description='Convert BNF grammar to CNF')
+from .node import Node
+from .parser import Parser
+from .translator import Translator
+from .validate import Validator
+
+parser = argparse.ArgumentParser(description="Convert BNF grammar to CNF")
 parser.add_argument(
-    'file',
+    "file",
     nargs=1,
     type=str,
-    help=(
-        'The file to read the grammar from.'
-    ),
+    help=("The file to read the grammar from."),
 )
 parser.add_argument(
-    '-f',
-    '--format',
-    choices=['cyk', 'py'],
-    default='py',
-    nargs='?',
+    "-f",
+    "--format",
+    choices=["cyk", "py"],
+    default="py",
+    nargs="?",
     type=str,
     help=(
         'The output format.  Can be either "cyk" or "py".  "cyk" '
-        'outputs the file in CYK format, as a .cyk file.  Py '
+        "outputs the file in CYK format, as a .cyk file.  Py "
         "generates a grammar which can be read by darglint2."
     ),
 )
 parser.add_argument(
-    '-o',
-    '--output',
-    nargs=1,
-    type=str,
-    default=None,
-    help=(
-        'The output file.'
-    )
+    "-o", "--output", nargs=1, type=str, default=None, help=("The output file.")
 )
 
 
 class Driver(object):
-
     def __init__(self):
         self.data = None  # type: Optional[str]
         self.parser = Parser()
@@ -52,31 +39,31 @@ class Driver(object):
         self.translator = Translator()
         self.tree = None  # type: Optional[Node]
 
-    def read(self, filename: str) -> 'Driver':
-        with open(filename, 'r') as fin:
+    def read(self, filename: str) -> "Driver":
+        with open(filename, "r") as fin:
             self.data = fin.read()
         return self
 
-    def parse(self) -> 'Driver':
+    def parse(self) -> "Driver":
         self.tree = self.parser.parse(self.data)
         return self
 
-    def translate(self) -> 'Driver':
+    def translate(self) -> "Driver":
         self.translator.translate(self.tree)
         return self
 
-    def validate(self) -> 'Driver':
+    def validate(self) -> "Driver":
         self.validator.validate(self.tree)
         return self
 
     def write(self, _format: str) -> str:
         assert self.tree is not None
-        if _format == 'cyk':
+        if _format == "cyk":
             return str(self.tree)
-        elif _format == 'py':
+        elif _format == "py":
             return self.tree.to_python()
         else:
-            raise Exception(f'Unrecognized format type {_format}')
+            raise Exception(f"Unrecognized format type {_format}")
 
     def get_imports(self) -> Iterator[str]:
         assert self.tree is not None
@@ -84,7 +71,7 @@ class Driver(object):
             assert _import.value is not None
             yield _import.value
 
-    def merge(self, driver: 'Driver'):
+    def merge(self, driver: "Driver"):
         """Merge in the grammar at the given filename with this grammar.
 
         Args:
@@ -131,11 +118,11 @@ def main():
     translated = driver.translate().validate().write(args.format)
 
     if args.output:
-        with open(args.output[0], 'w') as fout:
+        with open(args.output[0], "w") as fout:
             fout.write(translated)
     else:
         print(translated)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

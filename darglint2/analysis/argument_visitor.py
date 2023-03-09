@@ -1,9 +1,5 @@
 import ast
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any, Dict, List
 
 
 class ArgumentVisitor(ast.NodeVisitor):
@@ -21,14 +17,14 @@ class ArgumentVisitor(ast.NodeVisitor):
 
     def add_arg_by_name(self, name, arg):
         self.arguments.append(name)
-        if arg.annotation is not None and hasattr(arg.annotation, 'id'):
+        if arg.annotation is not None and hasattr(arg.annotation, "id"):
             self.types.append(arg.annotation.id)
         else:
             self.types.append(None)
 
     def visit_arguments(self, node):
         # type: (ast.arguments) -> ast.AST
-        if hasattr(node, 'posonlyargs'):
+        if hasattr(node, "posonlyargs"):
             for arg in node.posonlyargs:
                 self.add_arg_by_name(arg.arg, arg)
 
@@ -40,10 +36,10 @@ class ArgumentVisitor(ast.NodeVisitor):
 
         # Handle single-star arguments.
         if node.vararg is not None:
-            name = '*' + node.vararg.arg
+            name = "*" + node.vararg.arg
             self.add_arg_by_name(name, node.vararg)
 
         if node.kwarg is not None:
-            name = '**' + node.kwarg.arg
+            name = "**" + node.kwarg.arg
             self.add_arg_by_name(name, node.kwarg)
         return self.generic_visit(node)

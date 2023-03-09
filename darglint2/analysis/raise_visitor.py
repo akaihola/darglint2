@@ -1,23 +1,12 @@
 import ast
-from collections import (
-    deque,
-)
 import copy
-from typing import (
-    Any,
-    Dict,
-    Iterator,
-    List,
-    Optional,
-    Set,
-    Union,
-)
+from collections import deque
+from typing import Any, Dict, Iterator, List, Optional, Set, Union
+
 from ..config import get_logger
 from ..custom_assert import Assert
 
-
 logger = get_logger()
-
 
 
 class Context(object):
@@ -33,7 +22,7 @@ class Context(object):
         # This complicates the logic, for the calling class (as
         # contextual operations have to account for two cases),
         # but it doesn't seem avoidable.
-        self.bare_handler_exceptions = None # type: Optional[Set[str]]
+        self.bare_handler_exceptions = None  # type: Optional[Set[str]]
 
         # A lookup from variable names to AST nodes.
         # If the variable name occurs in a raise expression,
@@ -74,33 +63,29 @@ class Context(object):
                         names.extend(self._get_attr_name(node))
                     else:
                         logger.error(
-                            'While getting the names from a caught '
-                            'tuple of exceptions, encountered '
-                            'something other than an ast.Name: '
-                            '{}'.format(
-                                node.__class__.__name__
-                            )
+                            "While getting the names from a caught "
+                            "tuple of exceptions, encountered "
+                            "something other than an ast.Name: "
+                            "{}".format(node.__class__.__name__)
                         )
                 return names
             elif isinstance(curr, ast.Call):
                 logger.info(
-                    'Encountered exception classes generated from function '
-                    'call.  These can\'t always be known from static '
-                    'analysis, an in fact we won\'t even try: {}'.format(
+                    "Encountered exception classes generated from function "
+                    "call.  These can't always be known from static "
+                    "analysis, an in fact we won't even try: {}".format(
                         curr.__class__.__name__
                     )
                 )
                 curr = None
             else:
                 logger.error(
-                    'While getting ast.Attribute representation '
-                    'a node had an unexpected type {}'.format(
-                        curr.__class__.__name__
-                    )
+                    "While getting ast.Attribute representation "
+                    "a node had an unexpected type {}".format(curr.__class__.__name__)
                 )
                 curr = None
         parts.reverse()
-        return ['.'.join(parts)]
+        return [".".join(parts)]
 
     def _get_name_name(self, name):
         # type: (Union[ast.Name, ast.Tuple]) -> Union[str, List[str]]
@@ -128,42 +113,40 @@ class Context(object):
             else:
                 return name
         elif isinstance(raises.exc, ast.Call):
-            if hasattr(raises.exc.func, 'id'):
-                return getattr(raises.exc.func, 'id')
-            elif hasattr(raises.exc.func, 'attr'):
-                return getattr(raises.exc.func, 'attr')
+            if hasattr(raises.exc.func, "id"):
+                return getattr(raises.exc.func, "id")
+            elif hasattr(raises.exc.func, "attr"):
+                return getattr(raises.exc.func, "attr")
             else:
                 logger.debug(
-                    'Raises function call has neither id nor attr.'
-                    'has only: %s' % str(dir(raises.exc.func))
+                    "Raises function call has neither id nor attr."
+                    "has only: %s" % str(dir(raises.exc.func))
                 )
         elif isinstance(raises.exc, ast.Attribute):
             return raises.exc.attr
         elif isinstance(raises.exc, ast.Subscript):
-            id_repr = ''
-            if hasattr(raises.exc.value, 'id'):
-                id_repr = getattr(raises.exc.value, 'id')
-            n_repr = ''
-            if hasattr(raises.exc.slice, 'value'):
-                value = getattr(raises.exc.slice, 'value')
-                if hasattr(value, 'n'):
-                    n_repr = getattr(value, 'n')
-            return '{}[{}]'.format(
+            id_repr = ""
+            if hasattr(raises.exc.value, "id"):
+                id_repr = getattr(raises.exc.value, "id")
+            n_repr = ""
+            if hasattr(raises.exc.slice, "value"):
+                value = getattr(raises.exc.slice, "value")
+                if hasattr(value, "n"):
+                    n_repr = getattr(value, "n")
+            return "{}[{}]".format(
                 id_repr,
                 n_repr,
             )
         elif raises.exc is None:
             if not self.handling:
-                return ''
+                return ""
             elif len(self.handling) == 1:
                 return self.handling[0]
             else:
                 return self.handling
         else:
-            logger.debug('Unexpected type in raises expression: {}'.format(
-                raises.exc
-            ))
-        return ''
+            logger.debug("Unexpected type in raises expression: {}".format(raises.exc))
+        return ""
 
     def add_exception(self, node):
         # type: (ast.Raise) -> Set[str]
@@ -182,7 +165,7 @@ class Context(object):
 
         """
         name = self._get_exception_name(node)
-        if name == '':
+        if name == "":
             if self.bare_handler_exceptions is not None:
                 return self.bare_handler_exceptions | self.exceptions
             elif self.exceptions:
@@ -197,8 +180,8 @@ class Context(object):
                 return values
             else:
                 logger.warning(
-                    'Unexpectedly had no exception name raised and no exception '
-                    'in context.'
+                    "Unexpectedly had no exception name raised and no exception "
+                    "in context."
                 )
         if isinstance(name, str):
             self.exceptions.add(name)
@@ -206,7 +189,7 @@ class Context(object):
             for part in name:
                 self.exceptions.add(part)
         else:
-            logger.warning('Node {} name extraction failed.')
+            logger.warning("Node {} name extraction failed.")
         return set()
 
     def remove_exception(self, node):
@@ -247,7 +230,6 @@ class Context(object):
 
 
 class RaiseVisitor(ast.NodeVisitor):
-
     def __init__(self, *args, **kwargs):
         # type: (Any, Any) -> None
 
@@ -291,8 +273,8 @@ class RaiseVisitor(ast.NodeVisitor):
         for handler in node.handlers:
             if handler.type:
                 if handler.name and (
-                    isinstance(handler.type, ast.Name) or
-                    isinstance(handler.type, ast.Tuple)
+                    isinstance(handler.type, ast.Name)
+                    or isinstance(handler.type, ast.Tuple)
                 ):
                     self.context.add_variable(handler.name, handler.type)
                 elif isinstance(handler.type, ast.Attribute):
@@ -303,13 +285,11 @@ class RaiseVisitor(ast.NodeVisitor):
                     self.context.set_handling(handler.type)
                 else:
                     logger.error(
-                        'While getting the types of exceptions in '
-                        'the handler, expected to find an ast.Name, '
-                        'ast.Tuple, or ast.Attribute, but got {}'.format(
-                            handler.type
-                        )
+                        "While getting the types of exceptions in "
+                        "the handler, expected to find an ast.Name, "
+                        "ast.Tuple, or ast.Attribute, but got {}".format(handler.type)
                     )
-                id = getattr(handler.type, 'id', None)
+                id = getattr(handler.type, "id", None)
                 if id:
                     self.context.remove_exception(id)
 

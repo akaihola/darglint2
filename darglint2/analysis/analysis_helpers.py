@@ -1,8 +1,6 @@
 import ast
-from typing import (
-    Iterable,
-    Union
-)
+from typing import Iterable, Union
+
 
 def _has_decorator(function, decorators):
     # # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Union[str, Iterable[str]]) -> bool

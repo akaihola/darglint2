@@ -1,37 +1,24 @@
+import ast
 import os
 from unittest import TestCase
-from unittest.mock import (
-    patch,
-    Mock,
-)
+from unittest.mock import Mock, patch
 
-import ast
-from darglint2.analysis.raise_visitor import (
-    RaiseVisitor,
-)
-from darglint2.config import (
-    AssertStyle,
-)
-from darglint2.function_description import (
-    read_program,
-    get_function_descriptions,
-)
-from darglint2.utils import (
-    ConfigurationContext,
-)
+from darglint2.analysis.raise_visitor import RaiseVisitor
+from darglint2.config import AssertStyle
+from darglint2.function_description import get_function_descriptions, read_program
+from darglint2.utils import ConfigurationContext
 
 
 def yield_modules():
     # type: () -> Iterable[str]
-    for path, folders, filenames in os.walk('integration_tests/repos'):
+    for path, folders, filenames in os.walk("integration_tests/repos"):
         for filename in filenames:
-            if not filename.endswith('.py'):
+            if not filename.endswith(".py"):
                 continue
             yield os.path.join(path, filename)
 
 
 class RaiseAnalysisTest(TestCase):
-
     @patch("darglint2.analysis.raise_visitor.logger")
     def test_no_errors_logged_ever(self, mock_logger):
         """Make sure that no functions kill the analysis.
@@ -62,11 +49,11 @@ class RaiseAnalysisTest(TestCase):
                     try:
                         visitor.visit(function.function)
                     except:
-                        print('Visitor error raised during {}'.format(module))
+                        print("Visitor error raised during {}".format(module))
                         raise
                     self.assertFalse(
                         mock_logger.error.called,
-                        'Unexpected error log at {}'.format(
+                        "Unexpected error log at {}".format(
                             module,
-                        )
+                        ),
                     )

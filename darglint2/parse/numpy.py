@@ -1,61 +1,22 @@
 import inspect
-from typing import (
-    List,
-    Optional,
-    Callable,
-    Union,
-    Dict,
-)
-from functools import (
-    reduce,
-)
-from ..token import (
-    Token,
-    TokenType,
-)
-from ..node import (
-    CykNode,
-)
+from functools import reduce
+from typing import Callable, Dict, List, Optional, Union
+
 from ..custom_assert import Assert
-from .cyk import (
-    parse as cyk_parse,
-)
-from .grammars.numpy_arguments_section import (
-    ArgumentsGrammar,
-)
-from .grammars.numpy_other_arguments_section import (
-    OtherArgumentsGrammar,
-)
-from .grammars.numpy_raises_section import (
-    RaisesGrammar,
-)
-from .grammars.numpy_receives_section import (
-    ReceivesGrammar,
-)
-from .grammars.numpy_returns_section import (
-    ReturnsGrammar,
-)
-from .grammars.numpy_short_description import (
-    ShortDescriptionGrammar,
-)
-from .grammars.numpy_warns_section import (
-    WarnsGrammar,
-)
-from .grammars.numpy_yields_section import (
-    YieldsGrammar,
-)
-from .grammar import (
-    BaseGrammar,
-)
-from .combinator import (
-    parser_combinator,
-)
-from ..token import (
-    KEYWORDS,
-)
-from .long_description import (
-    parse as long_description_parse,
-)
+from ..node import CykNode
+from ..token import KEYWORDS, Token, TokenType
+from .combinator import parser_combinator
+from .cyk import parse as cyk_parse
+from .grammar import BaseGrammar
+from .grammars.numpy_arguments_section import ArgumentsGrammar
+from .grammars.numpy_other_arguments_section import OtherArgumentsGrammar
+from .grammars.numpy_raises_section import RaisesGrammar
+from .grammars.numpy_receives_section import ReceivesGrammar
+from .grammars.numpy_returns_section import ReturnsGrammar
+from .grammars.numpy_short_description import ShortDescriptionGrammar
+from .grammars.numpy_warns_section import WarnsGrammar
+from .grammars.numpy_yields_section import YieldsGrammar
+from .long_description import parse as long_description_parse
 
 
 def top_parse(tokens):
@@ -72,6 +33,7 @@ def top_parse(tokens):
         The docstring, split into sections.
 
     """
+
     def at_section_boundary(i):
         # type: (int) -> int
         """Return the number of tokens which start this new section.
@@ -88,29 +50,29 @@ def top_parse(tokens):
             return 0
         if tokens[i].token_type == TokenType.OTHER:
             if (
-                i + 3 < len(tokens) and
-                tokens[i + 1].token_type == TokenType.ARGUMENTS and
-                tokens[i + 2].token_type == TokenType.NEWLINE and
-                tokens[i + 3].token_type == TokenType.HEADER
+                i + 3 < len(tokens)
+                and tokens[i + 1].token_type == TokenType.ARGUMENTS
+                and tokens[i + 2].token_type == TokenType.NEWLINE
+                and tokens[i + 3].token_type == TokenType.HEADER
             ):
                 return 4
             else:
                 return 0
         elif tokens[i].token_type == TokenType.SEE:
             if (
-                i + 3 < len(tokens) and
-                tokens[i + 1].token_type == TokenType.ALSO and
-                tokens[i + 2].token_type == TokenType.NEWLINE and
-                tokens[i + 3].token_type == TokenType.HEADER
+                i + 3 < len(tokens)
+                and tokens[i + 1].token_type == TokenType.ALSO
+                and tokens[i + 2].token_type == TokenType.NEWLINE
+                and tokens[i + 3].token_type == TokenType.HEADER
             ):
                 return 4
             else:
                 return 0
         elif tokens[i].token_type in KEYWORDS:
             if (
-                i + 2 < len(tokens) and
-                tokens[i + 1].token_type == TokenType.NEWLINE and
-                tokens[i + 2].token_type == TokenType.HEADER
+                i + 2 < len(tokens)
+                and tokens[i + 1].token_type == TokenType.NEWLINE
+                and tokens[i + 2].token_type == TokenType.HEADER
             ):
                 return 3
             else:
@@ -135,7 +97,7 @@ def top_parse(tokens):
         if beginning_tokens and curr:
             overall.append(curr)
             curr = list()
-            curr.extend(tokens[i:i + beginning_tokens + 1])
+            curr.extend(tokens[i : i + beginning_tokens + 1])
             i += beginning_tokens + 1
         else:
             curr.append(tokens[i])
@@ -202,7 +164,7 @@ def _match(token):
 
 
 def lookup(section, section_index=-1):
-    Assert(len(section) > 0, 'Expected a non-empty section.')
+    Assert(len(section) > 0, "Expected a non-empty section.")
     grammars = _match(section[0])
     if section_index == 0:
         return [ShortDescriptionGrammar] + grammars
@@ -213,21 +175,22 @@ def combinator(*args):
     def inner(*nodes):
         if len(nodes) == 1:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
             )
         elif len(nodes) == 2:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
                 rchild=nodes[1],
             )
+
     if args:
         return reduce(inner, args)
     else:
         # The arguments are empty, so we return an
         # empty docstring.
-        return CykNode(symbol='docstring')
+        return CykNode(symbol="docstring")
 
 
 def parse(tokens):
@@ -238,4 +201,5 @@ def parse(tokens):
                 yield lambda x: cyk_parse(grammar, x)
             else:
                 yield grammar
+
     return parser_combinator(top_parse, mapped_lookup, combinator, tokens)

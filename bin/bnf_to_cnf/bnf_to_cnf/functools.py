@@ -1,8 +1,4 @@
-from typing import (
-    Callable,
-    Iterator,
-    TypeVar,
-)
+from typing import Callable, Iterator, TypeVar
 
 
 def exists(it: Iterator) -> bool:
@@ -13,7 +9,7 @@ def exists(it: Iterator) -> bool:
     return True
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def and_(*args: Callable[[T], bool]) -> Callable[[T], bool]:
@@ -22,6 +18,7 @@ def and_(*args: Callable[[T], bool]) -> Callable[[T], bool]:
             if not fn(x):
                 return False
         return True
+
     return _inner
 
 
@@ -31,10 +28,12 @@ def or_(*args: Callable[[T], bool]) -> Callable[[T], bool]:
             if fn(x):
                 return True
         return False
+
     return _inner
 
 
 def not_(fn: Callable[[T], bool]) -> Callable[[T], bool]:
     def _inner(x: T) -> bool:
         return not fn(x)
+
     return _inner

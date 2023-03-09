@@ -1,10 +1,7 @@
-from typing import (
-    Optional,
-    Union,
-)
+from typing import Optional, Union
 
+from . import google, numpy, sphinx
 from .base import BaseDocstring  # noqa
-from . import google, sphinx, numpy
 
 
 class Docstring(object):

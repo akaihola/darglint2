@@ -6,49 +6,27 @@ if it's proven more efficient or is much cleaner.
 
 """
 import copy
-from typing import (
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
-from collections import (
-    defaultdict,
-)
+from collections import defaultdict
+from typing import Callable, Dict, Iterable, List, Optional, Tuple, Type, Union
 
+from ..custom_assert import Assert
+from ..errors import DarglintError
+from ..lex import condense, lex
+from ..node import CykNode
 from ..parse.identifiers import (
     ArgumentItemIdentifier,
     ArgumentTypeIdentifier,
     ExceptionItemIdentifier,
-    ReturnTypeIdentifier,
-    YieldTypeIdentifier,
     Identifier,
     NoqaIdentifier,
+    ReturnTypeIdentifier,
+    YieldTypeIdentifier,
 )
+from ..parse.numpy import parse
+from ..strictness import Strictness
 from .base import BaseDocstring
 from .sections import Sections
 from .style import DocstringStyle
-from ..node import (
-    CykNode,
-)
-from ..strictness import Strictness
-from ..parse.numpy import (
-    parse,
-)
-from ..lex import (
-    lex,
-    condense,
-)
-from ..errors import (
-    DarglintError,
-)
-from ..custom_assert import (
-    Assert,
-)
 
 
 class Docstring(BaseDocstring):
@@ -80,7 +58,7 @@ class Docstring(BaseDocstring):
             self.root = parse(condense(lex(root)))
         self._lookup = self._discover()
 
-    def _discover(self, node = None):
+    def _discover(self, node=None):
         # type: (Optional[CykNode]) -> Dict[str, List[CykNode]]
         """Walk the tree, finding all non-terminal nodes.
 
@@ -91,14 +69,11 @@ class Docstring(BaseDocstring):
         root = node if node else self.root
         if not root:
             return dict()
-        lookup = defaultdict(
-            lambda: list()
-        )  # type: Dict[str, List[CykNode]]
+        lookup = defaultdict(lambda: list())  # type: Dict[str, List[CykNode]]
         for node in root.in_order_traverse():
             lookup[node.symbol].append(node)
             for annotation in node.annotations:
                 if issubclass(annotation, Identifier):
-
                     # TODO(000): Currently, annotations are being typed as Any.
                     lookup[annotation.key].append(node)  # type: ignore
         return lookup
@@ -109,47 +84,45 @@ class Docstring(BaseDocstring):
 
         # TODO: Add Receives section
         if section == Sections.SHORT_DESCRIPTION:
-            nodes = self._lookup.get('short-description', None)
+            nodes = self._lookup.get("short-description", None)
         elif section == Sections.LONG_DESCRIPTION:
-            nodes = self._lookup.get('long-description', None)
+            nodes = self._lookup.get("long-description", None)
         elif section == Sections.ARGUMENTS_SECTION:
-            nodes = self._lookup.get('arguments-section', None)
-            extra = self._lookup.get('other-arguments-section', None)
+            nodes = self._lookup.get("arguments-section", None)
+            extra = self._lookup.get("other-arguments-section", None)
             if nodes:
                 nodes.extend(extra or [])
             else:
                 nodes = extra
         elif section == Sections.RAISES_SECTION:
-            nodes = self._lookup.get('raises-section', None)
-            extra = self._lookup.get('warns-section', None)
+            nodes = self._lookup.get("raises-section", None)
+            extra = self._lookup.get("warns-section", None)
             if nodes:
                 nodes.extend(extra or [])
             else:
                 nodes = extra
         elif section == Sections.YIELDS_SECTION:
-            nodes = self._lookup.get('yields-section', None)
+            nodes = self._lookup.get("yields-section", None)
         elif section == Sections.RETURNS_SECTION:
-            nodes = self._lookup.get('returns-section', None)
+            nodes = self._lookup.get("returns-section", None)
         elif section == Sections.NOQAS:
-            nodes = self._lookup.get('noqa', None)
+            nodes = self._lookup.get("noqa", None)
         else:
-            raise Exception(
-                'Unsupported section type, {}'.format(section)
-            )
+            raise Exception("Unsupported section type, {}".format(section))
 
         if not nodes:
             return None
 
-        return_value = ''
+        return_value = ""
         for node in nodes:
-            return_value += '\n\n' + node.reconstruct_string()
+            return_value += "\n\n" + node.reconstruct_string()
 
         return return_value.strip() or None
 
     def _get_types_unsorted(self, section):
         # type: (Sections) -> Optional[Union[str, List[Optional[str]]]]
         if section == Sections.ARGUMENTS_SECTION:
-            if 'arguments-section' not in self._lookup:
+            if "arguments-section" not in self._lookup:
                 return None
             return [
                 ArgumentTypeIdentifier.extract(x)
@@ -157,9 +130,8 @@ class Docstring(BaseDocstring):
             ]
         else:
             raise Exception(
-                'Section type {} does not have types, '.format(
-                    section.name
-                ) + 'or is not yet supported'
+                "Section type {} does not have types, ".format(section.name)
+                + "or is not yet supported"
             )
         return None
 
@@ -173,7 +145,7 @@ class Docstring(BaseDocstring):
                 return ReturnTypeIdentifier.extract(return_type[0])
             else:
                 raise NotImplementedError(
-                    'Multiple types should be combined into a Union'
+                    "Multiple types should be combined into a Union"
                 )
         elif section == Sections.YIELDS_SECTION:
             yield_type = self._lookup.get(YieldTypeIdentifier.key, [])
@@ -183,7 +155,7 @@ class Docstring(BaseDocstring):
                 return YieldTypeIdentifier.extract(yield_type[0])
             else:
                 raise NotImplementedError(
-                    'Multiple types should be combined into a Union'
+                    "Multiple types should be combined into a Union"
                 )
 
         # Extract the item type from the item node.
@@ -200,7 +172,6 @@ class Docstring(BaseDocstring):
             # The type is the same as the thing being raised.
             type_identifier = ExceptionItemIdentifier
 
-
         type_lookup = dict()
         for item in items:
             lookup = self._discover(item)
@@ -210,17 +181,19 @@ class Docstring(BaseDocstring):
             # don't mix well with mypy, as far as I can see.
             type_nodes = lookup.get(type_identifier.key, [])  # type: ignore
             if not type_nodes:
-                type_lookup[item_value] = ''
+                type_lookup[item_value] = ""
             else:
                 Assert(
                     isinstance(type_nodes, list) and len(type_nodes) == 1,
                     "Expected there to only be one type per item.",
                 )
-                for value in item_value.split(','):
+                for value in item_value.split(","):
                     type_lookup[value.strip()] = type_identifier.extract(type_nodes[0])
 
         item_type_pairs = sorted(type_lookup.items())
-        sorted_types = [x[1] for x in item_type_pairs]  # type: List[Optional[str]]  # noqa: E501
+        sorted_types = [
+            x[1] for x in item_type_pairs
+        ]  # type: List[Optional[str]]  # noqa: E501
         return sorted_types
 
     def _get_items_unsorted(self, section):
@@ -237,9 +210,8 @@ class Docstring(BaseDocstring):
             return copy.copy(items) or None
         else:
             raise Exception(
-                'Section type {} does not have items, '.format(
-                    section.name
-                ) + 'or is not yet supported.'
+                "Section type {} does not have items, ".format(section.name)
+                + "or is not yet supported."
             )
         return None
 
@@ -258,9 +230,7 @@ class Docstring(BaseDocstring):
 
         sorted_items = list()
         for item in sorted(item_values):
-            sorted_items.extend([
-                x.strip() for x in item.split(',')
-            ])
+            sorted_items.extend([x.strip() for x in item.split(",")])
         return sorted_items
 
     def get_noqas(self):
@@ -275,8 +245,8 @@ class Docstring(BaseDocstring):
         """
         noqas = dict()
         for noqa in self._lookup[NoqaIdentifier.key]:
-            noqas[NoqaIdentifier.extract(noqa) or '*'] = (
-                NoqaIdentifier.extract_targets(noqa)
+            noqas[NoqaIdentifier.extract(noqa) or "*"] = NoqaIdentifier.extract_targets(
+                noqa
             )
         return noqas
 

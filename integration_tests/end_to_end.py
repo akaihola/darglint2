@@ -1,10 +1,8 @@
-from unittest import TestCase
-
 import subprocess
+from unittest import TestCase
 
 
 class EndToEndTest(TestCase):
-
     def get_errors(self, filename, *args):
         invocation = ["darglint2", *args]
         invocation.append(filename)
@@ -13,46 +11,44 @@ class EndToEndTest(TestCase):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        result = proc.stdout.decode('utf8')
+        result = proc.stdout.decode("utf8")
         return result
 
     def test_enable_disabled_by_default(self):
         errors = self.get_errors(
-            'integration_tests/files/missing_arg_type.py',
-            '--enable',
-            'DAR104',
+            "integration_tests/files/missing_arg_type.py",
+            "--enable",
+            "DAR104",
         )
-        self.assertTrue('DAR104' in errors, errors)
+        self.assertTrue("DAR104" in errors, errors)
 
     def test_two_space_indent(self):
         errors = self.get_errors(
-            'integration_tests/files/two_spaces.py',
-            '--indentation',
-            '2',
+            "integration_tests/files/two_spaces.py",
+            "--indentation",
+            "2",
         )
-        self.assertEqual(errors.count('DAR101'), 1)
+        self.assertEqual(errors.count("DAR101"), 1)
 
     def test_docstring_style_selection(self):
-        for style in ['google', 'sphinx', 'numpy']:
-            filename = 'integration_tests/files/{}_example.py'.format(
-                style
-            )
+        for style in ["google", "sphinx", "numpy"]:
+            filename = "integration_tests/files/{}_example.py".format(style)
             errors = self.get_errors(
                 filename,
-                '--docstring-style',
+                "--docstring-style",
                 style,
             )
             self.assertEqual(
-                errors.count('DAR101'),
+                errors.count("DAR101"),
                 1,
-                'Expected {} to have one missing parameter.'.format(
+                "Expected {} to have one missing parameter.".format(
                     filename,
-                )
+                ),
             )
             self.assertEqual(
-                errors.count('DAR102'),
+                errors.count("DAR102"),
                 1,
-                'Expected {} to have one extra parameter.'.format(
+                "Expected {} to have one extra parameter.".format(
                     filename,
-                )
+                ),
             )

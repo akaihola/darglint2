@@ -55,13 +55,10 @@ Original grammar:
 
 from unittest import TestCase
 
+from darglint2.parse.cyk import parse
 from darglint2.parse.grammar import BaseGrammar
 from darglint2.parse.grammar import Production as P
-from darglint2.parse.cyk import parse
-from darglint2.token import (
-    BaseTokenType,
-    Token,
-)
+from darglint2.token import BaseTokenType, Token
 
 
 class OutOfOrder(BaseException):
@@ -69,7 +66,6 @@ class OutOfOrder(BaseException):
 
 
 class GTT(BaseTokenType):
-
     intransitive_verb = 0
     transitive_verb = 1
     noun = 2
@@ -80,24 +76,31 @@ class GTT(BaseTokenType):
 
 # Generated on 2019-07-06 17:38:20.963686
 
+
 class Grammar(BaseGrammar):
     productions = [
-        P("sentence",
+        P(
+            "sentence",
             ([], "noun_phrase", "trans_verb_phrase", 0),
             ([], "transitive_verb", "noun_phrase", 0),
             (GTT.transitive_verb, 0),
             ([], "intransitive_verb", "noun_phrase", 0),
             (GTT.intransitive_verb, 0),
-            ([OutOfOrder], "noun_phrase", "intransitive_verb", 0)),
-        P("trans_verb_phrase",
+            ([OutOfOrder], "noun_phrase", "intransitive_verb", 0),
+        ),
+        P(
+            "trans_verb_phrase",
             ([], "transitive_verb", "noun_phrase", 0),
-            (GTT.transitive_verb, 0)),
-        P("noun_phrase",
+            (GTT.transitive_verb, 0),
+        ),
+        P(
+            "noun_phrase",
             ([], "noun", "adjective", 0),
             ([], "noun", "noun", 0),
             ([], "noun", "noun_phrase0", 0),
             ([], "noun", "noun_phrase1", 0),
-            (GTT.noun, 0)),
+            (GTT.noun, 0),
+        ),
         P("intransitive_verb", (GTT.intransitive_verb, 0)),
         P("transitive_verb", (GTT.transitive_verb, 0)),
         P("noun", (GTT.noun, 0)),
@@ -106,7 +109,6 @@ class Grammar(BaseGrammar):
         P("noun_phrase1", ([], "noun", "adjective", 0)),
     ]
     start = "sentence"
-
 
 
 def _lex(sentence):
@@ -135,7 +137,6 @@ def lex(sentence):
 
 
 class GeneratedGrammarTest(TestCase):
-
     def test_valid_sentences(self):
         sentences = [
             "Hegh puq",
@@ -146,16 +147,13 @@ class GeneratedGrammarTest(TestCase):
         for sentence in sentences:
             self.assertTrue(
                 parse(Grammar, lex(sentence)),
-                'Expected to parse "{}", but failed.'.format(
-                    sentence
-                )
+                'Expected to parse "{}", but failed.'.format(sentence),
             )
 
     def test_invalid_sentences(self):
         bad_sentences = [
             # Unrecognized symbol
             "unrecognized puq"
-
             # Incorrect structure
             "qIp qIp"
         ]
@@ -164,5 +162,5 @@ class GeneratedGrammarTest(TestCase):
                 parse(Grammar, lex(sentence)),
                 'Unexpectedly parsed "{}"'.format(
                     sentence,
-                )
+                ),
             )

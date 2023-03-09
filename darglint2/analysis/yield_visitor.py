@@ -1,16 +1,8 @@
 import ast
-from typing import (
-    Any,
-    Dict,
-    List,
-    Union,
-)
-from ..config import (
-    get_logger,
-)
-from ..custom_assert import (
-    Assert,
-)
+from typing import Any, Dict, List, Union
+
+from ..config import get_logger
+from ..custom_assert import Assert
 
 
 class YieldVisitor(ast.NodeVisitor):

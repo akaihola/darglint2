@@ -1,8 +1,6 @@
 import ast
+from typing import Any
 
-from typing import (
-    Any,
-)
 
 class FunctionScopedVisitorMixin(ast.NodeVisitor):
     """A visitor which is scoped to a single function.
@@ -26,11 +24,7 @@ class FunctionScopedVisitorMixin(ast.NodeVisitor):
         # type: (ast.Lambda) -> ast.AST
         if not self.in_function:
             self.in_function = True
-            return getattr(
-                super(),
-                "visit_Lambda",
-                super().generic_visit
-            )(node)
+            return getattr(super(), "visit_Lambda", super().generic_visit)(node)
         else:
             # Return a synthetic Pass node, to make type checking happy
             # (and to not violate the contract.)  Since it has no children,
@@ -41,11 +35,7 @@ class FunctionScopedVisitorMixin(ast.NodeVisitor):
         # type: (ast.FunctionDef) -> ast.AST
         if not self.in_function:
             self.in_function = True
-            return getattr(
-                super(),
-                "visit_FunctionDef",
-                super().generic_visit
-            )(node)
+            return getattr(super(), "visit_FunctionDef", super().generic_visit)(node)
         else:
             return ast.Pass()
 
@@ -53,10 +43,8 @@ class FunctionScopedVisitorMixin(ast.NodeVisitor):
         # type: (ast.AsyncFunctionDef) -> ast.AST
         if not self.in_function:
             self.in_function = True
-            return getattr(
-                super(),
-                "visit_AsyncFunctionDef",
-                super().generic_visit
-            )(node)
+            return getattr(super(), "visit_AsyncFunctionDef", super().generic_visit)(
+                node
+            )
         else:
             return ast.Pass()

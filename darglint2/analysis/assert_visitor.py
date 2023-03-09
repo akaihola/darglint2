@@ -1,14 +1,8 @@
 import ast
-
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any, Dict, List
 
 
 class AssertVisitor(ast.NodeVisitor):
-
     def __init__(self, *args, **kwargs):
         # type: (Any, Any) -> None
 
