@@ -37,9 +37,8 @@ class AstNodeUtils(object):
             return node.__class__.__name__
 
     @staticmethod
-    def to_dot(node):
-        # type: (AST) -> str
-        dot = ["digraph G {"]  # type: List[str]
+    def to_dot(node: AST) -> str:
+        dot: List[str] = ["digraph G {"]
         id = 0
         queue = deque([(id, node)])
         while queue:
@@ -83,8 +82,9 @@ class AstNodeUtils(object):
 
 class CykNodeUtils(object):
     @staticmethod
-    def contains(self, symbol=None, value=None):
-        # type: (CykNode, Optional[str], Optional[str]) -> bool
+    def contains(
+        self: CykNode, symbol: Optional[str] = None, value: Optional[str] = None
+    ) -> bool:
         """Return true if the tree contains the given symbol.
 
         This is intended only for testing.
@@ -111,8 +111,7 @@ class CykNodeUtils(object):
         return False
 
     @staticmethod
-    def get_annotated(self, annotation):
-        # type: (CykNode, Any) -> Set[CykNode]
+    def get_annotated(self: CykNode, annotation: Any) -> Set[CykNode]:
         nodes = set()
         for node in self.walk():
             if annotation in node.annotations:
@@ -120,8 +119,9 @@ class CykNodeUtils(object):
         return nodes
 
     @staticmethod
-    def to_dot(cyk_node, is_root=True, encountered=set()):
-        # type: (CykNode, bool, Set[str]) -> str
+    def to_dot(
+        cyk_node: CykNode, is_root: bool = True, encountered: Set[str] = set()
+    ) -> str:
         def _get_name(node):
             i = 0
             name = node.symbol

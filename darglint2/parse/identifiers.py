@@ -15,15 +15,19 @@ class Continuation(object):
 
     """
 
-    def __init__(self, path, condition, child=None):
-        # type: (str, Callable[[CykNode], bool], Union[Continuation, Tuple[Continuation, ...], None]) -> None  # noqa: E501
+    def __init__(
+        self,
+        path: str,
+        condition: Callable[[CykNode], bool],
+        child: Union[Continuation, Tuple[Continuation, ...], None] = None,
+    ) -> None:
+        # noqa: E501
         self.path = path
         self.condition = condition
         self.child = child
         self._sealed = False
 
-    def of(self, path):
-        # type: (str) -> Continuation
+    def of(self, path: str) -> Continuation:
         Assert(
             not self._sealed,
             "Sealed continuations shouldn't be extended!",
@@ -34,8 +38,7 @@ class Continuation(object):
             self.child = Continuation(path, lambda _: True, None)
         return self
 
-    def branch(self, *continuations):
-        # type: (Continuation) -> Continuation
+    def branch(self, *continuations: Continuation) -> Continuation:
         Assert(
             not self._sealed,
             "Sealed continuations shouldn't be extended!",
@@ -44,8 +47,7 @@ class Continuation(object):
         self._sealed = True
         return self
 
-    def extract(self, node):
-        # type: (CykNode) -> Union[str, CykNode, None]
+    def extract(self, node: CykNode) -> Union[str, CykNode, None]:
         """Extract the value of the leaf node described by this path.
 
         Args:
@@ -58,7 +60,7 @@ class Continuation(object):
         """
         if not self.condition(node):
             return None
-        curr = node  # type: Optional[CykNode]
+        curr: Optional[CykNode] = node
         for letter in self.path:
             if curr and letter == "r":
                 curr = curr.rchild
@@ -127,8 +129,7 @@ class Path(object):
     """
 
     @staticmethod
-    def of(path):
-        # type: (str) -> Continuation
+    def of(path: str) -> Continuation:
         """Construct a path composed of left and right turns.
 
         If this is the terminal path, it should end with the
@@ -145,8 +146,7 @@ class Path(object):
         return Continuation(path, lambda _: True)
 
     @staticmethod
-    def branch(*paths):
-        # type: (Continuation) -> Continuation
+    def branch(*paths: Continuation) -> Continuation:
         """A path which accepts the first succeeding path.
 
         Args:
@@ -162,13 +162,11 @@ class Path(object):
     # synonymous with an `of`.  However, it makes for nicer
     # documentation of intent, I think.
     @staticmethod
-    def if_left(path):
-        # type: (str) -> Continuation
+    def if_left(path: str) -> Continuation:
         return Continuation(path, lambda x: bool(x.lchild))
 
     @staticmethod
-    def if_right(path):
-        # type: (str) -> Continuation
+    def if_right(path: str) -> Continuation:
         return Continuation(path, lambda x: bool(x.rchild))
 
 
@@ -185,20 +183,17 @@ class Identifier(abc.ABC):
     @staticmethod
     @property
     @abc.abstractmethod
-    def key():
-        # type: () -> str
+    def key() -> str:
         pass
 
     @staticmethod
     @property
     @abc.abstractmethod
-    def path():
-        # type: () -> Continuation
+    def path() -> Continuation:
         pass
 
     @classmethod
-    def extract(cls, node):
-        # type: (CykNode) -> str
+    def extract(cls, node: CykNode) -> str:
         # TODO: Fix the type annotation here.
         value = cls.path.extract(node)  # type: ignore
         Assert(value is not None, "Failed to extract {}".format(cls.key))
@@ -230,8 +225,7 @@ class ArgumentTypeIdentifier(Identifier):
     )
 
     @staticmethod
-    def extract(node):
-        # type: (CykNode) -> str
+    def extract(node: CykNode) -> str:
         value = ArgumentTypeIdentifier.path.extract(node)
         is_leaf = isinstance(value, str)
         is_branch = isinstance(value, CykNode)
@@ -269,8 +263,7 @@ class NoqaIdentifier(Identifier):
     path = Path.of("rr").branch(Path.of("v"), Path.if_left("lv"))
 
     @staticmethod
-    def extract(node):
-        # type: (CykNode) -> str
+    def extract(node: CykNode) -> str:
         if node.rchild and node.rchild.rchild:
             path = Path.branch(Path.of("rrv"), Path.of("rrlv"))
             value = path.extract(node)
@@ -285,8 +278,7 @@ class NoqaIdentifier(Identifier):
             return ""
 
     @staticmethod
-    def extract_targets(node):
-        # type: (CykNode) -> List[str]
+    def extract_targets(node: CykNode) -> List[str]:
         if node.rchild and node.rchild.rchild:
             children = list()
             for child in node.rchild.rchild.walk():

@@ -33,15 +33,15 @@ class Stats(object):
 
     def __init__(
         self,
-        times,
-        by_length,
-        google,
-        sphinx,
-        timestamp=None,
-        scope=PerfScope.MODULE,
-        numpy=list(),
-    ):
-        # type: (List[float], List[Tuple[int, float]], List[float], List[float], int, PerfScope, List[float]) -> None  # noqa: E501
+        times: List[float],
+        by_length: List[Tuple[int, float]],
+        google: List[float],
+        sphinx: List[float],
+        timestamp: int = None,
+        scope: PerfScope = PerfScope.MODULE,
+        numpy: List[float] = list(),
+    ) -> None:
+        # noqa: E501
         self.times = times
         self.by_length = by_length
         self.google = google
@@ -54,15 +54,13 @@ class Stats(object):
         else:
             self.timestamp = int(time.time())
 
-    def is_stale(self):
-        # type: () -> bool
+    def is_stale(self) -> bool:
         current = int(time.time())
         delta = self.timestamp - current
         return (delta // 60) > self.STALE_AGE_MINS
 
     @staticmethod
-    def decode(datum):
-        # type: (Dict[str, Any]) -> Stats
+    def decode(datum: Dict[str, Any]) -> Stats:
         datum["by_length"] = [(x, y) for x, y in datum["by_length"]]
         return Stats(**datum)
 
@@ -81,14 +79,12 @@ class Stats(object):
 class Chart(object):
     """A quick graphical representation of the stats."""
 
-    def __init__(self, stats, width=65, height=25):
-        # type: (Stats, int, int) -> None
+    def __init__(self, stats: Stats, width: int = 65, height: int = 25) -> None:
         self.stats = stats
         self.width = width
         self.height = height
 
-    def __str__(self):
-        # type: () -> str
+    def __str__(self) -> str:
         x_min, x_max = self.stats.by_length[0][0], self.stats.by_length[0][0]
         y_min, y_max = self.stats.by_length[0][1], self.stats.by_length[0][1]
         for x, y in self.stats.by_length:
@@ -103,9 +99,9 @@ class Chart(object):
         if y_bucket <= 0:
             y_bucket = 1
 
-        plot_points = defaultdict(
+        plot_points: Dict[int, Dict[int, int]] = defaultdict(
             lambda: defaultdict(lambda: 0)
-        )  # type: Dict[int, Dict[int, int]]  # noqa: E501
+        )  # noqa: E501
 
         max_amount = 0
         for x, y in self.stats.by_length:
@@ -151,13 +147,13 @@ class Chart(object):
 class Performance(object):
     """Measure and report on performance of darglint2."""
 
-    def __init__(self, stats=None, module_stats=None):
-        # type: (Optional[Stats], Optional[Stats]) -> None
+    def __init__(
+        self, stats: Optional[Stats] = None, module_stats: Optional[Stats] = None
+    ) -> None:
         self.stats = stats
         self.module_stats = module_stats
 
-    def report_worst_five_percent(self, scope=PerfScope.DOCSTRING):
-        # type: (PerfScope) -> None
+    def report_worst_five_percent(self, scope: PerfScope = PerfScope.DOCSTRING) -> None:
         if scope == PerfScope.DOCSTRING:
             stats = self.stats
         elif scope == PerfScope.MODULE:
@@ -172,8 +168,7 @@ class Performance(object):
         worst = mean(sorted_stats[-1 * n :])
         print("1 %ile mean: {}".format(worst))
 
-    def report_stats(self):
-        # type: () -> None
+    def report_stats(self) -> None:
         if self.stats:
             print("∷∴∵∴∵∴∵∴∵∴∵∴∵ DOCSTRING ∴∵∴∵∴∵∴∵∴∵∴∵∷")
             print("x̄: {}".format(mean(self.stats.times)))
@@ -195,8 +190,7 @@ class Performance(object):
             chart = Chart(self.module_stats)
             print(chart)
 
-    def _parse_golden(self, golden):
-        # type: (Golden) -> BaseDocstring
+    def _parse_golden(self, golden: Golden) -> BaseDocstring:
         if golden["type"] == "GOOGLE":
             assert isinstance(golden["docstring"], str)
             docstring = Docstring.from_google(golden["docstring"])
@@ -210,8 +204,7 @@ class Performance(object):
             raise Exception("Unsupported docstring type {}".format(golden["type"]))
         return docstring
 
-    def _parse_and_measure(self, golden):
-        # type: (Golden) -> Tuple[float, bool]
+    def _parse_and_measure(self, golden: Golden) -> Tuple[float, bool]:
         succeeded = True
         start = time.time()
         try:
@@ -221,14 +214,12 @@ class Performance(object):
         end = time.time()
         return end - start, succeeded
 
-    def _read_goldens(self):
-        # type: () -> List[Golden]
+    def _read_goldens(self) -> List[Golden]:
         with open("integration_tests/goldens.json", "r") as fin:
             goldens = json.load(fin)
         return goldens
 
-    def test_golden_performance(self):
-        # type: () -> Stats
+    def test_golden_performance(self) -> Stats:
         stats = Stats(
             times=list(),
             by_length=list(),
@@ -261,8 +252,7 @@ class Performance(object):
         self.stats = stats
         return stats
 
-    def _read_and_measure(self, filename):
-        # type: (str) -> Tuple[float, bool, str]
+    def _read_and_measure(self, filename: str) -> Tuple[float, bool, str]:
         succeeded = True
         start = time.time()
         try:
@@ -276,8 +266,7 @@ class Performance(object):
         end = time.time()
         return end - start, succeeded, value
 
-    def _get_module_size(self, filename):
-        # type: (str) -> Optional[int]
+    def _get_module_size(self, filename: str) -> Optional[int]:
         try:
             completed_process = subprocess.run(
                 [
@@ -292,8 +281,7 @@ class Performance(object):
         except Exception:
             return None
 
-    def yield_modules(self):
-        # type: () -> Iterable[str]
+    def yield_modules(self) -> Iterable[str]:
         for path, folders, filenames in os.walk("integration_tests/repos"):
             for filename in filenames:
                 if not filename.endswith(".py"):
@@ -321,8 +309,7 @@ class Performance(object):
         return stats
 
 
-def _read_from_cache(filename=".performance_testrun"):
-    # type: (str) -> Optional[Stats]
+def _read_from_cache(filename: str = ".performance_testrun") -> Optional[Stats]:
     try:
         with open(filename, "r") as fin:
             data = json.load(fin)
@@ -331,8 +318,7 @@ def _read_from_cache(filename=".performance_testrun"):
         return None
 
 
-def _write_to_cache(data, filename=".performance_testrun"):
-    # type: (Stats, str) -> None
+def _write_to_cache(data: Stats, filename: str = ".performance_testrun") -> None:
     with open(filename, "w") as fout:
         json.dump(data.encode(), fout)
 

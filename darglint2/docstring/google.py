@@ -83,8 +83,9 @@ class Docstring(BaseDocstring):
         Sections.NOQAS,
     )
 
-    def __init__(self, root, style=DocstringStyle.GOOGLE):
-        # type: (Union[CykNode, str], DocstringStyle) -> None
+    def __init__(
+        self, root: Union[CykNode, str], style: DocstringStyle = DocstringStyle.GOOGLE
+    ) -> None:
         """Create a new docstring from the AST.
 
         Args:
@@ -101,15 +102,14 @@ class Docstring(BaseDocstring):
             self.root = parse(condense(lex(root)))
         self._lookup = self._discover()
 
-    def _discover(self):
-        # type: () -> Dict[str, List[CykNode]]
+    def _discover(self) -> Dict[str, List[CykNode]]:
         """Walk the tree, finding all non-terminal nodes.
 
         Returns:
             A lookup table for compound Nodes by their NodeType.
 
         """
-        lookup = defaultdict(lambda: list())  # type: Dict[str, List[CykNode]]
+        lookup: Dict[str, List[CykNode]] = defaultdict(lambda: list())
         for node in self.root.in_order_traverse():
             if node.annotations:
                 for annotation in node.annotations:
@@ -118,9 +118,8 @@ class Docstring(BaseDocstring):
             lookup[node.symbol].append(node)
         return lookup
 
-    def get_section(self, section):
-        # type: (Sections) -> Optional[str]
-        nodes = []  # type: Optional[List[CykNode]]
+    def get_section(self, section: Sections) -> Optional[str]:
+        nodes: Optional[List[CykNode]] = []
 
         if section == Sections.SHORT_DESCRIPTION:
             nodes = self._lookup.get("short-description", None)
@@ -148,8 +147,7 @@ class Docstring(BaseDocstring):
 
         return return_value.strip() or None
 
-    def _get_argument_types(self):
-        # type: () ->  Optional[List[Optional[str]]]
+    def _get_argument_types(self) -> Optional[List[Optional[str]]]:
         """Get a list of types corresponding to arguments.
 
         Returns:
@@ -163,8 +161,7 @@ class Docstring(BaseDocstring):
         names_and_types = sorted(lookup.items())
         return [x[1] for x in names_and_types]
 
-    def _get_return_type(self):
-        # type: () -> Optional[str]
+    def _get_return_type(self) -> Optional[str]:
         """Get the return type specified by the docstring, if any.
 
         Returns:
@@ -177,8 +174,7 @@ class Docstring(BaseDocstring):
             return type_node.lchild.value.value
         return None
 
-    def get_types(self, section):
-        # type: (Sections) -> Union[None, str, List[Optional[str]]]
+    def get_types(self, section: Sections) -> Union[None, str, List[Optional[str]]]:
         if section == Sections.ARGUMENTS_SECTION:
             if "arguments-section" not in self._lookup:
                 return None
@@ -194,8 +190,9 @@ class Docstring(BaseDocstring):
             )
         return None
 
-    def _get_compound_item_type_lookup(self, node_type):
-        # type: (str) -> Optional[Dict[str, Optional[str]]]
+    def _get_compound_item_type_lookup(
+        self, node_type: str
+    ) -> Optional[Dict[str, Optional[str]]]:
         """Get a map of names to types for the section.
 
         Args:
@@ -208,7 +205,7 @@ class Docstring(BaseDocstring):
         if node_type not in self._lookup:
             return None
 
-        item_types = dict()  # type: Dict[str, Optional[str]]
+        item_types: Dict[str, Optional[str]] = dict()
         for item in self._lookup[ArgumentTypeIdentifier.key]:
             item_types[
                 ArgumentIdentifier.extract(item)
@@ -219,22 +216,19 @@ class Docstring(BaseDocstring):
                 item_types[name] = None
         return item_types
 
-    def _get_compound_items(self, symbol):
-        # type: (str) -> Optional[List[str]]
+    def _get_compound_items(self, symbol: str) -> Optional[List[str]]:
         lookup = self._get_compound_item_type_lookup(symbol)
         if lookup is None:
             return None
         return sorted(lookup.keys())
 
-    def _get_raises_section_items(self):
-        # type: () -> Optional[List[str]]
+    def _get_raises_section_items(self) -> Optional[List[str]]:
         items = list()
         for item in self._lookup[ExceptionIdentifier.key]:
             items.append(ExceptionIdentifier.extract(item))
         return sorted(items) or None
 
-    def get_items(self, section):
-        # type: (Sections) -> Optional[List[str]]
+    def get_items(self, section: Sections) -> Optional[List[str]]:
         if section == Sections.ARGUMENTS_SECTION:
             return self._get_compound_items("arguments-section")
         elif section == Sections.RAISES_SECTION:
@@ -246,8 +240,7 @@ class Docstring(BaseDocstring):
             )
         return None
 
-    def _get_yield_type(self):
-        # type: () -> Optional[str]
+    def _get_yield_type(self) -> Optional[str]:
         """Get the yield type specified by the docstring, if any.
 
         Returns:
@@ -260,8 +253,7 @@ class Docstring(BaseDocstring):
             return type_node.lchild.value.value
         return None
 
-    def get_noqas(self):
-        # type: () -> Dict[str, List[str]]
+    def get_noqas(self) -> Dict[str, List[str]]:
         """Get a map of the errors ignored to their targets.
 
         Returns:
@@ -279,7 +271,7 @@ class Docstring(BaseDocstring):
                     ):
                         return annotation.extract(child)
 
-        noqas = defaultdict(lambda: set())  # type: Dict[str, Set[str]]
+        noqas: Dict[str, Set[str]] = defaultdict(lambda: set())
 
         for node in self._lookup[NoqaIdentifier.key]:
             error = NoqaIdentifier.extract(node)
@@ -311,8 +303,7 @@ class Docstring(BaseDocstring):
 
         return {key: sorted(values) for key, values in noqas.items()}
 
-    def get_style_errors(self):
-        # type: () -> Iterable[Tuple[Callable, Tuple[int, int]]]
+    def get_style_errors(self) -> Iterable[Tuple[Callable, Tuple[int, int]]]:
         """Get any style errors annotated on the tree.
 
         Yields:
@@ -326,8 +317,7 @@ class Docstring(BaseDocstring):
                 if issubclass(annotation, DarglintError):
                     yield annotation, node.line_numbers
 
-    def get_line_numbers(self, symbol):
-        # type: (str) -> Optional[Tuple[int, int]]
+    def get_line_numbers(self, symbol: str) -> Optional[Tuple[int, int]]:
         """Get the line numbers for the first instance of the given section.
 
         Args:
@@ -346,8 +336,9 @@ class Docstring(BaseDocstring):
             return nodes[0].line_numbers
         return None
 
-    def get_line_numbers_for_value(self, symbol, value):
-        # type: (str, str) -> Optional[Tuple[int, int]]
+    def get_line_numbers_for_value(
+        self, symbol: str, value: str
+    ) -> Optional[Tuple[int, int]]:
         """Get the line number for a node with the given value.
 
         Args:
@@ -368,8 +359,7 @@ class Docstring(BaseDocstring):
         return None
 
     @property
-    def ignore_all(self):
-        # type: () -> bool
+    def ignore_all(self) -> bool:
         """Return whether we should ignore everything in the docstring.
 
         This happens when there is a bare noqa in the docstring, or

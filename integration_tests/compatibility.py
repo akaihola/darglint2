@@ -67,16 +67,16 @@ class CompatibilityTest(TestCase):
     def tearDownClass(cls):
         cls.remove_configs()
 
-    def yield_modules(self):
-        # type: () -> Iterable[str]
+    def yield_modules(self) -> Iterable[str]:
         for path, folders, filenames in os.walk("integration_tests/repos"):
             for filename in filenames:
                 if not filename.endswith(".py"):
                     continue
                 yield os.path.join(path, filename)
 
-    def record_errors(self, collection, filename, config=None):
-        # type: (Dict[str, Set[str]], str) -> None
+    def record_errors(
+        self, collection: Dict[str, Set[str]], filename: str, config: str = None
+    ) -> None:
         if config:
             command = [
                 "flake8",
@@ -106,14 +106,12 @@ class CompatibilityTest(TestCase):
         collection[filename] |= set(errors)
 
     def test_with_darglint_is_superset(self):
-        errors = defaultdict(lambda: set())  # type: Dict[str, Set[str]]
+        errors: Dict[str, Set[str]] = defaultdict(lambda: set())
         self.create_no_darglint_setup()
         for filename in self.yield_modules():
             self.record_errors(errors, filename)
 
-        errors_with = defaultdict(
-            lambda: set()
-        )  # type: Dict[str, Set[str]]  # noqa: E501
+        errors_with: Dict[str, Set[str]] = defaultdict(lambda: set())  # noqa: E501
         self.create_darglint_setup()
         for filename in self.yield_modules():
             self.record_errors(errors_with, filename)

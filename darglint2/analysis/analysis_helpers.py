@@ -2,8 +2,10 @@ import ast
 from typing import Iterable, Union
 
 
-def _has_decorator(function, decorators):
-    # # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Union[str, Iterable[str]]) -> bool
+def _has_decorator(
+    function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+    decorators: Union[str, Iterable[str]],
+) -> bool:
     if isinstance(decorators, str):
         decorators = (decorators,)
 

@@ -10,7 +10,7 @@ class Repository(object):
     """Represents a git repository containing a python project."""
 
     def __init__(self, path: str) -> None:
-        self.files = dict()  # type: Dict[str, str]
+        self.files: Dict[str, str] = dict()
         try:
             with tempfile.TemporaryDirectory() as tempdir:
                 subprocess.run(["git", "clone", path, tempdir])

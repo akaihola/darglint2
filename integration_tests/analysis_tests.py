@@ -9,8 +9,7 @@ from darglint2.function_description import get_function_descriptions, read_progr
 from darglint2.utils import ConfigurationContext
 
 
-def yield_modules():
-    # type: () -> Iterable[str]
+def yield_modules() -> Iterable[str]:
     for path, folders, filenames in os.walk("integration_tests/repos"):
         for filename in filenames:
             if not filename.endswith(".py"):

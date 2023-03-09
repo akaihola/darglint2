@@ -20,8 +20,7 @@ from .grammars.sphinx_yields_section import YieldsGrammar
 from .long_description import parse as long_description_parse
 
 
-def two_newline_separated_or_keyword(tokens, i):
-    # type: (List[Token], int) -> int
+def two_newline_separated_or_keyword(tokens: List[Token], i: int) -> int:
     newline_count = 0
     j = i
     while j < len(tokens):
@@ -44,8 +43,7 @@ def two_newline_separated_or_keyword(tokens, i):
     return 0
 
 
-def top_parse(tokens):
-    # type: (List[Token]) -> List[List[Token]]
+def top_parse(tokens: List[Token]) -> List[List[Token]]:
     all_sections = list()
     curr = 0
     # Strip leading newlines.

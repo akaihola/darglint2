@@ -12,28 +12,23 @@ from .token import Token, TokenType
 # of the stream.
 
 
-def _is_space(char):
-    # type: (Optional[str]) -> bool
+def _is_space(char: Optional[str]) -> bool:
     return char == " "
 
 
-def _is_newline(char):
-    # type: (Optional[str]) -> bool
+def _is_newline(char: Optional[str]) -> bool:
     return char == "\n"
 
 
-def _is_colon(char):
-    # type: (Optional[str]) -> bool
+def _is_colon(char: Optional[str]) -> bool:
     return char == ":"
 
 
-def _is_hash(char):
-    # type: (Optional[str]) -> bool
+def _is_hash(char: Optional[str]) -> bool:
     return char == "#"
 
 
-def _is_separator(char):
-    # type: (Optional[str]) -> bool
+def _is_separator(char: Optional[str]) -> bool:
     """Check whether if `char` is a separator other than newline or space.
 
     Args:
@@ -48,23 +43,19 @@ def _is_separator(char):
     return char.isspace() and not (_is_space(char) or _is_newline(char))
 
 
-def _is_lparen(char):
-    # type: (Optional[str]) -> bool
+def _is_lparen(char: Optional[str]) -> bool:
     return char == "("
 
 
-def _is_rparen(char):
-    # type: (Optional[str]) -> bool
+def _is_rparen(char: Optional[str]) -> bool:
     return char == ")"
 
 
-def _is_hyphen(char):
-    # type: (Optional[str]) -> bool
+def _is_hyphen(char: Optional[str]) -> bool:
     return char == "-"
 
 
-def _is_word(char):
-    # type: (str) -> bool
+def _is_word(char: str) -> bool:
     return not any(
         [
             _is_space(char),
@@ -78,8 +69,7 @@ def _is_word(char):
     )
 
 
-def lex(program):
-    # type: (str) -> Iterator[Token]
+def lex(program: str) -> Iterator[Token]:
     """Create a stream of tokens from the string.
 
     Args:
@@ -177,8 +167,7 @@ KEYWORDS = {
 }
 
 
-def condense(tokens):
-    # type: (Iterator[Token]) -> List[Token]
+def condense(tokens: Iterator[Token]) -> List[Token]:
     """Condense the stream of tokens into a list consumable by CYK.
 
     This servers two purposes:
@@ -199,7 +188,7 @@ def condense(tokens):
         representation as possible.
 
     """
-    ret = list()  # type: List[Token]
+    ret: List[Token] = list()
     try:
         curr = next(tokens)
     except StopIteration:

@@ -5,15 +5,13 @@ from typing import Any, Dict, List
 class ArgumentVisitor(ast.NodeVisitor):
     """Reports which arguments a function contains."""
 
-    def __init__(self, *args, **kwargs):
-        # type: (List[Any], Dict[str, Any]) -> None
-
+    def __init__(self, *args: List[Any], **kwargs: Dict[str, Any]) -> None:
         # https://github.com/python/mypy/issues/5887
         super(ArgumentVisitor, self).__init__(*args, **kwargs)  # type: ignore
 
         # The arguments found in the function.
-        self.arguments = list()  # type: List[str]
-        self.types = list()  # type: List[str]
+        self.arguments: List[str] = list()
+        self.types: List[str] = list()
 
     def add_arg_by_name(self, name, arg):
         self.arguments.append(name)
@@ -22,8 +20,7 @@ class ArgumentVisitor(ast.NodeVisitor):
         else:
             self.types.append(None)
 
-    def visit_arguments(self, node):
-        # type: (ast.arguments) -> ast.AST
+    def visit_arguments(self, node: ast.arguments) -> ast.AST:
         if hasattr(node, "posonlyargs"):
             for arg in node.posonlyargs:
                 self.add_arg_by_name(arg.arg, arg)
