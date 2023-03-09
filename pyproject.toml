@@ -31,7 +31,7 @@ classifiers = [
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 
 [tool.poetry.group.lint.dependencies]
 flake8     = "^3.7"
