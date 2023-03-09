@@ -1,9 +1,8 @@
 """The entry point for flake8."""
 
-import ast  # noqa
-from typing import Iterator, Tuple  # noqa
+from typing import Iterator, Tuple
 
-from .config import Configuration, get_config
+from .config import get_config
 from .docstring.style import DocstringStyle
 from .function_description import get_function_descriptions
 from .integrity_checker import IntegrityChecker

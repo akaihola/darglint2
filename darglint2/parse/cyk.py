@@ -46,7 +46,7 @@ def parse(grammar: BaseGrammar, tokens: List[Token]) -> Optional[CykNode]:
                         value=token,
                         weight=weight,
                     )
-    for l in range(2, n + 1):
+    for l in range(2, n + 1):  # noqa: E741
         for s in range(n - l + 2):
             for p in range(l):
                 for a, production in enumerate(grammar.productions):

@@ -264,7 +264,7 @@ class RaiseVisitorTestCase(TestCase):
         )
         self.assertFound(program, "Rabies", "H1N1")
 
-    def test_reraise_any_exception_in_bare_handler(self):
+    def test_reraise_any_exception_in_bare_handler(self):  # noqa: F811
         program = "\n".join(
             [
                 "def f(x):",

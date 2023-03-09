@@ -1,5 +1,6 @@
 import ast
 import os
+from typing import Iterable
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
@@ -37,7 +38,7 @@ class RaiseAnalysisTest(TestCase):
                 program = read_program(module)
                 try:
                     tree = ast.parse(program)
-                except:
+                except:  # noqa: E722
                     # If it doesn't parse, then it's probably Python2,
                     # or something is invalid and we don't care.
                     # We only want to check files which are valid
@@ -47,7 +48,7 @@ class RaiseAnalysisTest(TestCase):
                 for function in functions:
                     try:
                         visitor.visit(function.function)
-                    except:
+                    except:  # noqa: E722
                         print("Visitor error raised during {}".format(module))
                         raise
                     self.assertFalse(

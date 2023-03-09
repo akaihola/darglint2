@@ -24,7 +24,6 @@ from ..parse.identifiers import (
     Identifier,
     NoqaIdentifier,
 )
-from ..strictness import Strictness
 from .base import BaseDocstring
 from .sections import Sections
 from .style import DocstringStyle

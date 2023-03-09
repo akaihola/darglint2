@@ -131,7 +131,7 @@ class NodeTest(TestCase):
         self.assertTrue(external in node.to_python())
 
     def test_probability_passed_to_python_production(self):
-        grammar = f"""
+        grammar = """
         <start>
             ::= 70 <A> <A>
               | 30 <A> <B>

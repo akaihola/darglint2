@@ -1,10 +1,8 @@
 import ast
-import copy
 from collections import deque
-from typing import Any, Dict, Iterator, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 from ..config import get_logger
-from ..custom_assert import Assert
 
 logger = get_logger()
 
@@ -214,7 +212,7 @@ class Context(object):
     def remove_variable(self, variable: str) -> None:
         del self.variables[variable]
 
-    def extend(self, other: Context) -> None:
+    def extend(self, other: "Context") -> None:
         self.exceptions |= other.exceptions
 
     def finish_handling(self) -> None:

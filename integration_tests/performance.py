@@ -60,7 +60,7 @@ class Stats(object):
         return (delta // 60) > self.STALE_AGE_MINS
 
     @staticmethod
-    def decode(datum: Dict[str, Any]) -> Stats:
+    def decode(datum: Dict[str, Any]) -> "Stats":
         datum["by_length"] = [(x, y) for x, y in datum["by_length"]]
         return Stats(**datum)
 

@@ -62,7 +62,7 @@ class LogLevel(Enum):
     DEBUG = logging.DEBUG
 
     @classmethod
-    def from_string(cls, level: str) -> LogLevel:
+    def from_string(cls, level: str) -> "LogLevel":
         normalized_level = level.lower().strip()
         if normalized_level == "critical":
             return cls.CRITICAL
@@ -215,7 +215,7 @@ def load_config_file(filename: str) -> Configuration:
     style = DocstringStyle.GOOGLE
     strictness = Strictness.FULL_DESCRIPTION
     indentation = 4
-    log_level = LogLevel.CRITICAL
+    # log_level = LogLevel.CRITICAL
     if "darglint2" in config.sections():
         if "ignore" in config["darglint2"]:
             errors = config["darglint2"]["ignore"]
@@ -254,8 +254,8 @@ def load_config_file(filename: str) -> Configuration:
                     )
                 )
 
-        if "log_level" in config["darglint2"]:
-            log_level = LogLevel.from_string(config["darglint2"]["log_level"])
+        # if "log_level" in config["darglint2"]:
+        #     log_level = LogLevel.from_string(config["darglint2"]["log_level"])
     return Configuration(
         ignore=ignore,
         message_template=message_template,

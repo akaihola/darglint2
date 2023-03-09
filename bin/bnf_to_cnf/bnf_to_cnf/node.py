@@ -442,7 +442,7 @@ class Node(object):
                 expression = self.children[2].to_python()
                 return (
                     " " * 8
-                    + f"P.with_annotations("
+                    + "P.with_annotations("
                     + f"{annotation}, {symbol}, {expression})"
                 )
             else:

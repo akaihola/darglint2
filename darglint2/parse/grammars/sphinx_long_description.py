@@ -1,6 +1,5 @@
 # Generated on 2023-02-05 17:17:15.354712
 
-from darglint2.errors import IndentError
 from darglint2.parse.grammar import BaseGrammar, P
 from darglint2.parse.identifiers import NoqaIdentifier
 from darglint2.token import TokenType

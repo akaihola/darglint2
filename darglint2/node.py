@@ -17,8 +17,8 @@ class CykNode(object):
     def __init__(
         self,
         symbol: str,
-        lchild: Optional[CykNode] = None,
-        rchild: Optional[CykNode] = None,
+        lchild: Optional["CykNode"] = None,
+        rchild: Optional["CykNode"] = None,
         value: Optional[Token] = None,
         annotations: List[Any] = list(),
         weight: int = 0,
@@ -74,7 +74,7 @@ class CykNode(object):
             ret += "\n" + self.rchild.__str__(indent + 2)
         return ret
 
-    def in_order_traverse(self) -> Iterator[CykNode]:
+    def in_order_traverse(self) -> Iterator["CykNode"]:
         if self.lchild:
             yield from self.lchild.in_order_traverse()
         yield self

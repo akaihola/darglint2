@@ -1,6 +1,6 @@
 import re
-from collections import defaultdict, deque
-from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple
+from collections import deque
+from typing import Dict, Iterator, List, Optional, Set, Tuple
 
 from .functools import and_, exists, or_
 from .node import Node, NodeType

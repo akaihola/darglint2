@@ -8,7 +8,6 @@ from darglint2.lex import condense, lex
 from darglint2.parse.identifiers import (
     ArgumentItemIdentifier,
     ArgumentTypeIdentifier,
-    ExceptionIdentifier,
     ExceptionItemIdentifier,
     NoqaIdentifier,
 )
