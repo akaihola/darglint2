@@ -1,40 +1,23 @@
 import inspect
-from typing import (
-    List,
-)
-from functools import (
-    reduce,
-)
+from functools import reduce
+from typing import List
 
 from ..custom_assert import Assert
-from ..token import (
-    Token,
-    TokenType,
-    KEYWORDS,
-)
-from .cyk import (
-    parse as cyk_parse,
-)
-from ..node import (
-    CykNode,
-)
-from .combinator import (
-    parser_combinator,
-)
-from .long_description import (
-    parse as long_description_parse,
-)
-
-from .grammars.sphinx_arguments_section import ArgumentsGrammar
+from ..node import CykNode
+from ..token import KEYWORDS, Token, TokenType
+from .combinator import parser_combinator
+from .cyk import parse as cyk_parse
 from .grammars.sphinx_argument_type_section import ArgumentTypeGrammar
-from .grammars.sphinx_variables_section import VariablesSectionGrammar
-from .grammars.sphinx_variable_type_section import VariableTypeGrammar
+from .grammars.sphinx_arguments_section import ArgumentsGrammar
 from .grammars.sphinx_raises_section import RaisesGrammar
-from .grammars.sphinx_returns_section import ReturnsGrammar
 from .grammars.sphinx_return_type_section import ReturnTypeGrammar
+from .grammars.sphinx_returns_section import ReturnsGrammar
 from .grammars.sphinx_short_description import ShortDescriptionGrammar
-from .grammars.sphinx_yields_section import YieldsGrammar
+from .grammars.sphinx_variable_type_section import VariableTypeGrammar
+from .grammars.sphinx_variables_section import VariablesSectionGrammar
 from .grammars.sphinx_yield_type_section import YieldTypeGrammar
+from .grammars.sphinx_yields_section import YieldsGrammar
+from .long_description import parse as long_description_parse
 
 
 def two_newline_separated_or_keyword(tokens, i):
@@ -51,9 +34,11 @@ def two_newline_separated_or_keyword(tokens, i):
     if newline_count >= 2:
         return j
 
-    if (j + 1 < len(tokens)
-            and tokens[j].token_type == TokenType.COLON
-            and tokens[j + 1].token_type in KEYWORDS):
+    if (
+        j + 1 < len(tokens)
+        and tokens[j].token_type == TokenType.COLON
+        and tokens[j + 1].token_type in KEYWORDS
+    ):
         return j
 
     return 0
@@ -72,9 +57,7 @@ def top_parse(tokens):
         split_end = two_newline_separated_or_keyword(tokens, curr)
         if split_end > curr:
             if tokens[prev:curr]:
-                all_sections.append(
-                    tokens[prev:curr]
-                )
+                all_sections.append(tokens[prev:curr])
             curr = split_end
             prev = curr
         else:
@@ -138,9 +121,8 @@ def _match(token):
 
 
 def lookup(section, section_index=-1):
-    Assert(len(section) > 0, 'Expected non-empty section.')
-    if (section[0].token_type == TokenType.COLON
-            and len(section) > 1):
+    Assert(len(section) > 0, "Expected non-empty section.")
+    if section[0].token_type == TokenType.COLON and len(section) > 1:
         grammars = _match(section[1])
     else:
         grammars = [long_description_parse]
@@ -166,21 +148,22 @@ def combinator(*args):
     def inner(*nodes):
         if len(nodes) == 1:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
             )
         elif len(nodes) == 2:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
                 rchild=nodes[1],
             )
+
     if args:
         return reduce(inner, args)
     else:
         # The arguments are empty, so we return an
         # empty docstring.
-        return CykNode(symbol='docstring')
+        return CykNode(symbol="docstring")
 
 
 def parse(tokens):
@@ -190,4 +173,5 @@ def parse(tokens):
                 yield lambda x: cyk_parse(grammar, x)
             else:
                 yield grammar
+
     return parser_combinator(top_parse, mapped_lookup, combinator, tokens)

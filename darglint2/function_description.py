@@ -1,37 +1,22 @@
 """A linter for docstrings following the google docstring format."""
 import ast
-from collections import deque
 import sys
+from collections import deque
 from enum import Enum
-from typing import (
-    Callable,
-    Iterator,
-    List,
-    Set,
-    Tuple,
-    Optional,
-    Union,
-    Type,
-    Any,
-)
+from typing import Any, Callable, Iterator, List, Optional, Set, Tuple, Type, Union
 
-from .analysis.analysis_visitor import (
-    AnalysisVisitor,
-)
-from .analysis.function_and_method_visitor import (
-    FunctionAndMethodVisitor,
-)
+from .analysis.analysis_helpers import _has_decorator
+from .analysis.analysis_visitor import AnalysisVisitor
+from .analysis.function_and_method_visitor import FunctionAndMethodVisitor
 from .config import get_logger
-from .analysis.analysis_helpers import (
-    _has_decorator
-)
-
 
 logger = get_logger()
 
 
-FunctionDef = ast.FunctionDef  # type: Union[Type[Any], Tuple[Type[Any], Type[Any]]]  # noqa: E501
-if hasattr(ast, 'AsyncFunctionDef'):
+FunctionDef = (
+    ast.FunctionDef
+)  # type: Union[Type[Any], Tuple[Type[Any], Type[Any]]]  # noqa: E501
+if hasattr(ast, "AsyncFunctionDef"):
     FunctionDef = (ast.FunctionDef, ast.AsyncFunctionDef)
 
 
@@ -47,23 +32,25 @@ def read_program(filename):  # type: (str) -> Union[bytes, str]
 
     """
     program = None  # type: Union[bytes, Optional[str]]
-    if filename == '-':
+    if filename == "-":
         program = sys.stdin.read()
     else:
-        with open(filename, 'rb') as fin:
+        with open(filename, "rb") as fin:
             program = fin.read()
-    return program or ''
+    return program or ""
 
 
 def _get_docstring(fun):  # type: (ast.AST) -> Optional[str]
     return ast.get_docstring(fun)
 
 
-def _get_all_functions(tree):  # type: (ast.AST) -> Iterator[Union[ast.FunctionDef, ast.AsyncFunctionDef]]  # noqa: E501
+def _get_all_functions(
+    tree,
+):  # type: (ast.AST) -> Iterator[Union[ast.FunctionDef, ast.AsyncFunctionDef]]  # noqa: E501
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             yield node
-        elif hasattr(ast, 'AsyncFunctionDef'):
+        elif hasattr(ast, "AsyncFunctionDef"):
             if isinstance(node, ast.AsyncFunctionDef):
                 yield node
 
@@ -74,7 +61,9 @@ def _get_all_classes(tree):  # type: (ast.AST) -> Iterator[ast.ClassDef]
             yield node
 
 
-def _get_all_methods(tree):  # type: (ast.AST) -> Iterator[Union[ast.FunctionDef, ast.AsyncFunctionDef]]  # noqa: E501
+def _get_all_methods(
+    tree,
+):  # type: (ast.AST) -> Iterator[Union[ast.FunctionDef, ast.AsyncFunctionDef]]  # noqa: E501
     for klass in _get_all_classes(tree):
         for fun in _get_all_functions(klass):
             yield fun
@@ -82,8 +71,8 @@ def _get_all_methods(tree):  # type: (ast.AST) -> Iterator[Union[ast.FunctionDef
 
 def _get_return_type(fn):
     # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef]) -> Optional[str]
-    if fn.returns is not None and hasattr(fn.returns, 'id'):
-        return getattr(fn.returns, 'id')
+    if fn.returns is not None and hasattr(fn.returns, "id"):
+        return getattr(fn.returns, "id")
     return None
 
 
@@ -103,14 +92,13 @@ def get_line_number_from_function(fn):
 
     """
     line_number = fn.lineno
-    if hasattr(fn, 'args') and fn.args.args:
+    if hasattr(fn, "args") and fn.args.args:
         last_arg = fn.args.args[-1]
         line_number = last_arg.lineno
     return line_number
 
 
 class FunctionType(Enum):
-
     FUNCTION = 1
     METHOD = 2
     PROPERTY = 3
@@ -134,8 +122,8 @@ class FunctionDescription(object):
             function: The base node of the function.
 
         """
-        self.is_method = (function_type == FunctionType.METHOD)
-        self.is_property = (function_type == FunctionType.PROPERTY)
+        self.is_method = function_type == FunctionType.METHOD
+        self.is_property = function_type == FunctionType.PROPERTY
         self.function = function
         self.line_number = get_line_number_from_function(function)
         self.name = function.name
@@ -143,7 +131,7 @@ class FunctionDescription(object):
         try:
             visitor.visit(function)
         except Exception as ex:
-            msg = 'Failed to visit in {}: {}'.format(self.name, ex)
+            msg = "Failed to visit in {}: {}".format(self.name, ex)
             logger.debug(msg)
             return
         self.argument_names = visitor.arguments
@@ -157,8 +145,7 @@ class FunctionDescription(object):
         if self.has_return:
             return_value = visitor.returns[0]
             self.has_empty_return = (
-                return_value is not None
-                and return_value.value is None
+                return_value is not None and return_value.value is None
             )
         self.return_type = _get_return_type(function)
         self.has_yield = bool(visitor.yields)

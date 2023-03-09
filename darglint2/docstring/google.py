@@ -1,7 +1,4 @@
-from collections import (
-    defaultdict,
-    deque,
-)
+from collections import defaultdict, deque
 from typing import (  # noqa: F401
     Callable,
     Dict,
@@ -13,26 +10,11 @@ from typing import (  # noqa: F401
     Union,
 )
 
-from ..custom_assert import (
-    Assert,
-)
-from .base import BaseDocstring
-from .sections import Sections
-from .style import DocstringStyle
-from ..node import (
-    CykNode,
-)
-from ..parse.google import (
-    parse,
-)
-from ..lex import (
-    condense,
-    lex,
-)
-from ..errors import (
-    DarglintError,
-)
-from ..strictness import Strictness
+from ..custom_assert import Assert
+from ..errors import DarglintError
+from ..lex import condense, lex
+from ..node import CykNode
+from ..parse.google import parse
 from ..parse.identifiers import (
     ArgumentIdentifier,
     ArgumentItemIdentifier,
@@ -42,6 +24,10 @@ from ..parse.identifiers import (
     Identifier,
     NoqaIdentifier,
 )
+from ..strictness import Strictness
+from .base import BaseDocstring
+from .sections import Sections
+from .style import DocstringStyle
 
 
 class _CykVisitor(object):
@@ -80,7 +66,7 @@ class _CykVisitor(object):
             raise StopIteration()
 
     def mark(self, mark):
-        Assert(not self.marks, 'Marks should be non-overlapping.')
+        Assert(not self.marks, "Marks should be non-overlapping.")
         self.marks.append(mark)
 
 
@@ -123,9 +109,7 @@ class Docstring(BaseDocstring):
             A lookup table for compound Nodes by their NodeType.
 
         """
-        lookup = defaultdict(
-            lambda: list()
-        )  # type: Dict[str, List[CykNode]]
+        lookup = defaultdict(lambda: list())  # type: Dict[str, List[CykNode]]
         for node in self.root.in_order_traverse():
             if node.annotations:
                 for annotation in node.annotations:
@@ -139,30 +123,28 @@ class Docstring(BaseDocstring):
         nodes = []  # type: Optional[List[CykNode]]
 
         if section == Sections.SHORT_DESCRIPTION:
-            nodes = self._lookup.get('short-description', None)
+            nodes = self._lookup.get("short-description", None)
         elif section == Sections.LONG_DESCRIPTION:
-            nodes = self._lookup.get('long-description', None)
+            nodes = self._lookup.get("long-description", None)
         elif section == Sections.ARGUMENTS_SECTION:
-            nodes = self._lookup.get('arguments-section', None)
+            nodes = self._lookup.get("arguments-section", None)
         elif section == Sections.RAISES_SECTION:
-            nodes = self._lookup.get('raises-section', None)
+            nodes = self._lookup.get("raises-section", None)
         elif section == Sections.YIELDS_SECTION:
-            nodes = self._lookup.get('yields-section', None)
+            nodes = self._lookup.get("yields-section", None)
         elif section == Sections.RETURNS_SECTION:
-            nodes = self._lookup.get('returns-section', None)
+            nodes = self._lookup.get("returns-section", None)
         elif section == Sections.NOQAS:
-            nodes = self._lookup.get('noqa', None)
+            nodes = self._lookup.get("noqa", None)
         else:
-            raise Exception(
-                'Unsupported section type {}'.format(section.name)
-            )
+            raise Exception("Unsupported section type {}".format(section.name))
 
         if not nodes:
             return None
 
-        return_value = ''
+        return_value = ""
         for node in nodes:
-            return_value += '\n\n' + node.reconstruct_string()
+            return_value += "\n\n" + node.reconstruct_string()
 
         return return_value.strip() or None
 
@@ -174,7 +156,7 @@ class Docstring(BaseDocstring):
             A dictionary matching arguments to types.
 
         """
-        lookup = self._get_compound_item_type_lookup('arguments-section')
+        lookup = self._get_compound_item_type_lookup("arguments-section")
         if not lookup:
             return None
 
@@ -189,7 +171,7 @@ class Docstring(BaseDocstring):
             The return type or None.
 
         """
-        for type_node in self._lookup['returns-type']:
+        for type_node in self._lookup["returns-type"]:
             if not type_node.lchild or not type_node.lchild.value:
                 continue
             return type_node.lchild.value.value
@@ -198,7 +180,7 @@ class Docstring(BaseDocstring):
     def get_types(self, section):
         # type: (Sections) -> Union[None, str, List[Optional[str]]]
         if section == Sections.ARGUMENTS_SECTION:
-            if 'arguments-section' not in self._lookup:
+            if "arguments-section" not in self._lookup:
                 return None
             return self._get_argument_types()
         elif section == Sections.RETURNS_SECTION:
@@ -207,9 +189,8 @@ class Docstring(BaseDocstring):
             return self._get_yield_type()
         else:
             raise Exception(
-                'Section type {} does not have types, '.format(
-                    section.name
-                ) + 'or is not yet supported'
+                "Section type {} does not have types, ".format(section.name)
+                + "or is not yet supported"
             )
         return None
 
@@ -255,14 +236,13 @@ class Docstring(BaseDocstring):
     def get_items(self, section):
         # type: (Sections) -> Optional[List[str]]
         if section == Sections.ARGUMENTS_SECTION:
-            return self._get_compound_items('arguments-section')
+            return self._get_compound_items("arguments-section")
         elif section == Sections.RAISES_SECTION:
             return self._get_raises_section_items()
         else:
             raise Exception(
-                'Section type {} does not have items, '.format(
-                    section.name
-                ) + 'or is not yet supported.'
+                "Section type {} does not have items, ".format(section.name)
+                + "or is not yet supported."
             )
         return None
 
@@ -274,7 +254,7 @@ class Docstring(BaseDocstring):
             The yield type or None
 
         """
-        for type_node in self._lookup['yields-type']:
+        for type_node in self._lookup["yields-type"]:
             if not type_node.lchild or not type_node.lchild.value:
                 continue
             return type_node.lchild.value.value
@@ -290,12 +270,12 @@ class Docstring(BaseDocstring):
             the values.  A blank list implies a global noqa.
 
         """
+
         def _get_branch_name(node):
             for child in node.walk():
                 for annotation in child.annotations:
-                    if (
-                        issubclass(annotation, ArgumentIdentifier)
-                        or issubclass(annotation, ExceptionIdentifier)
+                    if issubclass(annotation, ArgumentIdentifier) or issubclass(
+                        annotation, ExceptionIdentifier
                     ):
                         return annotation.extract(child)
 
@@ -306,13 +286,13 @@ class Docstring(BaseDocstring):
             if error:
                 noqas[error] |= set(NoqaIdentifier.extract_targets(node))
             else:
-                noqas['*'] = set()
+                noqas["*"] = set()
 
         # If the noqa did not have a target, but it had an error and was
         # in an item or error description, then the item or error in question
         # is the target.
         for section in (
-            self._lookup['arguments-section'] + self._lookup['raises-section']
+            self._lookup["arguments-section"] + self._lookup["raises-section"]
         ):
             visitor = _CykVisitor(section)
             for node, mark in visitor:
@@ -326,13 +306,10 @@ class Docstring(BaseDocstring):
                         if error and mark:
                             noqas[error].add(mark)
 
-        for section in self._lookup['raises-section']:
+        for section in self._lookup["raises-section"]:
             pass
 
-        return {
-            key: sorted(values)
-            for key, values in noqas.items()
-        }
+        return {key: sorted(values) for key, values in noqas.items()}
 
     def get_style_errors(self):
         # type: () -> Iterable[Tuple[Callable, Tuple[int, int]]]
@@ -386,9 +363,7 @@ class Docstring(BaseDocstring):
         nodes = self._lookup[symbol]
         for node in nodes:
             for child in node.walk():
-                if (child.value
-                        and child.value.value == value
-                        and child.line_numbers):
+                if child.value and child.value.value == value and child.line_numbers:
                     return child.line_numbers
         return None
 
@@ -405,4 +380,4 @@ class Docstring(BaseDocstring):
 
         """
         noqas = self.get_noqas()
-        return '*' in noqas
+        return "*" in noqas

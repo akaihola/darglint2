@@ -1,22 +1,16 @@
 import ast
-from unittest import (
-    TestCase,
-)
-from darglint2.analysis.abstract_callable_visitor import (
-    AbstractCallableVisitor,
-)
-from darglint2.analysis.analysis_visitor import (
-    AnalysisVisitor
-)
-from .utils import (
-    reindent,
-)
+from unittest import TestCase
+
+from darglint2.analysis.abstract_callable_visitor import AbstractCallableVisitor
+from darglint2.analysis.analysis_visitor import AnalysisVisitor
+
+from .utils import reindent
 
 
 class PureAbstractVisitorTests(TestCase):
     def analyzeAbstract(self, program):
         function = ast.parse(reindent(program)).body[0]
-        #visitor = AnalysisVisitor()
+        # visitor = AnalysisVisitor()
         visitor = AbstractCallableVisitor()
         visitor.visit(function)
         return visitor
@@ -30,8 +24,7 @@ class PureAbstractVisitorTests(TestCase):
     def check_abstract_toggle_doc(self, program, result=True, doc="None"):
         self.check_abstract_decoration(program.format(docstring=""), result)
         self.check_abstract_decoration(
-            program.format(docstring='"""{}"""'.format(doc)),
-            result
+            program.format(docstring='"""{}"""'.format(doc)), result
         )
 
     def test_pass(self):

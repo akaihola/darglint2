@@ -25,87 +25,85 @@ class ErrorReportMessageTemplateTest(TestCase):
 
     def setUp(self):
         """Make a generic function to raise errors about."""
-        self.function_description = _get_function_description('\n'.join([
-            'def top_level_function(arg):',
-            '    """My docstring.',
-            '',
-            '    Args:',
-            '        arg:',
-            '',
-            '    """',
-            '    return 1',
-        ]))
+        self.function_description = _get_function_description(
+            "\n".join(
+                [
+                    "def top_level_function(arg):",
+                    '    """My docstring.',
+                    "",
+                    "    Args:",
+                    "        arg:",
+                    "",
+                    '    """',
+                    "    return 1",
+                ]
+            )
+        )
 
         # Give a line number so that it can be sorted.
         self.function_description.lineno = 0
 
     def test_message_template_can_be_empty(self):
         """Ensure the error report representation can be empty."""
-        message = 'Discard me.'
+        message = "Discard me."
         error = EmptyDescriptionError(
-            self.function_description, message,
+            self.function_description,
+            message,
         )
-        filename = '/Some/File/Discarded.py'
-        message_template = ''
+        filename = "/Some/File/Discarded.py"
+        message_template = ""
         error_report = ErrorReport(
             errors=[error],
             filename=filename,
             message_template=message_template,
         )
-        self.assertEqual(
-            str(error_report), ''
-        )
+        self.assertEqual(str(error_report), "")
 
     def test_format_string_only_msg_id(self):
         """Ensure that message template can have one item."""
-        message = 'This message is missing a description.'
+        message = "This message is missing a description."
         error = EmptyDescriptionError(
-            self.function_description, message,
+            self.function_description,
+            message,
         )
-        filename = '/Users/ronald_vermillion/great_donuts.ijs'
-        message_template = '{msg_id}'
+        filename = "/Users/ronald_vermillion/great_donuts.ijs"
+        message_template = "{msg_id}"
         error_report = ErrorReport(
-            errors=[error],
-            filename=filename,
-            message_template=message_template
+            errors=[error], filename=filename, message_template=message_template
         )
-        self.assertEqual(
-            str(error_report),
-            EmptyDescriptionError.error_code
-        )
+        self.assertEqual(str(error_report), EmptyDescriptionError.error_code)
 
     def test_format_can_include_string_constants(self):
         """Ensure that string constants can be in message."""
-        message = 'The Message!'
+        message = "The Message!"
         error = EmptyDescriptionError(
-            self.function_description, message,
+            self.function_description,
+            message,
         )
-        filename = './some_filename.py'
-        message_template = '({msg}) :)'
+        filename = "./some_filename.py"
+        message_template = "({msg}) :)"
         error_report = ErrorReport(
-            errors=[error],
-            filename=filename,
-            message_template=message_template
+            errors=[error], filename=filename, message_template=message_template
         )
-        self.assertEqual(
-            str(error_report),
-            '(Empty description: e The Message!) :)'
-        )
+        self.assertEqual(str(error_report), "(Empty description: e The Message!) :)")
 
     def test_all_attributes(self):
         """Test against all possible attributes."""
-        message = 'The Message!'
+        message = "The Message!"
         error = EmptyDescriptionError(
-            self.function_description, message,
+            self.function_description,
+            message,
         )
-        filename = './some_filename.py'
-        message_template = ' '.join([
-            '{msg}',
-            '{msg_id}',
-            '{line}',
-            '{path}',
-            '{obj}',
-        ])
+        filename = "./some_filename.py"
+        message_template = " ".join(
+            [
+                "{msg}",
+                "{msg_id}",
+                "{line}",
+                "{path}",
+                "{obj}",
+            ]
+        )
         error_report = ErrorReport(
             errors=[error],
             filename=filename,
@@ -117,11 +115,12 @@ class ErrorReportMessageTemplateTest(TestCase):
         str(error_report)
 
     def test_message_template_is_none_uses_default(self):
-        message = 'My Message'
+        message = "My Message"
         error = EmptyDescriptionError(
-            self.function_description, message,
+            self.function_description,
+            message,
         )
-        filename = './data/datum.py'
+        filename = "./data/datum.py"
         error_report = ErrorReport(
             errors=[error],
             filename=filename,
@@ -129,9 +128,11 @@ class ErrorReportMessageTemplateTest(TestCase):
         )
         error_repr = str(error_report)
         self.assertTrue(
-            all([
-                message in error_repr,
-                filename in error_repr,
-                EmptyDescriptionError.error_code in error_repr,
-            ])
+            all(
+                [
+                    message in error_repr,
+                    filename in error_repr,
+                    EmptyDescriptionError.error_code in error_repr,
+                ]
+            )
         )

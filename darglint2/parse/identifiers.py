@@ -1,17 +1,9 @@
 import abc
+from typing import Callable, List, Optional, Tuple, Union
 
 from ..custom_assert import Assert
+from ..token import TokenType
 from .cyk import CykNode
-from typing import (
-    Callable,
-    List,
-    Optional,
-    Union,
-    Tuple,
-)
-from ..token import (
-    TokenType,
-)
 
 
 class Continuation(object):
@@ -34,7 +26,7 @@ class Continuation(object):
         # type: (str) -> Continuation
         Assert(
             not self._sealed,
-            'Sealed continuations shouldn\'t be extended!',
+            "Sealed continuations shouldn't be extended!",
         )
         if isinstance(self.child, Continuation):
             self.child.of(path)
@@ -46,7 +38,7 @@ class Continuation(object):
         # type: (Continuation) -> Continuation
         Assert(
             not self._sealed,
-            'Sealed continuations shouldn\'t be extended!',
+            "Sealed continuations shouldn't be extended!",
         )
         self.child = continuations
         self._sealed = True
@@ -68,11 +60,11 @@ class Continuation(object):
             return None
         curr = node  # type: Optional[CykNode]
         for letter in self.path:
-            if curr and letter == 'r':
+            if curr and letter == "r":
                 curr = curr.rchild
-            elif curr and letter == 'l':
+            elif curr and letter == "l":
                 curr = curr.lchild
-            elif curr and letter == 'v' and curr.value:
+            elif curr and letter == "v" and curr.value:
                 return curr.value.value
             else:
                 return None
@@ -95,10 +87,10 @@ class Continuation(object):
                 else:
                     Assert(
                         False,
-                        'Expected path extraction to yield str '
-                        'or None or CykNode but was {}'.format(
+                        "Expected path extraction to yield str "
+                        "or None or CykNode but was {}".format(
                             next_curr.__class__.__name__
-                        )
+                        ),
                     )
                     return None
             # Branches are always terminal.  If we haven't
@@ -115,10 +107,8 @@ class Continuation(object):
             else:
                 Assert(
                     False,
-                    'Expected path extraction to yield str '
-                    'or None but was {}'.format(
-                        next_curr.__class__.__name__
-                    )
+                    "Expected path extraction to yield str "
+                    "or None but was {}".format(next_curr.__class__.__name__),
                 )
                 return None
         return curr
@@ -166,7 +156,7 @@ class Path(object):
             A continuation representing the path.
 
         """
-        return Continuation('', lambda _: True, paths)
+        return Continuation("", lambda _: True, paths)
 
     # These methods are technically unnecessary -- they are
     # synonymous with an `of`.  However, it makes for nicer
@@ -211,38 +201,32 @@ class Identifier(abc.ABC):
         # type: (CykNode) -> str
         # TODO: Fix the type annotation here.
         value = cls.path.extract(node)  # type: ignore
-        Assert(
-            value is not None,
-            'Failed to extract {}'.format(cls.key)
-        )
-        return value or ''
+        Assert(value is not None, "Failed to extract {}".format(cls.key))
+        return value or ""
 
     def __str__(self):
-        return '<identifier: {}>'.format(self.key)
+        return "<identifier: {}>".format(self.key)
 
     def __repr__(self):
         return str(self)
 
 
 class ArgumentItemIdentifier(Identifier):
-
-    key = 'id_ArgsItem'
-    path = Path.of('lv')
+    key = "id_ArgsItem"
+    path = Path.of("lv")
 
 
 class ArgumentIdentifier(Identifier):
-
-    key = 'id_Args'
-    path = Path.of('rlv')
+    key = "id_Args"
+    path = Path.of("rlv")
 
 
 class ArgumentTypeIdentifier(Identifier):
-
-    key = 'id_ArgType'
-    path = Path.of('rrl').branch(
-        Path.if_right('r').branch(Path.of('lv'), Path.of('l')),
-        Path.of('v'),
-        Path.of(''),
+    key = "id_ArgType"
+    path = Path.of("rrl").branch(
+        Path.if_right("r").branch(Path.of("lv"), Path.of("l")),
+        Path.of("v"),
+        Path.of(""),
     )
 
     @staticmethod
@@ -251,49 +235,44 @@ class ArgumentTypeIdentifier(Identifier):
         value = ArgumentTypeIdentifier.path.extract(node)
         is_leaf = isinstance(value, str)
         is_branch = isinstance(value, CykNode)
-        Assert(is_leaf or is_branch, 'Unable to extract argument type.')
+        Assert(is_leaf or is_branch, "Unable to extract argument type.")
         if is_leaf:
             return value  # type: ignore
         elif is_branch:
             return value.reconstruct_string()  # type: ignore
         else:
-            return ''
+            return ""
 
 
 class ExceptionItemIdentifier(Identifier):
-
-    key = 'id_ExceptItem'
-    path = Path.of('lv')
+    key = "id_ExceptItem"
+    path = Path.of("lv")
 
 
 class ExceptionIdentifier(Identifier):
-
-    key = 'id_Except'
-    path = Path.of('rlv')
+    key = "id_Except"
+    path = Path.of("rlv")
 
 
 class ReturnTypeIdentifier(Identifier):
-
-    key = 'id_ReturnType'
-    path = Path.of('lv')
+    key = "id_ReturnType"
+    path = Path.of("lv")
 
 
 class YieldTypeIdentifier(Identifier):
-
-    key = 'id_YieldType'
-    path = Path.of('lv')
+    key = "id_YieldType"
+    path = Path.of("lv")
 
 
 class NoqaIdentifier(Identifier):
-
-    key = 'id_Noqa'
-    path = Path.of('rr').branch(Path.of('v'), Path.if_left('lv'))
+    key = "id_Noqa"
+    path = Path.of("rr").branch(Path.of("v"), Path.if_left("lv"))
 
     @staticmethod
     def extract(node):
         # type: (CykNode) -> str
         if node.rchild and node.rchild.rchild:
-            path = Path.branch(Path.of('rrv'), Path.of('rrlv'))
+            path = Path.branch(Path.of("rrv"), Path.of("rrlv"))
             value = path.extract(node)
             if isinstance(value, str):
                 return value
@@ -301,17 +280,14 @@ class NoqaIdentifier(Identifier):
             # value = path2.extract(node)
             # if isinstance(value, str):
             #     return value
-            return ''
+            return ""
         else:
-            return ''
+            return ""
 
     @staticmethod
     def extract_targets(node):
         # type: (CykNode) -> List[str]
-        if (
-            node.rchild
-            and node.rchild.rchild
-        ):
+        if node.rchild and node.rchild.rchild:
             children = list()
             for child in node.rchild.rchild.walk():
                 if child.value and child.value.token_type == TokenType.WORD:

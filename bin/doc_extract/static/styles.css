@@ -65,12 +65,12 @@
     flex-direction: column;
     box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
     width: 200px;
-	min-height: 100px;
+    min-height: 100px;
     margin: 4px;
     overflow-y: scroll;
 }
 
-.selected  {
+.selected {
     background-color: rgba(0, 256, 0, 0.1);
 }
 
@@ -95,7 +95,7 @@
 
 .selector input {
     -webkit-appearance: none;
-    -moz-appearance:textfield;
+    -moz-appearance: textfield;
     margin: 0;
     width: 25px;
 }

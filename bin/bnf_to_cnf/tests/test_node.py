@@ -1,23 +1,13 @@
-from unittest import (
-    TestCase,
-)
+from unittest import TestCase
 
-from bnf_to_cnf.node import (
-    Node,
-    NodeType,
-)
-from bnf_to_cnf.parser import (
-    Parser,
-)
-from utils import (
-    random_string,
-)
+from bnf_to_cnf.node import Node, NodeType
+from bnf_to_cnf.parser import Parser
+from utils import random_string
 
 MAX_REPS = 100
 
 
 class NodeTest(TestCase):
-
     def test_str(self):
         node = Node(
             NodeType.GRAMMAR,
@@ -27,7 +17,7 @@ class NodeTest(TestCase):
                     children=[
                         Node(
                             NodeType.SYMBOL,
-                            value='header',
+                            value="header",
                         ),
                         Node(
                             NodeType.EXPRESSION,
@@ -37,7 +27,7 @@ class NodeTest(TestCase):
                                     children=[
                                         Node(
                                             NodeType.SYMBOL,
-                                            value='arg',
+                                            value="arg",
                                         )
                                     ],
                                 ),
@@ -46,7 +36,7 @@ class NodeTest(TestCase):
                                     children=[
                                         Node(
                                             NodeType.SYMBOL,
-                                            value='returns',
+                                            value="returns",
                                         )
                                     ],
                                 ),
@@ -59,7 +49,7 @@ class NodeTest(TestCase):
                     children=[
                         Node(
                             NodeType.SYMBOL,
-                            value='arg',
+                            value="arg",
                         ),
                         Node(
                             NodeType.EXPRESSION,
@@ -81,10 +71,12 @@ class NodeTest(TestCase):
         )
         self.assertEqual(
             str(node),
-            '\n'.join([
-                '<header> ::= <arg> | <returns>',
-                '<arg> ::= "Arg"',
-            ]),
+            "\n".join(
+                [
+                    "<header> ::= <arg> | <returns>",
+                    '<arg> ::= "Arg"',
+                ]
+            ),
         )
 
     def test_terminals_equal(self):
@@ -107,61 +99,46 @@ class NodeTest(TestCase):
 
     def test_grammars_equal(self):
         grammarA = '<A> ::= "b" | "c"'
+        self.assertTrue(Parser().parse(grammarA).equals(Parser().parse(grammarA)))
+        grammarB = '<Q> ::= "chicken"\n' '<D> ::= "sargh"'
         self.assertTrue(
-            Parser().parse(grammarA).equals(
-                Parser().parse(grammarA)
-            )
-        )
-        grammarB = (
-            '<Q> ::= "chicken"\n'
-            '<D> ::= "sargh"'
-        )
-        self.assertTrue(
-            Parser().parse(grammarB).equals(
-                Parser().parse(grammarB)
-            ),
+            Parser().parse(grammarB).equals(Parser().parse(grammarB)),
         )
         self.assertFalse(
-            Parser().parse(grammarA).equals(
-                Parser().parse(grammarB)
-            ),
+            Parser().parse(grammarA).equals(Parser().parse(grammarB)),
         )
 
     def test_empty_nodes_equal(self):
-        for node_type in [
-            NodeType.SEQUENCE, NodeType.GRAMMAR, NodeType.EXPRESSION
-        ]:
+        for node_type in [NodeType.SEQUENCE, NodeType.GRAMMAR, NodeType.EXPRESSION]:
             self.assertTrue(
-                Node(node_type, children=[]).equals(
-                    Node(node_type, children=[])
-                ),
+                Node(node_type, children=[]).equals(Node(node_type, children=[])),
             )
 
     def test_external_filename_preserved_in_both_python_and_bnf(self):
         external = (
             "from darglint2.parse.identifiers import (\n"
-            '    ArgumentIdentifier,\n'
-            '    NoqaIdentifier,\n'
-            ')'
+            "    ArgumentIdentifier,\n"
+            "    NoqaIdentifier,\n"
+            ")"
         )
-        grammar = f'''
+        grammar = f"""
         {external}
 
         <A> ::= "A"
-        '''
+        """
         node = Parser().parse(grammar)
         self.assertTrue(external in str(node))
         self.assertTrue(external in node.to_python())
 
     def test_probability_passed_to_python_production(self):
-        grammar = f'''
+        grammar = f"""
         <start>
             ::= 70 <A> <A>
               | 30 <A> <B>
 
         <A> ::= "A"
         <B> ::= "B"
-        '''
+        """
         node = Parser().parse(grammar)
         self.assertEqual(
             '([], "A", "A", 70)',

@@ -1,18 +1,16 @@
 """Describes Peaker, a stream transformer for peaking ahead."""
 from collections import deque
-
 from typing import (  # noqa: F401
     Callable,
     Generic,
     Iterator,
     List,
+    Optional,
     TypeVar,
     Union,
-    Optional,
 )
 
-
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class Peaker(Generic[T]):
@@ -55,10 +53,8 @@ class Peaker(Generic[T]):
         """
         if amount > self.lookahead:
             raise Exception(
-                'Cannot extend buffer to {}: '
-                'beyond buffer lookahead {}'.format(
-                    amount, self.lookahead
-                )
+                "Cannot extend buffer to {}: "
+                "beyond buffer lookahead {}".format(amount, self.lookahead)
             )
         while len(self.buffer) < amount:
             try:
@@ -104,7 +100,7 @@ class Peaker(Generic[T]):
         """
         if lookahead > self.lookahead:
             raise Exception(
-                'Cannot peak to {}: beyond buffer lookahead {}'.format(
+                "Cannot peak to {}: beyond buffer lookahead {}".format(
                     lookahead, self.lookahead
                 )
             )
@@ -132,7 +128,7 @@ class Peaker(Generic[T]):
         """
         if lookahead > self.lookahead:
             raise Exception(
-                'Cannot peak to {}: beyond buffer lookahead {}'.format(
+                "Cannot peak to {}: beyond buffer lookahead {}".format(
                     lookahead, self.lookahead
                 )
             )

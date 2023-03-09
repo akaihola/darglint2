@@ -5,59 +5,42 @@ and individual files.
 
 """
 
-from collections import (
-    defaultdict,
-)
-from datetime import (
-    datetime,
-)
-from enum import Enum
 import json
-import time
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Iterable,
-)
-from unittest import (
-    TestCase,
-)
-
-from darglint2.docstring.base import (
-    BaseDocstring,
-)
-from darglint2.docstring.docstring import (
-    Docstring,
-)
-from darglint2.driver import (
-    print_version,
-)
-from statistics import (
-    mean,
-    stdev,
-)
-import subprocess
 import os
+import subprocess
+import time
+from collections import defaultdict
+from datetime import datetime
+from enum import Enum
+from statistics import mean, stdev
+from typing import Any, Dict, Iterable, List, Optional, Tuple
+from unittest import TestCase
 
+from darglint2.docstring.base import BaseDocstring
+from darglint2.docstring.docstring import Docstring
+from darglint2.driver import print_version
 
 Golden = Dict[str, Any]
 
 
 class PerfScope(Enum):
-
     DOCSTRING = 1
     MODULE = 2
 
 
 class Stats(object):
-
     STALE_AGE_MINS = 30
 
-    def __init__(self, times, by_length, google, sphinx,
-                 timestamp=None, scope=PerfScope.MODULE, numpy=list()):
+    def __init__(
+        self,
+        times,
+        by_length,
+        google,
+        sphinx,
+        timestamp=None,
+        scope=PerfScope.MODULE,
+        numpy=list(),
+    ):
         # type: (List[float], List[Tuple[int, float]], List[float], List[float], int, PerfScope, List[float]) -> None  # noqa: E501
         self.times = times
         self.by_length = by_length
@@ -80,18 +63,18 @@ class Stats(object):
     @staticmethod
     def decode(datum):
         # type: (Dict[str, Any]) -> Stats
-        datum['by_length'] = [(x, y) for x, y in datum['by_length']]
+        datum["by_length"] = [(x, y) for x, y in datum["by_length"]]
         return Stats(**datum)
 
     def encode(self):
         return {
-            'times': self.times,
-            'by_length': [[x, y] for x, y in self.by_length],
-            'google': self.google,
-            'sphinx': self.sphinx,
-            'timestamp': self.timestamp,
-            'scope': self.scope.value,
-            'numpy': self.numpy,
+            "times": self.times,
+            "by_length": [[x, y] for x, y in self.by_length],
+            "google": self.google,
+            "sphinx": self.sphinx,
+            "timestamp": self.timestamp,
+            "scope": self.scope.value,
+            "numpy": self.numpy,
         }
 
 
@@ -120,7 +103,9 @@ class Chart(object):
         if y_bucket <= 0:
             y_bucket = 1
 
-        plot_points = defaultdict(lambda: defaultdict(lambda: 0))  # type: Dict[int, Dict[int, int]]  # noqa: E501
+        plot_points = defaultdict(
+            lambda: defaultdict(lambda: 0)
+        )  # type: Dict[int, Dict[int, int]]  # noqa: E501
 
         max_amount = 0
         for x, y in self.stats.by_length:
@@ -130,35 +115,35 @@ class Chart(object):
             if plot_points[xb][yb] > max_amount:
                 max_amount = plot_points[xb][yb]
 
-        title = 'Time to Parse (seconds) by Length (chars)\n'
+        title = "Time to Parse (seconds) by Length (chars)\n"
         ret = title.rjust((self.width // 2) - (len(title) // 2) + len(title))
 
         y_axis_top = str(int(y_max))
         y_axis_bottom = str(int(y_min))
         padding = max(len(y_axis_top), len(y_axis_bottom))
-        ret += y_axis_top.rjust(padding) + '│\n'
+        ret += y_axis_top.rjust(padding) + "│\n"
         for row in range(self.height + 1, -1, -1):
             if row == 0:
-                ret += y_axis_bottom.rjust(padding) + '│'
+                ret += y_axis_bottom.rjust(padding) + "│"
             else:
-                ret += '│'.rjust(padding + 1)
+                ret += "│".rjust(padding + 1)
             for col in range(self.width + 1):
                 point = plot_points[col][row]
                 if point == 0:
-                    ret += ' '
+                    ret += " "
                 elif 0 < point <= max_amount / 3:
-                    ret += '○'
+                    ret += "○"
                 elif max_amount / 3 < point < 2 * (max_amount / 3):
-                    ret += '◎'
+                    ret += "◎"
                 elif 2 * (max_amount / 3) < point:
-                    ret += '●'
-            ret += '\n'
-        ret += '└'.rjust(padding + 1) + '─' * (self.width) + '\n'
+                    ret += "●"
+            ret += "\n"
+        ret += "└".rjust(padding + 1) + "─" * (self.width) + "\n"
         x_axis_left = str(int(x_min))
         x_axis_right = str(int(x_max))
-        ret += '{}{}\n'.format(
+        ret += "{}{}\n".format(
             x_axis_left.rjust(padding + len(x_axis_left)),
-            x_axis_right.rjust(self.width - (len(x_axis_left) + padding))
+            x_axis_right.rjust(self.width - (len(x_axis_left) + padding)),
         )
         return ret
 
@@ -178,22 +163,22 @@ class Performance(object):
         elif scope == PerfScope.MODULE:
             stats = self.module_stats
         else:
-            raise Exception('Unrecognized PerfScope {}'.format(scope))
+            raise Exception("Unrecognized PerfScope {}".format(scope))
         assert stats
         total = len(stats.times)
         n = int(0.01 * total)
         assert n > 0
         sorted_stats = sorted(stats.times)
-        worst = mean(sorted_stats[-1 * n:])
-        print('1 %ile mean: {}'.format(worst))
+        worst = mean(sorted_stats[-1 * n :])
+        print("1 %ile mean: {}".format(worst))
 
     def report_stats(self):
         # type: () -> None
         if self.stats:
-            print('∷∴∵∴∵∴∵∴∵∴∵∴∵ DOCSTRING ∴∵∴∵∴∵∴∵∴∵∴∵∷')
-            print('x̄: {}'.format(mean(self.stats.times)))
-            print('s: {}'.format(stdev(self.stats.times)))
-            print('n: {}'.format(len(self.stats.times)))
+            print("∷∴∵∴∵∴∵∴∵∴∵∴∵ DOCSTRING ∴∵∴∵∴∵∴∵∴∵∴∵∷")
+            print("x̄: {}".format(mean(self.stats.times)))
+            print("s: {}".format(stdev(self.stats.times)))
+            print("n: {}".format(len(self.stats.times)))
             self.report_worst_five_percent()
             print()
             chart = Chart(self.stats)
@@ -201,10 +186,10 @@ class Performance(object):
             print()
 
         if self.module_stats:
-            print('∷∴∵∴∵∴∵∴∵∴∵∴∵∴∵ MODULE ∴∵∴∵∴∵∴∵∴∵∴∵∴∵∷')
-            print('x̄: {}'.format(mean(self.module_stats.times)))
-            print('s: {}'.format(stdev(self.module_stats.times)))
-            print('n: {}'.format(len(self.module_stats.times)))
+            print("∷∴∵∴∵∴∵∴∵∴∵∴∵∴∵ MODULE ∴∵∴∵∴∵∴∵∴∵∴∵∴∵∷")
+            print("x̄: {}".format(mean(self.module_stats.times)))
+            print("s: {}".format(stdev(self.module_stats.times)))
+            print("n: {}".format(len(self.module_stats.times)))
             self.report_worst_five_percent(PerfScope.MODULE)
             print()
             chart = Chart(self.module_stats)
@@ -212,19 +197,17 @@ class Performance(object):
 
     def _parse_golden(self, golden):
         # type: (Golden) -> BaseDocstring
-        if golden['type'] == 'GOOGLE':
-            assert isinstance(golden['docstring'], str)
-            docstring = Docstring.from_google(golden['docstring'])
-        elif golden['type'] == 'SPHINX':
-            assert isinstance(golden['docstring'], str)
-            docstring = Docstring.from_sphinx(golden['docstring'])
-        elif golden['type'] == 'NUMPY':
-            assert isinstance(golden['docstring'], str)
-            docstring = Docstring.from_numpy(golden['docstring'])
+        if golden["type"] == "GOOGLE":
+            assert isinstance(golden["docstring"], str)
+            docstring = Docstring.from_google(golden["docstring"])
+        elif golden["type"] == "SPHINX":
+            assert isinstance(golden["docstring"], str)
+            docstring = Docstring.from_sphinx(golden["docstring"])
+        elif golden["type"] == "NUMPY":
+            assert isinstance(golden["docstring"], str)
+            docstring = Docstring.from_numpy(golden["docstring"])
         else:
-            raise Exception('Unsupported docstring type {}'.format(
-                golden['type']
-            ))
+            raise Exception("Unsupported docstring type {}".format(golden["type"]))
         return docstring
 
     def _parse_and_measure(self, golden):
@@ -240,7 +223,7 @@ class Performance(object):
 
     def _read_goldens(self):
         # type: () -> List[Golden]
-        with open('integration_tests/goldens.json', 'r') as fin:
+        with open("integration_tests/goldens.json", "r") as fin:
             goldens = json.load(fin)
         return goldens
 
@@ -262,19 +245,19 @@ class Performance(object):
                 continue
 
             stats.times.append(duration)
-            if golden['type'] == 'GOOGLE':
+            if golden["type"] == "GOOGLE":
                 stats.google.append(duration)
-            elif golden['type'] == 'SPHINX':
+            elif golden["type"] == "SPHINX":
                 stats.sphinx.append(duration)
-            elif golden['type'] == 'NUMPY':
+            elif golden["type"] == "NUMPY":
                 stats.numpy.append(duration)
             else:
-                raise Exception('Unexpected docstring type {}'.format(
-                    golden['type'],
-                ))
-            stats.by_length.append(
-                (len(golden['docstring']), duration)
-            )
+                raise Exception(
+                    "Unexpected docstring type {}".format(
+                        golden["type"],
+                    )
+                )
+            stats.by_length.append((len(golden["docstring"]), duration))
         self.stats = stats
         return stats
 
@@ -283,35 +266,37 @@ class Performance(object):
         succeeded = True
         start = time.time()
         try:
-            completed_process = subprocess.run([
-                "darglint2",
-                filename
-            ], stdout=subprocess.PIPE)
-            value = completed_process.stdout.decode('utf8')
+            completed_process = subprocess.run(
+                ["darglint2", filename], stdout=subprocess.PIPE
+            )
+            value = completed_process.stdout.decode("utf8")
         except Exception:
             succeeded = False
-            value = ''
+            value = ""
         end = time.time()
         return end - start, succeeded, value
 
     def _get_module_size(self, filename):
         # type: (str) -> Optional[int]
         try:
-            completed_process = subprocess.run([
-                'wc',
-                '-l',
-                filename,
-            ], stdout=subprocess.PIPE)
-            value = completed_process.stdout.decode('utf8')
+            completed_process = subprocess.run(
+                [
+                    "wc",
+                    "-l",
+                    filename,
+                ],
+                stdout=subprocess.PIPE,
+            )
+            value = completed_process.stdout.decode("utf8")
             return int(value.split()[0])
         except Exception:
             return None
 
     def yield_modules(self):
         # type: () -> Iterable[str]
-        for path, folders, filenames in os.walk('integration_tests/repos'):
+        for path, folders, filenames in os.walk("integration_tests/repos"):
             for filename in filenames:
-                if not filename.endswith('.py'):
+                if not filename.endswith(".py"):
                     continue
                 yield os.path.join(path, filename)
 
@@ -336,28 +321,27 @@ class Performance(object):
         return stats
 
 
-def _read_from_cache(filename='.performance_testrun'):
+def _read_from_cache(filename=".performance_testrun"):
     # type: (str) -> Optional[Stats]
     try:
-        with open(filename, 'r') as fin:
+        with open(filename, "r") as fin:
             data = json.load(fin)
         return Stats.decode(data)
     except Exception:
         return None
 
 
-def _write_to_cache(data, filename='.performance_testrun'):
+def _write_to_cache(data, filename=".performance_testrun"):
     # type: (Stats, str) -> None
-    with open(filename, 'w') as fout:
+    with open(filename, "w") as fout:
         json.dump(data.encode(), fout)
 
 
 class PerformanceRegressionTest(TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.prev_stats = _read_from_cache()
-        cls.prev_module_stats = _read_from_cache('.performance_module_testrun')
+        cls.prev_module_stats = _read_from_cache(".performance_module_testrun")
         cls.stats = Stats(
             times=list(),
             by_length=list(),
@@ -374,7 +358,7 @@ class PerformanceRegressionTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         _write_to_cache(cls.stats)
-        _write_to_cache(cls.module_stats, '.performance_module_testrun')
+        _write_to_cache(cls.module_stats, ".performance_module_testrun")
 
     def test_performance_not_worse_than_before(self):
         # Capture stats and test.
@@ -392,9 +376,9 @@ class PerformanceRegressionTest(TestCase):
         # of means.
         self.assertTrue(
             delta < prev_stdev * 2,
-            'Expected small variance in performance change, but '
-            'current mean, {}, is more than two standard deviations ({}) '
-            'from previous mean, {}'.format(
+            "Expected small variance in performance change, but "
+            "current mean, {}, is more than two standard deviations ({}) "
+            "from previous mean, {}".format(
                 curr_mean,
                 prev_stdev,
                 prev_mean,
@@ -413,17 +397,19 @@ class PerformanceRegressionTest(TestCase):
         self.module_stats = perf.test_repo_performance()
 
 
-def _record_historical(stats, module_stats, filename='.performance_history'):
+def _record_historical(stats, module_stats, filename=".performance_history"):
     # We don't bother with checking if it's unique or not, since
     # we can just open it in vim and do a sort.
-    with open(filename, 'a') as fout:
-        fout.write('{}\t{}\t{}\t{}\t{}\n'.format(
-            datetime.fromtimestamp(stats.timestamp).isoformat(),
-            mean(stats.times),
-            stdev(stats.times),
-            mean(module_stats.times),
-            stdev(module_stats.times),
-        ))
+    with open(filename, "a") as fout:
+        fout.write(
+            "{}\t{}\t{}\t{}\t{}\n".format(
+                datetime.fromtimestamp(stats.timestamp).isoformat(),
+                mean(stats.times),
+                stdev(stats.times),
+                mean(module_stats.times),
+                stdev(module_stats.times),
+            )
+        )
 
 
 def _main():
@@ -435,16 +421,14 @@ def _main():
         stats = perf.test_golden_performance()
         _write_to_cache(stats)
 
-    module_stats = _read_from_cache('.performance_module_testrun')
-    if (not module_stats
-            or module_stats.is_stale()
-            or not len(module_stats.times)):
+    module_stats = _read_from_cache(".performance_module_testrun")
+    if not module_stats or module_stats.is_stale() or not len(module_stats.times):
         module_stats = perf.test_repo_performance()
-        _write_to_cache(module_stats, '.performance_module_testrun')
+        _write_to_cache(module_stats, ".performance_module_testrun")
     perf.module_stats = module_stats
     _record_historical(stats, module_stats)
     perf.report_stats()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main()

@@ -1,9 +1,8 @@
 """A collection of sphinx docstrings from the wild."""
 import ast
 
-
 FunctionDef = ast.FunctionDef
-if hasattr(ast, 'AsyncFunctionDef'):
+if hasattr(ast, "AsyncFunctionDef"):
     FunctionDef = (ast.FunctionDef, ast.AsyncFunctionDef)
 
 
@@ -252,9 +251,8 @@ def docstrings():
     :rtype: List[str]
 
     """
-    with open(__file__, 'r') as fin:
+    with open(__file__, "r") as fin:
         data = fin.read()
     this_script = ast.parse(data)
-    functions = [x for x in this_script.body
-                 if isinstance(x, FunctionDef)]
+    functions = [x for x in this_script.body if isinstance(x, FunctionDef)]
     return list(map(ast.get_docstring, functions))

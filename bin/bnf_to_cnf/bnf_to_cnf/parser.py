@@ -1,18 +1,10 @@
+from lark import Lark, Tree
 
-from lark import (
-    Lark,
-    Tree,
-)
-
-from .node import (
-    Node,
-    NodeType,
-)
+from .node import Node, NodeType
 
 
 class Parser(object):
-
-    grammar = r'''
+    grammar = r"""
         start: grammar
 
         grammar: imports? external_imports? name? start_expression? production+
@@ -69,7 +61,7 @@ class Parser(object):
 
         _WHITESPACE: (" " | "\n" | "\t")+
         %ignore _WHITESPACE
-    '''  # noqa: E501
+    """  # noqa: E501
 
     def __init__(self):
         self.delegate = Lark(self.grammar)
@@ -92,10 +84,9 @@ class Parser(object):
             A node which is the head of the production (not the grammar.)
 
         """
-        if '\n' in value:
+        if "\n" in value:
             raise Exception(
-                'There should only be a single product, but '
-                'a newline is present.'
+                "There should only be a single product, but " "a newline is present."
             )
         grammar = self.parse(value)
         if grammar.children[0].node_type == NodeType.PRODUCTION:

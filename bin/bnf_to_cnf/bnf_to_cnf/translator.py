@@ -1,33 +1,12 @@
-from collections import (
-    defaultdict,
-    deque,
-)
 import re
-from typing import (
-    Callable,
-    Dict,
-    Iterator,
-    List,
-    Optional,
-    Set,
-    Tuple,
-)
+from collections import defaultdict, deque
+from typing import Callable, Dict, Iterator, List, Optional, Set, Tuple
 
-from .parser import (
-    Parser,
-)
-from .node import (
-    Node,
-    NodeType,
-)
-from .functools import (
-    exists,
-    and_,
-    or_,
-)
+from .functools import and_, exists, or_
+from .node import Node, NodeType
+from .parser import Parser
 
-
-END_DIGIT = re.compile(r'\d+$')
+END_DIGIT = re.compile(r"\d+$")
 
 
 def to_symbol(value: str, count: int = None) -> str:
@@ -44,21 +23,18 @@ def to_symbol(value: str, count: int = None) -> str:
     """
     ret = value
     for not_allowed, allowed in [
-        ('\\"', 'Q'),
-        ('"', ''),
-        ('*', 'A'),
-        ('.', 'P'),
-        (':', 'C'),
-        ('^', 'E'),
-        ('(', 'LP'),
-        (')', 'RP'),
-        ('\\', 'B'),
+        ('\\"', "Q"),
+        ('"', ""),
+        ("*", "A"),
+        (".", "P"),
+        (":", "C"),
+        ("^", "E"),
+        ("(", "LP"),
+        (")", "RP"),
+        ("\\", "B"),
     ]:
         ret = ret.replace(not_allowed, allowed)
-    return ret + (
-        str(count) if count is not None
-        else ''
-    )
+    return ret + (str(count) if count is not None else "")
 
 
 class Translator(object):
@@ -79,15 +55,11 @@ class Translator(object):
         start_value = start_symbol.value
 
         def is_start_node(x):
-            return (
-                x.node_type == NodeType.SYMBOL
-                and x.value.startswith(start_value)
-            )
+            return x.node_type == NodeType.SYMBOL and x.value.startswith(start_value)
 
         def is_start_production(x):
-            return (
-                x.node_type == NodeType.PRODUCTION
-                and exists(x.filter(Node.has_value(start_value)))
+            return x.node_type == NodeType.PRODUCTION and exists(
+                x.filter(Node.has_value(start_value))
             )
 
         # Gather all the symbols that start with "start",
@@ -105,7 +77,7 @@ class Translator(object):
         # Do a linear probe.  There won't be more than one or
         # two, if even that.
         start_suffix = 0
-        while f'{start_value}{start_suffix}' in start_versions:
+        while f"{start_value}{start_suffix}" in start_versions:
             start_suffix += 1
 
         # Rename the "start" symbol on the LHS.
@@ -115,21 +87,23 @@ class Translator(object):
                 parent = production.children.pop(0)
                 annotations.extend(parent.children)
             symbol = production.children[0]
-            symbol.value = f'{start_value}{start_suffix}'
+            symbol.value = f"{start_value}{start_suffix}"
 
         # Rename the "start" symbols on the RHS.
         for seq in tree.filter(lambda x: x.node_type == NodeType.SEQUENCE):
             for symbol in seq.filter(is_start_node):
-                symbol.value = f'{start_value}{start_suffix}'
+                symbol.value = f"{start_value}{start_suffix}"
 
         new_production = Parser().parse_production(
-            f'<{start_value}> ::= <{start_value}{start_suffix}>'
+            f"<{start_value}> ::= <{start_value}{start_suffix}>"
         )
         if annotations:
-            new_production.prepend(Node(
-                node_type=NodeType.ANNOTATIONS,
-                children=annotations,
-            ))
+            new_production.prepend(
+                Node(
+                    node_type=NodeType.ANNOTATIONS,
+                    children=annotations,
+                )
+            )
         tree.prepend(new_production)
 
     def _reassign_nonsolitary_terminals(self, tree: Node):
@@ -152,13 +126,10 @@ class Translator(object):
                 return False
 
             expression = x.children[1]
-            return (
-                exists(expression.filter(
-                    lambda y: y.node_type == NodeType.TERMINAL
-                ))
-                and not exists(expression.filter(
-                    lambda y: y.node_type == NodeType.SYMBOL
-                ))
+            return exists(
+                expression.filter(lambda y: y.node_type == NodeType.TERMINAL)
+            ) and not exists(
+                expression.filter(lambda y: y.node_type == NodeType.SYMBOL)
             )
 
         terminal_symbol_lookup = {
@@ -181,7 +152,7 @@ class Translator(object):
                         i += 1
                     tree.append(
                         Parser().parse_production(
-                            f'<{replacement}> ::= {terminal.value}'
+                            f"<{replacement}> ::= {terminal.value}"
                         )
                     )
                 terminal.value = replacement
@@ -191,20 +162,18 @@ class Translator(object):
         instances = END_DIGIT.findall(value)
         if instances:
             end_digit = instances[0]
-            name = value[:-1 * len(end_digit)]
+            name = value[: -1 * len(end_digit)]
             return name, int(instances[0])
         else:
             return value, 0
 
     def _break_sequences_up(self, grammar: Node, production: Node):
-        has_annotation = (
-            len(production.children) > 0
-            and Node.is_annotations(production.children[0])
+        has_annotation = len(production.children) > 0 and Node.is_annotations(
+            production.children[0]
         )
         assert (
-            (has_annotation and production.children[1].value is not None)
-            or production.children[0].value is not None
-        )
+            has_annotation and production.children[1].value is not None
+        ) or production.children[0].value is not None
         assert Node.is_production(production)
         if has_annotation:
             symbol = production.children[1]
@@ -214,14 +183,11 @@ class Translator(object):
         for sequence in production.filter(Node.is_sequence):
             if len(sequence.children) <= 2:
                 continue
-            while grammar.defines(f'{name}{i}'):
+            while grammar.defines(f"{name}{i}"):
                 i += 1
             new_children = [
                 sequence.children[0],
-                Node(
-                    NodeType.SYMBOL,
-                    value=f'{name}{i}'
-                )
+                Node(NodeType.SYMBOL, value=f"{name}{i}"),
             ]
             old_children = sequence.children[1:]
             sequence.children = new_children
@@ -232,17 +198,11 @@ class Translator(object):
                         NodeType.SEQUENCE,
                         children=old_children,
                     )
-                ]
+                ],
             )
             new_production = Node(
                 NodeType.PRODUCTION,
-                children=[
-                    Node(
-                        NodeType.SYMBOL,
-                        value=f'{name}{i}'
-                    ),
-                    new_sequence
-                ]
+                children=[Node(NodeType.SYMBOL, value=f"{name}{i}"), new_sequence],
             )
             grammar.append(new_production)
 
@@ -269,12 +229,11 @@ class Translator(object):
             return Node.is_expression(x) and not x.children
 
         def _production_is_empty(x: Node) -> bool:
-            return (
-                Node.is_production(x)
-                and all([
+            return Node.is_production(x) and all(
+                [
                     _expression_is_empty(expression)
                     for expression in x.filter(Node.is_expression)
-                ])
+                ]
             )
 
         # This could be far more efficient by doing a BFS,
@@ -282,9 +241,7 @@ class Translator(object):
         tree.remove(_sequence_is_empty)
         tree.remove(_production_is_empty)
 
-    def _get_symbol_production_lookup(self,
-                                      tree: Node
-                                      ) -> Dict[str, List[Node]]:
+    def _get_symbol_production_lookup(self, tree: Node) -> Dict[str, List[Node]]:
         lookup = dict()  # type: Dict[str, List[Node]]
         for production in tree.filter(Node.is_production):
             for symbol in production.filter(Node.is_symbol):
@@ -307,6 +264,7 @@ class Translator(object):
             including the original sequence.
 
         """
+
         def from_bitmask(mask: int) -> Node:
             i = len(sequence.children) - 1
             mask_index = 0
@@ -330,10 +288,12 @@ class Translator(object):
             # Re-add an epsilon if it's otherwise empty.
             is_empty = len(new_sequence.children) == 0
             if is_empty:
-                new_sequence.children.append(Node(
-                    node_type=NodeType.SYMBOL,
-                    value='ε',
-                ))
+                new_sequence.children.append(
+                    Node(
+                        node_type=NodeType.SYMBOL,
+                        value="ε",
+                    )
+                )
 
             return new_sequence
 
@@ -351,22 +311,19 @@ class Translator(object):
             Whether the grammar was updated or not.
 
         """
+
         def is_epsilon_rule(x: Node) -> bool:
-            return exists(x.filter(lambda y: y.value == 'ε'))
+            return exists(x.filter(lambda y: y.value == "ε"))
 
         updated = False
 
         replacement_candidates = set()  # Set[str]
 
-        for production in tree.filter(and_(
-            Node.is_production, is_epsilon_rule
-        )):
+        for production in tree.filter(and_(Node.is_production, is_epsilon_rule)):
             updated = True
 
             # Remove the epsilon sequence
-            production.children[1].remove(and_(
-                Node.is_sequence, is_epsilon_rule
-            ))
+            production.children[1].remove(and_(Node.is_sequence, is_epsilon_rule))
 
             # Register to replace the symbol, or remove the production
             # entirely. (It is either empty, or represents optional values.)
@@ -377,10 +334,9 @@ class Translator(object):
                 replacement_candidates.add(symbol)
             else:
                 # TODO: Remove symbol from all sequences?
-                tree.remove(and_(
-                    Node.is_production,
-                    lambda x: x.children[0].value == symbol
-                ))
+                tree.remove(
+                    and_(Node.is_production, lambda x: x.children[0].value == symbol)
+                )
 
         production_lookup = self._get_symbol_production_lookup(tree)
 
@@ -388,12 +344,10 @@ class Translator(object):
         # occurrence, it could be present, or it could be absent.)
         for symbol in replacement_candidates:
             for production in production_lookup[symbol]:
-                for sequence in production.filter(and_(
-                    Node.is_sequence, Node.has_symbol(symbol)
-                )):
-                    for new_sequence in self._permute_sequence(
-                        sequence, symbol
-                    ):
+                for sequence in production.filter(
+                    and_(Node.is_sequence, Node.has_symbol(symbol))
+                ):
+                    for new_sequence in self._permute_sequence(sequence, symbol):
                         production.children[1].children.append(new_sequence)
 
         # Remove any productions which have empty expressions.
@@ -401,9 +355,7 @@ class Translator(object):
 
         return updated
 
-    def _expand_reachability(self,
-                             graph: Dict[str, Set[str]]
-                             ) -> Dict[str, Set[str]]:
+    def _expand_reachability(self, graph: Dict[str, Set[str]]) -> Dict[str, Set[str]]:
         """Get a lookup of nodes to reachable nodes.
 
         Args:
@@ -413,6 +365,7 @@ class Translator(object):
             A lookup from node to the reachable set of nodes.
 
         """
+
         def _bfs(node: str) -> Set[str]:
             queue = deque([node])
             encountered = set()
@@ -425,16 +378,15 @@ class Translator(object):
                     queue.appendleft(child)
             return encountered - {node}
 
-        return {
-            node: _bfs(node)
-            for node in list(graph.keys())
-        }
+        return {node: _bfs(node) for node in list(graph.keys())}
 
     def _get_definition_lookup(self, tree: Node) -> Dict[str, Node]:
         return {
-            (node.children[1].value or ''
-             if Node.has_annotation(node)
-             else node.children[0].value or ''): node
+            (
+                node.children[1].value or ""
+                if Node.has_annotation(node)
+                else node.children[0].value or ""
+            ): node
             for node in tree.filter(Node.is_production)
         }
 
@@ -482,6 +434,7 @@ class Translator(object):
                     Simplify(p.lhs)
 
         """
+
         def is_unit_sequence(x: Node) -> bool:
             if Node.has_annotation(x):
                 return (
@@ -561,18 +514,13 @@ class Translator(object):
                 graph[symbol] = set()
 
             expression = next(production.filter(Node.is_expression))
-            for child in expression.filter(
-                or_(Node.is_symbol, Node.is_terminal)
-            ):
+            for child in expression.filter(or_(Node.is_symbol, Node.is_terminal)):
                 assert child.value is not None
                 graph[symbol].add(child.value)
 
         return graph
 
-    def _remove_unused_productions(self,
-                                   tree: Node,
-                                   start_symbol: Optional[Node]
-                                   ):
+    def _remove_unused_productions(self, tree: Node, start_symbol: Optional[Node]):
         # Only simplify if the starting symbol is present,
         # since other grammars will not be used except for
         # experimenting, anyway.
@@ -607,7 +555,7 @@ class Translator(object):
 
     def _remove_start_symbol(self, tree: Node) -> Optional[Node]:
         symbols = list(tree.filter(Node.is_start))
-        assert len(symbols) <= 1, 'There should only be one start.'
+        assert len(symbols) <= 1, "There should only be one start."
         if len(symbols) == 0:
             return None
         else:
@@ -619,8 +567,7 @@ class Translator(object):
         if start_symbol:
             tree.children.insert(0, start_symbol)
 
-    def _remove_non_fruitful_branches(self, tree: Node,
-                                      start_symbol: Optional[Node]):
+    def _remove_non_fruitful_branches(self, tree: Node, start_symbol: Optional[Node]):
         # This is very inefficient, but seems to work well enough
         # in practice.  Ideally, this would be O(n) or something.
         if not start_symbol:
@@ -657,14 +604,18 @@ class Translator(object):
 
             changed = False
             # Remove all sequences where the children are nonfruitful.
-            changed |= tree.remove(lambda x: Node.is_sequence(x) and all([
-                y.value in nonfruitful for y in x.filter(Node.is_symbol)]))
+            changed |= tree.remove(
+                lambda x: Node.is_sequence(x)
+                and all([y.value in nonfruitful for y in x.filter(Node.is_symbol)])
+            )
 
             # Remove all empty productions.
             changed |= tree.remove(
-                lambda x: Node.is_production(x) and not (list(
-                    x.filter(Node.is_sequence)) or list(
-                        x.filter(Node.is_terminal))))
+                lambda x: Node.is_production(x)
+                and not (
+                    list(x.filter(Node.is_sequence)) or list(x.filter(Node.is_terminal))
+                )
+            )
 
     def translate(self, tree: Node) -> Node:
         start_symbol = self._remove_start_symbol(tree)
@@ -681,7 +632,7 @@ class Translator(object):
             max_iterations -= 1
 
         if max_iterations == 0:
-            raise Exception('Reached maximum epsilon expansion.')
+            raise Exception("Reached maximum epsilon expansion.")
 
         self._eliminate_unit_productions(tree)
 

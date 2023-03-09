@@ -1,19 +1,12 @@
 """Defines a base class far describing grammars."""
 
 import abc
-from typing import (  # noqa: F401
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import Any, Dict, List, Optional, Tuple, Union  # noqa: F401
 
 from ..custom_assert import Assert
 from ..token import TokenType
 
-Annotation = Any # TODO(000): This should actually be Union[Identifier, DarglintError]
+Annotation = Any  # TODO(000): This should actually be Union[Identifier, DarglintError]
 NonTerminalDerivation = Tuple[List[Annotation], str, str, int]
 TerminalDerivation = Tuple[TokenType, int]
 Derivation = Union[NonTerminalDerivation, TerminalDerivation]
@@ -49,7 +42,6 @@ P = Production
 
 
 class BaseGrammar(abc.ABC):
-
     @property
     @abc.abstractmethod
     def productions(self):
@@ -70,10 +62,7 @@ class BaseGrammar(abc.ABC):
         # We have to tell the type checker that productions is, in fact,
         # a list, since enumerate actually takes a wider type (Iterable),
         # and it gets confused.
-        Assert(
-            isinstance(cls.productions, list),
-            'Expected productions to be a list.'
-        )
+        Assert(isinstance(cls.productions, list), "Expected productions to be a list.")
         if not isinstance(cls.productions, list):
             return dict()
         for i, production in enumerate(cls.productions):
@@ -86,7 +75,7 @@ class BaseGrammar(abc.ABC):
         # () -> str
 
         def normalize(name):
-            return name.replace('-', '_').replace('.', '_')
+            return name.replace("-", "_").replace(".", "_")
 
         def interpolate(curr, max_weight):
             min_color = (200, 200, 200)
@@ -97,13 +86,11 @@ class BaseGrammar(abc.ABC):
             )
 
         def to_hex(color):
-            return '#{}{}{}'.format(*[
-                format(x, '02x') for x in color
-            ])
+            return "#{}{}{}".format(*[format(x, "02x") for x in color])
 
         start = cls.start
         if not start:
-            return ''
+            return ""
 
         max_weight = 0
         for production in cls.productions:
@@ -113,57 +100,50 @@ class BaseGrammar(abc.ABC):
                         max_weight = derivation[-1]
 
         join_count = 0
-        ret = 'digraph G {\n'
+        ret = "digraph G {\n"
         for production in cls.productions:
             lhs = normalize(production.lhs)
             for derivation in production.rhs:
                 if len(derivation) == 2:
                     rhs = normalize(str(derivation[0]))
                     color = to_hex(interpolate(0, max_weight))
-                    ret += (
-                        '  {} -> {} [color="{}"];\n\n'.format(
-                            lhs,
-                            rhs,
-                            color,
-                        )
+                    ret += '  {} -> {} [color="{}"];\n\n'.format(
+                        lhs,
+                        rhs,
+                        color,
                     )
                 elif len(derivation) == 4:
                     weight = derivation[-1]
                     color = to_hex(interpolate(weight, max_weight))
-                    join_node = '_join{}'.format(join_count)
+                    join_node = "_join{}".format(join_count)
                     join_count += 1
                     annotations = [x.__name__ for x in derivation[0]]
                     if annotations:
-                        node_color = '#c8e6c9'
-                        if any(['error' in x.lower() for x in annotations]):
-                            node_color = '#ffcdd2'
+                        node_color = "#c8e6c9"
+                        if any(["error" in x.lower() for x in annotations]):
+                            node_color = "#ffcdd2"
                         ret += (
                             '  {} [label="{}", shape="rect", '
                             'style="filled", fillcolor="{}"]\n'
                         ).format(
                             join_node,
-                            '\\n'.join(annotations),
+                            "\\n".join(annotations),
                             node_color,
                         )
                     else:
                         ret += (
-                            '  {} [label="", color="none", '
-                            'height="0", width="0"];\n'
+                            '  {} [label="", color="none", ' 'height="0", width="0"];\n'
                         ).format(join_node)
-                    ret += (
-                        '  {} -> {} [arrowhead="none", color="{}"];\n'
-                    ).format(
+                    ret += ('  {} -> {} [arrowhead="none", color="{}"];\n').format(
                         lhs,
                         join_node,
                         color,
                     )
-                    ret += (
-                        '  {} -> {{ {}, {} }} [color="{}"];\n\n'
-                    ).format(
+                    ret += ('  {} -> {{ {}, {} }} [color="{}"];\n\n').format(
                         join_node,
                         normalize(derivation[1]),
                         normalize(derivation[2]),
                         color,
                     )
-        ret += '}'
+        ret += "}"
         return ret

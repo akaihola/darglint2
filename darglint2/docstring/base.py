@@ -1,17 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import (
-    ClassVar,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-    Iterable,
-)
+from typing import Callable, ClassVar, Dict, Iterable, List, Optional, Tuple, Union
 
-from .sections import Sections
 from ..strictness import Strictness
+from .sections import Sections
 
 
 class BaseDocstring(ABC):
@@ -25,7 +16,7 @@ class BaseDocstring(ABC):
 
     """
 
-    supported_sections = tuple(Sections) # type: ClassVar[Tuple[Sections, ...]]
+    supported_sections = tuple(Sections)  # type: ClassVar[Tuple[Sections, ...]]
 
     @abstractmethod
     def get_section(self, section):
@@ -142,9 +133,7 @@ class BaseDocstring(ABC):
 
         """
         sections = {
-            section
-            for section in self.supported_sections
-            if self.get_section(section)
+            section for section in self.supported_sections if self.get_section(section)
         }
         if strictness == Strictness.SHORT_DESCRIPTION:
             return sections == {Sections.SHORT_DESCRIPTION}

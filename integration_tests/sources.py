@@ -1,27 +1,22 @@
-from unittest import TestCase
 import subprocess
+from unittest import TestCase
 
 
 class SourceFileTestCase(TestCase):
-
     def assertWorks(self, filename):
-        proc = subprocess.run([
-            "darglint2", filename
-        ])
+        proc = subprocess.run(["darglint2", filename])
         self.assertTrue(
             proc.returncode in {0, 1},
-            'Expected error code 0 or 1, but got {} for {}'.format(
+            "Expected error code 0 or 1, but got {} for {}".format(
                 proc.returncode,
                 filename,
-            )
+            ),
         )
 
     def test_encoding_works(self):
         for encoding in [
-            'ascii',
-            'utf8',
-            'latin1',
+            "ascii",
+            "utf8",
+            "latin1",
         ]:
-            self.assertWorks('integration_tests/files/example-{}.py'.format(
-                encoding
-            ))
+            self.assertWorks("integration_tests/files/example-{}.py".format(encoding))

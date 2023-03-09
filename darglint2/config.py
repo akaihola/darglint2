@@ -8,18 +8,11 @@ updated only prior to spawning any threads.
 """
 
 import configparser
-from enum import Enum
 import logging
-from logging import (  # noqa
-    Logger,
-)
 import os
-
-from typing import (  # noqa
-    Iterable,
-    List,
-    Optional,
-)
+from enum import Enum
+from logging import Logger  # noqa
+from typing import Iterable, List, Optional  # noqa
 
 from .docstring.style import DocstringStyle
 from .strictness import Strictness
@@ -37,16 +30,17 @@ def get_logger():  # type: () -> Logger
 
 POSSIBLE_CONFIG_FILENAMES = (
     ".darglint2",
-    '.darglint',
-    'setup.cfg',
-    'tox.ini',
+    ".darglint",
+    "setup.cfg",
+    "tox.ini",
 )
 
-DEFAULT_DISABLED = {'DAR104'}
+DEFAULT_DISABLED = {"DAR104"}
 
 
 class AssertStyle(Enum):
     """Describes how to handle assertions."""
+
     RAISE = 1
     LOG = 2
 
@@ -60,6 +54,7 @@ class LogLevel(Enum):
     as other options.
 
     """
+
     CRITICAL = logging.CRITICAL
     ERROR = logging.ERROR
     WARNING = logging.WARNING
@@ -70,28 +65,35 @@ class LogLevel(Enum):
     def from_string(cls, level):
         # type: (str) -> LogLevel
         normalized_level = level.lower().strip()
-        if normalized_level == 'critical':
+        if normalized_level == "critical":
             return cls.CRITICAL
-        elif normalized_level == 'error':
+        elif normalized_level == "error":
             return cls.ERROR
-        elif normalized_level == 'warning':
+        elif normalized_level == "warning":
             return cls.WARNING
-        elif normalized_level == 'info':
+        elif normalized_level == "info":
             return cls.INFO
-        elif normalized_level == 'debug':
+        elif normalized_level == "debug":
             return cls.DEBUG
         else:
-            raise ValueError('Unrecognized log level, "{}"'.format(
-                level
-            ))
+            raise ValueError('Unrecognized log level, "{}"'.format(level))
 
 
 class Configuration(object):
-
-    def __init__(self, ignore, message_template, style, strictness,
-                 ignore_regex=None, ignore_raise=[], ignore_properties=False, enable=[],
-                 indentation=4, assert_style=AssertStyle.LOG,
-                 log_level=LogLevel.CRITICAL):
+    def __init__(
+        self,
+        ignore,
+        message_template,
+        style,
+        strictness,
+        ignore_regex=None,
+        ignore_raise=[],
+        ignore_properties=False,
+        enable=[],
+        indentation=4,
+        assert_style=AssertStyle.LOG,
+        log_level=LogLevel.CRITICAL,
+    ):
         # type: (List[str], Optional[str], DocstringStyle, Strictness, Optional[str], List[str], bool, List[str], int, AssertStyle, LogLevel) -> None  # noqa: E501
         """Initialize the configuration object.
 
@@ -139,15 +141,17 @@ class Configuration(object):
 
     def __str__(self):
         # type: () -> str
-        return '\n'.join([
-            'message_template={message_template}',
-            'style={style}',
-            'strictness={strictness}',
-            'indentation={indentation}',
-            'ignore={errors_to_ignore}',
-            'ignore_regex={ignore_regex}',
-            'ignore_raise={ignore_raise}',
-        ]).format(**self.__dict__)
+        return "\n".join(
+            [
+                "message_template={message_template}",
+                "style={style}",
+                "strictness={strictness}",
+                "indentation={indentation}",
+                "ignore={errors_to_ignore}",
+                "ignore_regex={ignore_regex}",
+                "ignore_raise={ignore_raise}",
+            ]
+        ).format(**self.__dict__)
 
     @classmethod
     def get_default_instance(cls):
@@ -224,11 +228,11 @@ def load_config_file(filename):  # type: (str) -> Configuration
     if "darglint2" in config.sections():
         if "ignore" in config["darglint2"]:
             errors = config["darglint2"]["ignore"]
-            for error in errors.split(','):
+            for error in errors.split(","):
                 ignore.append(error.strip())
         if "enable" in config["darglint2"]:
             to_enable = config["darglint2"]["enable"]
-            for error in to_enable.split(','):
+            for error in to_enable.split(","):
                 enable.append(error.strip())
         if "message_template" in config["darglint2"]:
             message_template = config["darglint2"]["message_template"]
@@ -236,7 +240,7 @@ def load_config_file(filename):  # type: (str) -> Configuration
             ignore_regex = config["darglint2"]["ignore_regex"]
         if "ignore_raise" in config["darglint2"]:
             to_ignore_raise = config["darglint2"]["ignore_raise"]
-            for exception in to_ignore_raise.split(','):
+            for exception in to_ignore_raise.split(","):
                 ignore_raise.append(exception.strip())
         if "ignore_properties" in config["darglint2"]:
             ignore_properties = bool(config["darglint2"]["ignore_properties"])
@@ -253,8 +257,8 @@ def load_config_file(filename):  # type: (str) -> Configuration
                 indentation = int(config["darglint2"]["indentation"])
             except ValueError:
                 raise Exception(
-                    'Unrecognized value for indentation.  Expected '
-                    'a non-zero, positive integer, but received {}'.format(
+                    "Unrecognized value for indentation.  Expected "
+                    "a non-zero, positive integer, but received {}".format(
                         config["darglint2"]["indentation"]
                     )
                 )
@@ -319,9 +323,9 @@ def find_config_file_in_path(path):  # type: (str) -> Optional[str]
                 if "darglint2" in config.sections():
                     return fully_qualified_path
             except configparser.ParsingError:
-                get_logger().error('Unable to parse file {}'.format(
-                    fully_qualified_path
-                ))
+                get_logger().error(
+                    "Unable to parse file {}".format(fully_qualified_path)
+                )
     return None
 
 

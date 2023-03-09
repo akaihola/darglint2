@@ -1,28 +1,18 @@
 """The entry point for flake8."""
 
 import ast  # noqa
-from typing import (  # noqa
-    Iterator,
-    Tuple,
-)
+from typing import Iterator, Tuple  # noqa
 
+from .config import Configuration, get_config
 from .docstring.style import DocstringStyle
-from .function_description import (
-    get_function_descriptions,
-)
+from .function_description import get_function_descriptions
 from .integrity_checker import IntegrityChecker
-from .config import (
-    Configuration,
-    get_config,
-)
 from .strictness import Strictness
-
 
 __version__ = "1.8.2"
 
 
 class DarglintChecker(object):
-
     name = "flake8-darglint2"
     version = __version__
     config = get_config()
@@ -34,7 +24,7 @@ class DarglintChecker(object):
 
     def run(self):
         # type: () -> Iterator[Tuple[int, int, str, type]]
-        if '*' in self.config.ignore:
+        if "*" in self.config.ignore:
             return
 
         # Remember the last line number, so that if there is an
@@ -50,10 +40,7 @@ class DarglintChecker(object):
             for function in functions:
                 checker.run_checks(function)
 
-            error_report = checker.get_error_report(
-                self.verbosity,
-                self.filename
-            )
+            error_report = checker.get_error_report(self.verbosity, self.filename)
             for line, col, msg in error_report.flake8_report():
                 last_line = line
                 yield (line, col, msg, type(self))
@@ -63,7 +50,7 @@ class DarglintChecker(object):
                 last_line,
                 0,
                 "DAR000: Unexpected exception in darglint2: " + str(ex),
-                type(self)
+                type(self),
             )
 
     @classmethod
@@ -71,24 +58,24 @@ class DarglintChecker(object):
         defaults = cls.config
 
         option_manager.add_option(
-            '--docstring-style',
+            "--docstring-style",
             default=defaults.style.name,
             parse_from_config=True,
             help="Docstring style to use for Darglint2",
         )
 
         option_manager.add_option(
-            '--strictness',
+            "--strictness",
             default=defaults.strictness.name,
             parse_from_config=True,
             help="Strictness level to use for Darglint2",
         )
 
         option_manager.add_option(
-            '--darglint2-ignore-regex',
+            "--darglint2-ignore-regex",
             type=str,
             help=(
-                'Methods/function names matching this regex will be skipped '
+                "Methods/function names matching this regex will be skipped "
                 "by Darglint2 during analysis."
             ),
         )

@@ -12,14 +12,9 @@ produce the CNF of the grammar from the modified tree.
 
 """
 import re
-from typing import (
-    List,
-)
+from typing import List
 
-from .node import (
-    Node,
-    NodeType,
-)
+from .node import Node, NodeType
 
 
 class ValidationError(Exception):
@@ -53,9 +48,9 @@ class Validator(object):
         return False
 
     def _validate_sequence(self, sequence: Node) -> bool:
-        assert sequence.node_type == NodeType.SEQUENCE, (
-            f'"{sequence}" is not a Sequence'
-        )
+        assert (
+            sequence.node_type == NodeType.SEQUENCE
+        ), f'"{sequence}" is not a Sequence'
         assert len(sequence.children) > 0
         if len(sequence.children) == 1:
             if sequence.children[0].node_type != NodeType.TERMINAL:
@@ -63,13 +58,9 @@ class Validator(object):
                     f'"{sequence}" has only one node: it should be terminal.'
                 )
         elif len(sequence.children) == 2:
-            if not all([
-                x.node_type == NodeType.SYMBOL
-                for x in sequence.children
-            ]):
+            if not all([x.node_type == NodeType.SYMBOL for x in sequence.children]):
                 return self._wrap(
-                    f'"{sequence}" has two nodes: they should '
-                    f'be non-terminals.'
+                    f'"{sequence}" has two nodes: they should ' f"be non-terminals."
                 )
         else:
             return self._wrap(f'"{sequence} has more than 3 token on the RHS.')
@@ -89,7 +80,7 @@ class Validator(object):
         return _import.value is not None
 
     def _validate_name(self, name: Node) -> bool:
-        name_pattern = re.compile(r'\w+')
+        name_pattern = re.compile(r"\w+")
         if name.value is None:
             return False
         return name_pattern.fullmatch(name.value) is not None

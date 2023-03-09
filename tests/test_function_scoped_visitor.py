@@ -1,31 +1,20 @@
 import ast
-from unittest import (
-    TestCase,
-)
-from darglint2.analysis.return_visitor import (
-    ReturnVisitor,
-)
-from darglint2.analysis.function_scoped_visitor import (
-    FunctionScopedVisitorMixin,
-)
-from darglint2.analysis.argument_visitor import (
-    ArgumentVisitor,
-)
-from .utils import (
-    reindent,
-)
+from unittest import TestCase
+
+from darglint2.analysis.argument_visitor import ArgumentVisitor
+from darglint2.analysis.function_scoped_visitor import FunctionScopedVisitorMixin
+from darglint2.analysis.return_visitor import ReturnVisitor
+
+from .utils import reindent
 
 
 class ScopedReturnAndArgumentVisitor(
-    FunctionScopedVisitorMixin,
-    ArgumentVisitor,
-    ReturnVisitor
+    FunctionScopedVisitorMixin, ArgumentVisitor, ReturnVisitor
 ):
     pass
 
 
 class FunctionScopedVisitorMixinTests(TestCase):
-
     def assertArgsFound(self, program, *args):
         """Assert that the given arguments were present.
 
@@ -78,16 +67,16 @@ class FunctionScopedVisitorMixinTests(TestCase):
         return visitor
 
     def test_nested_return(self):
-        program = r'''
+        program = r"""
             def f():
                 def g():
                     return 'Hello nesting!'
                 print(g())
-        '''
+        """
         self.assertNoReturnFound(program)
 
     def test_deeply_nested_return(self):
-        program = r'''
+        program = r"""
             def f():
                 def g():
                     def h():
@@ -96,7 +85,7 @@ class FunctionScopedVisitorMixinTests(TestCase):
                         print(i())
                     h()
                 g()
-        '''
+        """
         self.assertNoReturnFound(program)
 
     def test_only_outermost_captured(self):
@@ -110,38 +99,37 @@ class FunctionScopedVisitorMixinTests(TestCase):
         recursive.  Also, it will allow us to ignore nesting if we want.
 
         """
-        program = r'''
+        program = r"""
             def f():
                 def g():
                     return 3
                 yield g()
-        '''
+        """
         self.assertNoReturnFound(program)
 
     def test_outer_async_function_captured(self):
-        program = r'''
+        program = r"""
             async def f():
                 return 3
-        '''
+        """
         self.assertReturnFound(program)
 
     def test_inner_async_skipped(self):
-        program = r'''
+        program = r"""
             async def f():
                 async def g():
                     return 3
                 yield await g()
-        '''
+        """
         self.assertNoReturnFound(program)
 
     def test_lambda_forms_scope(self):
         """A lambda must form its own scope, to prevent leaking into parent."""
-        program = r'''
+        program = r"""
             def f(xs):
                 ys = copy(xs)
                 ys.sort(key=lambda x: x[0])
                 return ys
-        '''
+        """
         self.assertReturnFound(program)
-        self.assertArgsFound(program, 'xs')
-
+        self.assertArgsFound(program, "xs")

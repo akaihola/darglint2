@@ -1,42 +1,20 @@
 import inspect
-from typing import (
-    List,
-)
-from functools import (
-    reduce,
-)
+from functools import reduce
+from typing import List
 
 from ..custom_assert import Assert
-from ..token import (
-    Token,
-    TokenType,
-    KEYWORDS,
-)
-from .cyk import (
-    parse as cyk_parse,
-)
-from ..node import (
-    CykNode,
-)
-
-from .combinator import (
-    parser_combinator,
-)
-from .long_description import (
-    parse as long_description_parse,
-)
-
+from ..node import CykNode
+from ..token import KEYWORDS, Token, TokenType
+from .combinator import parser_combinator
+from .cyk import parse as cyk_parse
 from .grammars.google_arguments_section import ArgumentsGrammar
 from .grammars.google_raises_section import RaisesGrammar
 from .grammars.google_returns_section import ReturnsGrammar
-from .grammars.google_returns_section_without_type import (
-    ReturnsWithoutTypeGrammar,
-)
+from .grammars.google_returns_section_without_type import ReturnsWithoutTypeGrammar
 from .grammars.google_short_description import ShortDescriptionGrammar
 from .grammars.google_yields_section import YieldsGrammar
-from .grammars.google_yields_section_without_type import (
-    YieldsWithoutTypeGrammar,
-)
+from .grammars.google_yields_section_without_type import YieldsWithoutTypeGrammar
+from .long_description import parse as long_description_parse
 
 
 def _get_split_end_with_indents(tokens, i):
@@ -72,9 +50,7 @@ def _get_split_end_with_indents(tokens, i):
 
     # Back up so that we don't remove indents on the same line as
     # the encountered text.
-    while (j < len(tokens)
-            and j > 1
-            and tokens[j - 1].token_type == TokenType.INDENT):
+    while j < len(tokens) and j > 1 and tokens[j - 1].token_type == TokenType.INDENT:
         j -= 1
 
     # TODO: Do we want to check for keywords before assuming a
@@ -91,9 +67,11 @@ def _get_split_end_with_indents(tokens, i):
     # If there were not 2+ newlines in a row, (i.e. there were
     # indented lines in with these), then it's only a new section
     # if it starts with a keyword.
-    if (j < len(tokens)
-            and tokens[j].token_type in KEYWORDS
-            and tokens[j - 1].token_type == TokenType.NEWLINE):
+    if (
+        j < len(tokens)
+        and tokens[j].token_type in KEYWORDS
+        and tokens[j - 1].token_type == TokenType.NEWLINE
+    ):
         return j
 
     return 0
@@ -112,9 +90,7 @@ def top_parse(tokens):
         split_end = _get_split_end_with_indents(tokens, curr)
         if split_end > curr:
             if tokens[prev:curr]:
-                all_sections.append(
-                    tokens[prev:curr]
-                )
+                all_sections.append(tokens[prev:curr])
             curr = split_end
             prev = curr
         else:
@@ -160,7 +136,7 @@ def _match(token):
 
 
 def lookup(section, section_index=-1):
-    Assert(len(section) > 0, 'Expected non-empty section.')
+    Assert(len(section) > 0, "Expected non-empty section.")
     grammars = _match(section[0])
     if section_index == 0:
         return [ShortDescriptionGrammar] + grammars
@@ -171,21 +147,22 @@ def combinator(*args):
     def inner(*nodes):
         if len(nodes) == 1:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
             )
         elif len(nodes) == 2:
             return CykNode(
-                symbol='docstring',
+                symbol="docstring",
                 lchild=nodes[0],
                 rchild=nodes[1],
             )
+
     if args:
         return reduce(inner, args)
     else:
         # The arguments are empty, so we return an
         # empty docstring.
-        return CykNode(symbol='docstring')
+        return CykNode(symbol="docstring")
 
 
 def parse(tokens):
@@ -195,4 +172,5 @@ def parse(tokens):
                 yield lambda x: cyk_parse(grammar, x)
             else:
                 yield grammar
+
     return parser_combinator(top_parse, mapped_lookup, combinator, tokens)

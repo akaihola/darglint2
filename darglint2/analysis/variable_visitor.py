@@ -1,13 +1,8 @@
 import ast
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any, Dict, List
 
 
 class VariableVisitor(ast.NodeVisitor):
-
     def __init__(self, *args, **kwargs):
         # type: (Any, Any) -> None
 
@@ -19,6 +14,6 @@ class VariableVisitor(ast.NodeVisitor):
         # type: (ast.Name) -> ast.AST
         # Only gather names during assignment.  Others are unnecessary,
         # and could be from a different context.
-        if hasattr(node, 'ctx') and isinstance(node.ctx, ast.Store):
+        if hasattr(node, "ctx") and isinstance(node.ctx, ast.Store):
             self.variables.append(node)
         return self.generic_visit(node)

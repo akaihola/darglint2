@@ -1,197 +1,182 @@
 """Defines the command line interface for darglint2."""
 import argparse
 import ast
+import inspect
 import pathlib
 import sys
-import inspect
+from typing import List
 
-from typing import (
-    List,
-)
-
-from .function_description import (
-    read_program,
-    get_function_descriptions,
-)
-from .integrity_checker import IntegrityChecker
-from .config import (
-    get_config,
-    get_logger,
-    LogLevel,
-)
-from .docstring.style import DocstringStyle
-from .strictness import Strictness
 import darglint2.errors
 from darglint2.error_report import ErrorReport
 
+from .config import LogLevel, get_config, get_logger
+from .docstring.style import DocstringStyle
+from .function_description import get_function_descriptions, read_program
+from .integrity_checker import IntegrityChecker
+from .strictness import Strictness
 
 # ---------------------- ARGUMENT PARSER -----------------------------
 
-parser = argparse.ArgumentParser(description='Check docstring validity.')
+parser = argparse.ArgumentParser(description="Check docstring validity.")
 parser.add_argument(
-    '--message-template',
-    '-m',
+    "--message-template",
+    "-m",
     type=str,
     help=(
-        'Specify a message template.  This is a Python format string '
-        'describing errors, which can access the following attributes:\n'
-        '    line: The line number,\n'
-        '    msg: The error message,\n'
-        '    msg_id: The error code,\n'
-        '    obj: The function/method name,\n'
-        '    path: The relative file path.\n'
+        "Specify a message template.  This is a Python format string "
+        "describing errors, which can access the following attributes:\n"
+        "    line: The line number,\n"
+        "    msg: The error message,\n"
+        "    msg_id: The error code,\n"
+        "    obj: The function/method name,\n"
+        "    path: The relative file path.\n"
     ),
 )
 parser.add_argument(
-    '--ignore-regex',
-    '-i',
+    "--ignore-regex",
+    "-i",
     type=str,
     help=(
-        'Methods/function names matching this regex will be skipped '
-        'during analysis.'
+        "Methods/function names matching this regex will be skipped " "during analysis."
     ),
 )
 parser.add_argument(
-    '--ignore-raise',
-    '-c',
+    "--ignore-raise",
+    "-c",
     type=str,
     help=(
-        'Exceptions that don\'t need to be documented in docstrings. '
+        "Exceptions that don't need to be documented in docstrings. "
         'Accepts a comma-separated list. E.g.: "ValueError,MyCustomError"'
     ),
 )
 parser.add_argument(
-    '--ignore-properties',
-    '-p',
+    "--ignore-properties",
+    "-p",
     action="store_true",
     default=False,
     help="Class property methods will be ignored by darglint2",
 )
 parser.add_argument(
-    '--raise-syntax',
-    action='store_true',
+    "--raise-syntax",
+    action="store_true",
     help=(
-        'When a docstring is incorrectly formatted, raise an exception '
+        "When a docstring is incorrectly formatted, raise an exception "
         "rather than storing the error.  Useful for debugging darglint2."
     ),
 )
 parser.add_argument(
-    '--verbosity',
-    '-v',
+    "--verbosity",
+    "-v",
     default=1,
     type=int,
     choices=[1, 2],
-    help='The level of verbosity.',
+    help="The level of verbosity.",
 )
 parser.add_argument(
-    '--version',
-    action='store_true',
+    "--version",
+    action="store_true",
+    help=("Return the current version number of darglint2."),
+)
+parser.add_argument(
+    "files",
+    nargs="*",
     help=(
-        "Return the current version number of darglint2."
+        'The python source files to check. If "-" is given, then stdin will ' "be read."
     ),
 )
 parser.add_argument(
-    'files',
-    nargs='*',
-    help=(
-        'The python source files to check. If "-" is given, then stdin will '
-        'be read.'
-    ),
-)
-parser.add_argument(
-    '--no-exit-code',
-    '-x',
-    action='store_true',
+    "--no-exit-code",
+    "-x",
+    action="store_true",
     help=(
         "Exit with status 0, even on errors.  By default, darglint2 "
-        'exits with status 1 when errors are encountered.  Giving '
-        'this flag prevents that.  Useful when invocating with xargs '
-        'and you want to see all errors.  '
+        "exits with status 1 when errors are encountered.  Giving "
+        "this flag prevents that.  Useful when invocating with xargs "
+        "and you want to see all errors.  "
         'Ex: `find . -name "*.py" | xargs darglint2 -x`'
     ),
 )
 parser.add_argument(
-    '--list-errors',
-    action='store_true',
-    help=(
-        'Print a list of error codes and what they represent.'
-    )
+    "--list-errors",
+    action="store_true",
+    help=("Print a list of error codes and what they represent."),
 )
 parser.add_argument(
-    '-s',
-    '--docstring-style',
+    "-s",
+    "--docstring-style",
     default=None,
-    choices=['google', 'sphinx', 'numpy'],
+    choices=["google", "sphinx", "numpy"],
     help=(
-        'The docstring style used in the given project. Currently, '
-        'only google, sphinx, and numpy styles are supported.'
-    )
-)
-parser.add_argument(
-    '-z',
-    '--strictness',
-    default=None,
-    choices=[
-        'short',
-        'long',
-        'full',
-    ],
-    help=(
-        'The minimum strictness when checking docstrings. '
-        '`short`, for example, will result in one-line '
-        'docstrings always being accepted.  Anything more than one line '
-        'would go through the full check.'
+        "The docstring style used in the given project. Currently, "
+        "only google, sphinx, and numpy styles are supported."
     ),
 )
 parser.add_argument(
-    '-e',
-    '--enable',
-    type=str,
+    "-z",
+    "--strictness",
+    default=None,
+    choices=[
+        "short",
+        "long",
+        "full",
+    ],
     help=(
-        'Enable disabled-by-default errors.  Accepts a '
-        'comma-separated list of error codes.  E.g.: '
-        '"DAR104,DAR105"'
-    )
+        "The minimum strictness when checking docstrings. "
+        "`short`, for example, will result in one-line "
+        "docstrings always being accepted.  Anything more than one line "
+        "would go through the full check."
+    ),
 )
 parser.add_argument(
-    '--indentation',
+    "-e",
+    "--enable",
+    type=str,
+    help=(
+        "Enable disabled-by-default errors.  Accepts a "
+        "comma-separated list of error codes.  E.g.: "
+        '"DAR104,DAR105"'
+    ),
+)
+parser.add_argument(
+    "--indentation",
     type=int,
     default=None,
     help=(
-        'The number of spaces to count as an indentation. '
-        'For example, if following the Google python style '
-        'guide, you would set --indentation=2.'
+        "The number of spaces to count as an indentation. "
+        "For example, if following the Google python style "
+        "guide, you would set --indentation=2."
     ),
 )
 parser.add_argument(
-    '--log-level',
-    '-l',
+    "--log-level",
+    "-l",
     type=str,
     default=None,
     choices=[
-        'CRITICAL',
-        'ERROR',
-        'WARNING',
-        'INFO',
-        'DEBUG',
+        "CRITICAL",
+        "ERROR",
+        "WARNING",
+        "INFO",
+        "DEBUG",
     ],
     help=(
-        'The level at which to log.  Can help with debugging '
-        'when something strange is happening.  The default '
-        'level, CRITICAL, means that only the most severe of '
-        'errors will be logged.  Assertions are logged at the '
-        'ERROR level.'
-    )
+        "The level at which to log.  Can help with debugging "
+        "when something strange is happening.  The default "
+        "level, CRITICAL, means that only the most severe of "
+        "errors will be logged.  Assertions are logged at the "
+        "ERROR level."
+    ),
 )
 
 # ---------------------- MAIN SCRIPT ---------------------------------
 
 
-def get_error_report(filename,
-                     verbosity,
-                     raise_errors_for_syntax,
-                     message_template=None,
-                     ):
+def get_error_report(
+    filename,
+    verbosity,
+    raise_errors_for_syntax,
+    message_template=None,
+):
     # type: (str, int, bool, str) -> str
     """Get the error report for the given file.
 
@@ -232,11 +217,13 @@ def get_error_report(filename,
 def print_error_list():
     errors = list()  # type: List[str]
     for name, obj in inspect.getmembers(darglint2.errors, inspect.isclass):
-        if (issubclass(obj, darglint2.errors.DarglintError)
-                and obj != darglint2.errors.DarglintError):
-            errors.append('{}: {}'.format(obj.error_code, obj.description))
+        if (
+            issubclass(obj, darglint2.errors.DarglintError)
+            and obj != darglint2.errors.DarglintError
+        ):
+            errors.append("{}: {}".format(obj.error_code, obj.description))
     errors.sort()
-    print('\n'.join(errors))
+    print("\n".join(errors))
 
 
 def print_version():
@@ -265,39 +252,37 @@ def main():
     files = []
     for f in args.files:
         p = pathlib.Path(f)
-        if not p.is_dir() and p.suffix == '.py':
+        if not p.is_dir() and p.suffix == ".py":
             files.append(f)
         # Convert back to strings to not require modifications of any
         # subsequent code.
-        files.extend(str(i) for i in p.glob('**/*.py'))
+        files.extend(str(i) for i in p.glob("**/*.py"))
 
     try:
         config = get_config()
 
         # Only override enable if explicitly passed.
         if args.enable:
-            config.enable = [
-                x.strip() for x in args.enable.split(',')
-            ]
+            config.enable = [x.strip() for x in args.enable.split(",")]
 
-        if '*' in config.ignore:
+        if "*" in config.ignore:
             sys.exit(0)
 
         if args.indentation:
             config.indentation = args.indentation
 
-        if args.docstring_style == 'sphinx':
+        if args.docstring_style == "sphinx":
             config.style = DocstringStyle.SPHINX
-        elif args.docstring_style == 'google':
+        elif args.docstring_style == "google":
             config.style = DocstringStyle.GOOGLE
-        elif args.docstring_style == 'numpy':
+        elif args.docstring_style == "numpy":
             config.style = DocstringStyle.NUMPY
 
-        if args.strictness == 'short':
+        if args.strictness == "short":
             config.strictness = Strictness.SHORT_DESCRIPTION
-        elif args.strictness == 'long':
+        elif args.strictness == "long":
             config.strictness = Strictness.LONG_DESCRIPTION
-        elif args.strictness == 'full':
+        elif args.strictness == "full":
             config.strictness = Strictness.FULL_DESCRIPTION
 
         if args.log_level:
@@ -306,9 +291,7 @@ def main():
         if args.ignore_regex:
             config.ignore_regex = args.ignore_regex
         if args.ignore_raise:
-            config.ignore_raise = [
-                x.strip() for x in args.ignore_raise.split(",")
-            ]
+            config.ignore_raise = [x.strip() for x in args.ignore_raise.split(",")]
         if args.ignore_properties:
             config.ignore_properties = args.ignore_properties
 
@@ -321,7 +304,7 @@ def main():
                 message_template=args.message_template,
             )
             if error_report:
-                print(error_report + '\n')
+                print(error_report + "\n")
                 encountered_errors = True
     except Exception as exc:
         # Exit with status 129 regardless of whether user wants a
@@ -336,5 +319,5 @@ def main():
         sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

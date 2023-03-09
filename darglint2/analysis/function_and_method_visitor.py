@@ -1,22 +1,19 @@
 import ast
-from typing import (
-    List,
-    Set,
-    Union,
-)
+from typing import List, Set, Union
 
-from .analysis_helpers import (
-    _has_decorator
-)
+from .analysis_helpers import _has_decorator
 
 
 class FunctionAndMethodVisitor(ast.NodeVisitor):
-
     def __init__(self):
         # type: () -> None
-        self.callables = set()  # type: Set[Union[ast.FunctionDef, ast.AsyncFunctionDef]]
+        self.callables = (
+            set()
+        )  # type: Set[Union[ast.FunctionDef, ast.AsyncFunctionDef]]
         self._methods = set()  # type: Set[Union[ast.FunctionDef, ast.AsyncFunctionDef]]
-        self._properties = set()  # type: Set[Union[ast.FunctionDef, ast.AsyncFunctionDef]]
+        self._properties = (
+            set()
+        )  # type: Set[Union[ast.FunctionDef, ast.AsyncFunctionDef]]
 
     @property
     def functions(self):
