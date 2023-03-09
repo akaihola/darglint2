@@ -7,7 +7,6 @@ from ..lex import condense, lex
 from ..node import CykNode
 from ..parse.identifiers import Identifier, NoqaIdentifier
 from ..parse.sphinx import parse
-from ..strictness import Strictness
 from .base import BaseDocstring
 from .sections import Sections
 from .style import DocstringStyle

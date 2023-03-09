@@ -12,7 +12,6 @@ produce the CNF of the grammar from the modified tree.
 
 """
 import re
-from typing import List
 
 from .node import Node, NodeType
 

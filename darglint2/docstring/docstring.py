@@ -1,7 +1,5 @@
-from typing import Optional, Union
-
 from . import google, numpy, sphinx
-from .base import BaseDocstring  # noqa
+from .base import BaseDocstring
 
 
 class Docstring(object):

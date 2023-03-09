@@ -1,6 +1,6 @@
 # Generated on 2023-02-05 17:17:19.086166
 
-from darglint2.errors import EmptyDescriptionError, EmptyTypeError
+from darglint2.errors import EmptyTypeError
 from darglint2.parse.grammar import BaseGrammar, P
 from darglint2.parse.identifiers import ExceptionItemIdentifier, NoqaIdentifier
 from darglint2.token import TokenType

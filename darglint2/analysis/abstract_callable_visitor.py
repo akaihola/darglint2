@@ -1,5 +1,4 @@
 import ast
-from typing import Any, Dict, List
 
 from .analysis_helpers import _has_decorator
 

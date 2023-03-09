@@ -23,7 +23,6 @@ from ..parse.identifiers import (
     YieldTypeIdentifier,
 )
 from ..parse.numpy import parse
-from ..strictness import Strictness
 from .base import BaseDocstring
 from .sections import Sections
 from .style import DocstringStyle

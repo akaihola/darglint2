@@ -1,8 +1,5 @@
 import ast
-from typing import Any, Dict, List, Optional, Union
-
-from ..config import get_logger
-from ..custom_assert import Assert
+from typing import Any, List, Optional
 
 
 class ReturnVisitor(ast.NodeVisitor):

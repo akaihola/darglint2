@@ -1,9 +1,8 @@
 """A linter for docstrings following the google docstring format."""
 import ast
 import sys
-from collections import deque
 from enum import Enum
-from typing import Any, Callable, Iterator, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Iterator, List, Optional, Tuple, Type, Union
 
 from .analysis.analysis_helpers import _has_decorator
 from .analysis.analysis_visitor import AnalysisVisitor

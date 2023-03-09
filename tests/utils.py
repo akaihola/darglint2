@@ -4,7 +4,6 @@ import sys
 from typing import Callable, Iterable, List, Set
 from unittest import skip
 
-from darglint2.config import Configuration, get_config
 from darglint2.token import Token, TokenType
 
 REFACTORING_COMPLETE = True

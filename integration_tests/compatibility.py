@@ -144,7 +144,6 @@ class CompatibilityTest(TestCase):
     def test_defaults_overriden_from_darglint_config(self):
         self.create_darglint_setup(strictness="short")
         self.create_flake8_setup(strictness="full")
-        errors = defaultdict(lambda: set())
 
         flake8_errors = defaultdict(lambda: set())
         self.record_errors(flake8_errors, self.STRICTNESS_FILE, config=".flake8")

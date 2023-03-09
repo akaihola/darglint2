@@ -2,9 +2,10 @@ import ast
 from unittest import TestCase
 
 from darglint2.analysis.abstract_callable_visitor import AbstractCallableVisitor
-from darglint2.analysis.analysis_visitor import AnalysisVisitor
 
 from .utils import reindent
+
+# from darglint2.analysis.analysis_visitor import AnalysisVisitor
 
 
 class PureAbstractVisitorTests(TestCase):

@@ -69,9 +69,7 @@ class BaseGrammar(abc.ABC):
         return lookup
 
     @classmethod
-    def to_dot(cls):
-        # () -> str
-
+    def to_dot(cls) -> str:
         def normalize(name):
             return name.replace("-", "_").replace(".", "_")
 
@@ -79,8 +77,8 @@ class BaseGrammar(abc.ABC):
             min_color = (200, 200, 200)
             max_color = (0, 0, 0)
             return tuple(
-                int(u - (u - l) * (curr / max_weight))
-                for l, u in zip(max_color, min_color)
+                int(ma - (ma - mi) * (curr / max_weight))
+                for mi, ma in zip(max_color, min_color)
             )
 
         def to_hex(color):

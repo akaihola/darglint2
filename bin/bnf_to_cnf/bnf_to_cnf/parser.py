@@ -1,4 +1,4 @@
-from lark import Lark, Tree
+from lark import Lark
 
 from .node import Node, NodeType
 

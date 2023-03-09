@@ -19,7 +19,7 @@ class Continuation(object):
         self,
         path: str,
         condition: Callable[[CykNode], bool],
-        child: Union[Continuation, Tuple[Continuation, ...], None] = None,
+        child: Union["Continuation", Tuple["Continuation", ...], None] = None,
     ) -> None:
         # noqa: E501
         self.path = path
@@ -27,7 +27,7 @@ class Continuation(object):
         self.child = child
         self._sealed = False
 
-    def of(self, path: str) -> Continuation:
+    def of(self, path: str) -> "Continuation":
         Assert(
             not self._sealed,
             "Sealed continuations shouldn't be extended!",
@@ -38,7 +38,7 @@ class Continuation(object):
             self.child = Continuation(path, lambda _: True, None)
         return self
 
-    def branch(self, *continuations: Continuation) -> Continuation:
+    def branch(self, *continuations: "Continuation") -> "Continuation":
         Assert(
             not self._sealed,
             "Sealed continuations shouldn't be extended!",
