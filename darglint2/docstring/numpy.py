@@ -40,8 +40,10 @@ class Docstring(BaseDocstring):
         Sections.NOQAS,
     )
 
-    def __init__(self, root, style=DocstringStyle.SPHINX):
-        # type: (Union[CykNode, str], DocstringStyle) -> None  # noqa: E501
+    def __init__(
+        self, root: Union[CykNode, str], style: DocstringStyle = DocstringStyle.SPHINX
+    ) -> None:
+        # noqa: E501
         """Create a new docstring from the AST.
 
         Args:
@@ -53,13 +55,12 @@ class Docstring(BaseDocstring):
 
         """
         if isinstance(root, CykNode):
-            self.root = root  # type: Optional[CykNode]
+            self.root: Optional[CykNode] = root
         else:
             self.root = parse(condense(lex(root)))
         self._lookup = self._discover()
 
-    def _discover(self, node=None):
-        # type: (Optional[CykNode]) -> Dict[str, List[CykNode]]
+    def _discover(self, node: Optional[CykNode] = None) -> Dict[str, List[CykNode]]:
         """Walk the tree, finding all non-terminal nodes.
 
         Returns:
@@ -69,7 +70,7 @@ class Docstring(BaseDocstring):
         root = node if node else self.root
         if not root:
             return dict()
-        lookup = defaultdict(lambda: list())  # type: Dict[str, List[CykNode]]
+        lookup: Dict[str, List[CykNode]] = defaultdict(lambda: list())
         for node in root.in_order_traverse():
             lookup[node.symbol].append(node)
             for annotation in node.annotations:
@@ -78,9 +79,8 @@ class Docstring(BaseDocstring):
                     lookup[annotation.key].append(node)  # type: ignore
         return lookup
 
-    def get_section(self, section):
-        # type: (Sections) -> Optional[str]
-        nodes = []  # type: Optional[List[CykNode]]
+    def get_section(self, section: Sections) -> Optional[str]:
+        nodes: Optional[List[CykNode]] = []
 
         # TODO: Add Receives section
         if section == Sections.SHORT_DESCRIPTION:
@@ -119,8 +119,9 @@ class Docstring(BaseDocstring):
 
         return return_value.strip() or None
 
-    def _get_types_unsorted(self, section):
-        # type: (Sections) -> Optional[Union[str, List[Optional[str]]]]
+    def _get_types_unsorted(
+        self, section: Sections
+    ) -> Optional[Union[str, List[Optional[str]]]]:
         if section == Sections.ARGUMENTS_SECTION:
             if "arguments-section" not in self._lookup:
                 return None
@@ -135,8 +136,7 @@ class Docstring(BaseDocstring):
             )
         return None
 
-    def get_types(self, section):
-        # type: (Sections) -> Optional[Union[str, List[Optional[str]]]]
+    def get_types(self, section: Sections) -> Optional[Union[str, List[Optional[str]]]]:
         if section == Sections.RETURNS_SECTION:
             return_type = self._lookup.get(ReturnTypeIdentifier.key, [])
             if len(return_type) == 0:
@@ -164,8 +164,8 @@ class Docstring(BaseDocstring):
             return None
 
         if section == Sections.ARGUMENTS_SECTION:
-            item_identifier = ArgumentItemIdentifier  # type: Type[Identifier]
-            type_identifier = ArgumentTypeIdentifier  # type: Type[Identifier]
+            item_identifier: Type[Identifier] = ArgumentItemIdentifier
+            type_identifier: Type[Identifier] = ArgumentTypeIdentifier
         elif section == Sections.RAISES_SECTION:
             item_identifier = ExceptionItemIdentifier
 
@@ -191,13 +191,12 @@ class Docstring(BaseDocstring):
                     type_lookup[value.strip()] = type_identifier.extract(type_nodes[0])
 
         item_type_pairs = sorted(type_lookup.items())
-        sorted_types = [
+        sorted_types: List[Optional[str]] = [
             x[1] for x in item_type_pairs
-        ]  # type: List[Optional[str]]  # noqa: E501
+        ]  # noqa: E501
         return sorted_types
 
-    def _get_items_unsorted(self, section):
-        # type: (Sections) -> Optional[List[CykNode]]
+    def _get_items_unsorted(self, section: Sections) -> Optional[List[CykNode]]:
         if section == Sections.ARGUMENTS_SECTION:
             items = self._lookup.get(ArgumentItemIdentifier.key, [])
 
@@ -215,8 +214,7 @@ class Docstring(BaseDocstring):
             )
         return None
 
-    def get_items(self, section):
-        # type: (Sections) -> Optional[List[str]]
+    def get_items(self, section: Sections) -> Optional[List[str]]:
         items = self._get_items_unsorted(section)
         if not items:
             return None
@@ -233,8 +231,7 @@ class Docstring(BaseDocstring):
             sorted_items.extend([x.strip() for x in item.split(",")])
         return sorted_items
 
-    def get_noqas(self):
-        # type: () -> Dict[str, List[str]]
+    def get_noqas(self) -> Dict[str, List[str]]:
         """Get a map of the errors ignored to their targets.
 
         Returns:
@@ -250,8 +247,7 @@ class Docstring(BaseDocstring):
             )
         return noqas
 
-    def get_line_numbers(self, node_type):
-        # type: (str) -> Optional[Tuple[int, int]]
+    def get_line_numbers(self, node_type: str) -> Optional[Tuple[int, int]]:
         """Get the line numbers for the first instance of the given section.
 
         Args:
@@ -269,8 +265,9 @@ class Docstring(BaseDocstring):
             return nodes[0].line_numbers
         return None
 
-    def get_line_numbers_for_value(self, node_type, value):
-        # type: (str, str) -> Optional[Tuple[int, int]]
+    def get_line_numbers_for_value(
+        self, node_type: str, value: str
+    ) -> Optional[Tuple[int, int]]:
         """Get the line number for a node with the given value.
 
         Args:
@@ -291,8 +288,7 @@ class Docstring(BaseDocstring):
         return None
 
     @property
-    def ignore_all(self):
-        # type: () -> bool
+    def ignore_all(self) -> bool:
         """Return whether we should ignore everything in the docstring.
 
         This happens when there is a bare noqa in the docstring, or
@@ -304,8 +300,7 @@ class Docstring(BaseDocstring):
         """
         return False
 
-    def get_style_errors(self):
-        # type: () -> Iterable[Tuple[Callable, Tuple[int, int]]]
+    def get_style_errors(self) -> Iterable[Tuple[Callable, Tuple[int, int]]]:
         """Get any style errors annotated on the tree.
 
         Yields:

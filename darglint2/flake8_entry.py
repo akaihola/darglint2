@@ -22,8 +22,7 @@ class DarglintChecker(object):
         self.filename = filename
         self.verbosity = 2
 
-    def run(self):
-        # type: () -> Iterator[Tuple[int, int, str, type]]
+    def run(self) -> Iterator[Tuple[int, int, str, type]]:
         if "*" in self.config.ignore:
             return
 

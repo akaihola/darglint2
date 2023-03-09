@@ -19,8 +19,7 @@ from .grammars.numpy_yields_section import YieldsGrammar
 from .long_description import parse as long_description_parse
 
 
-def top_parse(tokens):
-    # type: (List[Token]) -> List[List[Token]]
+def top_parse(tokens: List[Token]) -> List[List[Token]]:
     """Split the docstring into sections.
 
     Each section will be parsed individually, according
@@ -34,8 +33,7 @@ def top_parse(tokens):
 
     """
 
-    def at_section_boundary(i):
-        # type: (int) -> int
+    def at_section_boundary(i: int) -> int:
         """Return the number of tokens which start this new section.
 
         Args:
@@ -84,8 +82,8 @@ def top_parse(tokens):
     if not tokens:
         return list()
 
-    curr = list()  # type: List[Token]
-    overall = list()  # type: List[List[Token]]
+    curr: List[Token] = list()
+    overall: List[List[Token]] = list()
     i = 0
     while i < len(tokens) and tokens[i].token_type != TokenType.NEWLINE:
         i += 1
@@ -107,8 +105,7 @@ def top_parse(tokens):
     return overall
 
 
-def _match(token):
-    # type: (Token) -> List[Union[Callable, BaseGrammar]]
+def _match(token: Token) -> List[Union[Callable, BaseGrammar]]:
     """Match the given token from the given section to a set of grammars.
 
     Args:
@@ -119,7 +116,7 @@ def _match(token):
         A list of grammars to be tried in order.
 
     """
-    tt_lookup = {
+    tt_lookup: Dict[TokenType, List[Union[BaseGrammar, Callable]]] = {
         TokenType.RETURNS: [
             ReturnsGrammar,
             long_description_parse,
@@ -159,7 +156,7 @@ def _match(token):
         TokenType.EXAMPLES: [
             long_description_parse,
         ],
-    }  # type: Dict[TokenType, List[Union[BaseGrammar, Callable]]]  # noqa: E501
+    }  # noqa: E501
     return tt_lookup.get(token.token_type, [long_description_parse])
 
 
@@ -193,8 +190,7 @@ def combinator(*args):
         return CykNode(symbol="docstring")
 
 
-def parse(tokens):
-    # type: (List[Token]) -> Optional[CykNode]
+def parse(tokens: List[Token]) -> Optional[CykNode]:
     def mapped_lookup(section, section_index=-1):
         for grammar in lookup(section, section_index):
             if inspect.isclass(grammar):

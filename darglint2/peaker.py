@@ -17,13 +17,12 @@ class Peaker(Generic[T]):
     """A stream transformer allowing us to peak ahead."""
 
     # The previous token which was gotten.
-    prev = None  # type: T
+    prev: T = None
 
     class _Empty(object):
         value = None
 
-    def __init__(self, stream, lookahead=1):
-        # type: (Iterator[T], int) -> None
+    def __init__(self, stream: Iterator[T], lookahead: int = 1) -> None:
         """Create a new peaker.
 
         Args:
@@ -33,7 +32,7 @@ class Peaker(Generic[T]):
 
         """
         self.stream = stream
-        self.buffer = deque()  # type: deque
+        self.buffer: deque = deque()
         self.lookahead = lookahead
         self._buffer_to(lookahead)
 
@@ -62,8 +61,7 @@ class Peaker(Generic[T]):
             except StopIteration:
                 break
 
-    def next(self):
-        # type: () -> T
+    def next(self) -> T:
         """Get the next item in the stream, moving it forward.
 
         Side effects:
@@ -82,8 +80,7 @@ class Peaker(Generic[T]):
         self._buffer_to(self.lookahead)
         return self.prev
 
-    def peak(self, lookahead=1):
-        # type: (int) -> Optional[T]
+    def peak(self, lookahead: int = 1) -> Optional[T]:
         """Get the next letter in the stream, without moving it forward.
 
         Args:
@@ -109,8 +106,7 @@ class Peaker(Generic[T]):
         index = len(self.buffer) - lookahead
         return self.buffer[index]
 
-    def rpeak(self, lookahead=1):
-        # type: (int) -> T
+    def rpeak(self, lookahead: int = 1) -> T:
         """Peak at the item lookahead ahead, raising an exception if empty.
 
         Args:
@@ -137,8 +133,7 @@ class Peaker(Generic[T]):
         index = len(self.buffer) - lookahead
         return self.buffer[index]
 
-    def has_next(self):
-        # type: () -> bool
+    def has_next(self) -> bool:
         """Tell whether there are more tokens in the stream.
 
         Returns:
@@ -147,8 +142,7 @@ class Peaker(Generic[T]):
         """
         return len(self.buffer) > 0
 
-    def take_while(self, test):
-        # type: (Callable) -> List[T]
+    def take_while(self, test: Callable) -> List[T]:
         """Return elements from the stream while they pass the test.
 
         Args:
@@ -159,7 +153,7 @@ class Peaker(Generic[T]):
             A list of items (of type T), which pass the given test function.
 
         """
-        passing_elements = []  # type: List[T]
+        passing_elements: List[T] = []
         while self.has_next() and test(self.peak()):
             passing_elements.append(self.next())
         return passing_elements

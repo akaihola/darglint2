@@ -36,8 +36,7 @@ BARE_NOQA = re.compile(r"#\s*noqa([^:]|$)")
 class IntegrityChecker(object):
     """Checks the integrity of the docstring compared to the definition."""
 
-    def __init__(self, raise_errors=False):
-        # type: (bool) -> None
+    def __init__(self, raise_errors: bool = False) -> None:
         """Create a new checker for the given function and docstring.
 
         Args:
@@ -46,7 +45,7 @@ class IntegrityChecker(object):
                 for development.
 
         """
-        self.errors = list()  # type: List[DarglintError]
+        self.errors: List[DarglintError] = list()
         self._sorted = True
         self.config = get_config()
         self.raise_errors = raise_errors
@@ -57,15 +56,13 @@ class IntegrityChecker(object):
         # The pool is collected when `get_error_report_string` is called.
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
-    def schedule(self, function):
-        # type: (FunctionDescription) -> None
+    def schedule(self, function: FunctionDescription) -> None:
         if self._skip_checks(function):
             return
 
         self.executor.submit(self.run_checks, function)
 
-    def run_checks(self, function):
-        # type: (FunctionDescription) -> None
+    def run_checks(self, function: FunctionDescription) -> None:
         """Run checks on the given function.
 
         Args:
@@ -109,8 +106,7 @@ class IntegrityChecker(object):
         self._check_style(docstring, function)
         self._sorted = False
 
-    def _skip_checks(self, function):
-        # type: (FunctionDescription) -> bool
+    def _skip_checks(self, function: FunctionDescription) -> bool:
         no_docsting = function.docstring is None
         skip_by_regex = self.config.ignore_regex and re.match(
             self.config.ignore_regex, function.name
@@ -119,8 +115,9 @@ class IntegrityChecker(object):
 
         return bool(no_docsting or skip_by_regex or skip_property)
 
-    def _check_parameter_types(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_parameter_types(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         error_code = ParameterTypeMismatchError.error_code
         if self._ignore_error(docstring, ParameterTypeMismatchError):
             return
@@ -131,7 +128,7 @@ class IntegrityChecker(object):
                 docstring.get_types(Sections.ARGUMENTS_SECTION) or [],
             )
         )
-        doc_arg_types = list()  # type: List[Optional[str]]
+        doc_arg_types: List[Optional[str]] = list()
         for name in function.argument_names:
             if name not in argument_types:
                 doc_arg_types.append(None)
@@ -166,8 +163,9 @@ class IntegrityChecker(object):
                     )
                 )
 
-    def _check_parameter_types_missing(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_parameter_types_missing(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         error_code = ParameterTypeMissingError.error_code
         if self._ignore_error(docstring, ParameterTypeMissingError):
             return
@@ -202,8 +200,9 @@ class IntegrityChecker(object):
                     )
                 )
 
-    def _check_return_type(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_return_type(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         if function.is_abstract:
             return
 
@@ -228,8 +227,9 @@ class IntegrityChecker(object):
                     ),
                 )
 
-    def _check_yield(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_yield(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         if function.is_abstract:
             return
 
@@ -250,9 +250,9 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _check_return(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
-
+    def _check_return(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         if function.is_abstract:
             return
 
@@ -279,8 +279,9 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _check_parameters(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_parameters(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         docstring_arguments = set(docstring.get_items(Sections.ARGUMENTS_SECTION) or [])
         actual_arguments = set(function.argument_names)
         missing_in_doc = actual_arguments - docstring_arguments
@@ -340,11 +341,12 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _check_variables(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
-        described_variables = set(
+    def _check_variables(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
+        described_variables: Set[str] = set(
             docstring.get_items(Sections.VARIABLES_SECTION) or []
-        )  # type: Set[str]
+        )
         actual_variables = set(function.variables)
         excess_in_doc = described_variables - actual_variables
 
@@ -369,8 +371,7 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _ignore_error(self, docstring, error):
-        # type: (BaseDocstring, Any) -> bool
+    def _ignore_error(self, docstring: BaseDocstring, error: Any) -> bool:
         """Return true if we should ignore this error.
 
         Args:
@@ -391,8 +392,9 @@ class IntegrityChecker(object):
             return True
         return False
 
-    def _remove_ignored(self, docstring, missing, error):
-        # type: (BaseDocstring, Set[str], Any) -> Set[str]
+    def _remove_ignored(
+        self, docstring: BaseDocstring, missing: Set[str], error: Any
+    ) -> Set[str]:
         """Remove ignored from missing.
 
         Args:
@@ -419,8 +421,9 @@ class IntegrityChecker(object):
         # We are to ignore specific instances.
         return missing - set(noqa_lookup[error_code])
 
-    def _check_style(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_style(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         for StyleError, line_numbers in docstring.get_style_errors():
             if self._ignore_error(docstring, StyleError):
                 continue
@@ -431,8 +434,9 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _check_raises(self, docstring, function):
-        # type: (BaseDocstring, FunctionDescription) -> None
+    def _check_raises(
+        self, docstring: BaseDocstring, function: FunctionDescription
+    ) -> None:
         if function.is_abstract:
             return
 
@@ -488,14 +492,14 @@ class IntegrityChecker(object):
                 )
             )
 
-    def _sort(self):
-        # type: () -> None
+    def _sort(self) -> None:
         if not self._sorted:
             self.errors.sort(key=lambda x: x.function.lineno)
             self._sorted = True
 
-    def get_error_report(self, verbosity, filename, message_template=None):
-        # type: (int, str, str) -> ErrorReport
+    def get_error_report(
+        self, verbosity: int, filename: str, message_template: str = None
+    ) -> ErrorReport:
         self.executor.shutdown()
         return ErrorReport(
             errors=self.errors,
@@ -504,8 +508,9 @@ class IntegrityChecker(object):
             message_template=message_template or self.config.message_template,
         )
 
-    def get_error_report_string(self, verbosity, filename, message_template=None):
-        # type: (int, str, str) -> str
+    def get_error_report_string(
+        self, verbosity: int, filename: str, message_template: str = None
+    ) -> str:
         """Return a string representation of the errors.
 
         Args:

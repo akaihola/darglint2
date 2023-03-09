@@ -61,7 +61,7 @@ class Node(object):
         self.node_type = node_type
         self.value = value
         self.children = children
-        self.cached_symbols = set()  # type: Set[str]
+        self.cached_symbols: Set[str] = set()
         self.probability = probability
 
     def __str__(self):
@@ -193,7 +193,7 @@ class Node(object):
                 yield node
 
     def remove(self, filt: Callable[["Node"], bool]) -> bool:
-        parents_to_children = dict()  # type: Dict['Node', List['Node']]
+        parents_to_children: Dict["Node", List["Node"]] = dict()
         for parent in self._bfs():
             for child in parent.children:
                 if filt(child):
@@ -608,8 +608,8 @@ class Node(object):
             The dot representation of the tree.
 
         """
-        name_lookup = dict()  # type: Dict['Node', str]
-        names = set()  # type: Set[str]
+        name_lookup: Dict["Node", str] = dict()
+        names: Set[str] = set()
 
         def _node_name(node: "Node") -> str:
             if node in name_lookup:

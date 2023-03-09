@@ -5,7 +5,7 @@ from typing import Any, Optional
 from .config import AssertStyle, get_config, get_logger
 
 
-def Assert(expr, message):  # type: (Any, Optional[str]) -> None
+def Assert(expr: Any, message: Optional[str]) -> None:
     """Asserts that the given expression is true.
 
     Args:

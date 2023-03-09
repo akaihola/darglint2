@@ -11,17 +11,14 @@ class FunctionScopedVisitorMixin(ast.NodeVisitor):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        # type: (Any, Any) -> None
-
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         # TODO: https://github.com/python/mypy/issues/4001
         super(FunctionScopedVisitorMixin, self).__init__(*args, **kwargs)  # type: ignore  # noqa: E501
 
         # Whether we have passed the initial `FunctionDef` node.
         self.in_function = False
 
-    def visit_Lambda(self, node):
-        # type: (ast.Lambda) -> ast.AST
+    def visit_Lambda(self, node: ast.Lambda) -> ast.AST:
         if not self.in_function:
             self.in_function = True
             return getattr(super(), "visit_Lambda", super().generic_visit)(node)
@@ -31,16 +28,14 @@ class FunctionScopedVisitorMixin(ast.NodeVisitor):
             # it will effectively stop the visit.
             return ast.Pass()
 
-    def visit_FunctionDef(self, node):
-        # type: (ast.FunctionDef) -> ast.AST
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST:
         if not self.in_function:
             self.in_function = True
             return getattr(super(), "visit_FunctionDef", super().generic_visit)(node)
         else:
             return ast.Pass()
 
-    def visit_AsyncFunctionDef(self, node):
-        # type: (ast.AsyncFunctionDef) -> ast.AST
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> ast.AST:
         if not self.in_function:
             self.in_function = True
             return getattr(super(), "visit_AsyncFunctionDef", super().generic_visit)(

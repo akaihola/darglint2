@@ -60,7 +60,7 @@ class Driver(object):
         else:
             paths = sys.stdin.readlines()
 
-        contents = list()  # type: List[Dict[str, Any]]
+        contents: List[Dict[str, Any]] = list()
 
         for path in paths:
             try:

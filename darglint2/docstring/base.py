@@ -16,11 +16,10 @@ class BaseDocstring(ABC):
 
     """
 
-    supported_sections = tuple(Sections)  # type: ClassVar[Tuple[Sections, ...]]
+    supported_sections: ClassVar[Tuple[Sections, ...]] = tuple(Sections)
 
     @abstractmethod
-    def get_section(self, section):
-        # type: (Sections) -> Optional[str]
+    def get_section(self, section: Sections) -> Optional[str]:
         """Get an entire section of the docstring.
 
         Args:
@@ -40,8 +39,7 @@ class BaseDocstring(ABC):
         pass
 
     @abstractmethod
-    def get_types(self, section):
-        # type: (Sections) -> Optional[Union[str, List[Optional[str]]]]
+    def get_types(self, section: Sections) -> Optional[Union[str, List[Optional[str]]]]:
         """Get the type of the section, or of the items in the section.
 
         Args:
@@ -65,8 +63,7 @@ class BaseDocstring(ABC):
         pass
 
     @abstractmethod
-    def get_items(self, section):
-        # type: (Sections) -> Optional[List[str]]
+    def get_items(self, section: Sections) -> Optional[List[str]]:
         """Get the item names in the section.
 
         Args:
@@ -87,8 +84,7 @@ class BaseDocstring(ABC):
         pass
 
     @abstractmethod
-    def get_style_errors(self):
-        # type: () -> Iterable[Tuple[Callable, Tuple[int, int]]]
+    def get_style_errors(self) -> Iterable[Tuple[Callable, Tuple[int, int]]]:
         """Get any style errors annotated on the tree.
 
         Yields:
@@ -100,24 +96,22 @@ class BaseDocstring(ABC):
         pass
 
     @abstractmethod
-    def get_noqas(self):
-        # type: () -> Dict[str, List[str]]
+    def get_noqas(self) -> Dict[str, List[str]]:
         pass
 
     @abstractmethod
-    def get_line_numbers(self, node_type):
-        # type: (str) -> Optional[Tuple[int, int]]
+    def get_line_numbers(self, node_type: str) -> Optional[Tuple[int, int]]:
         pass
 
     @abstractmethod
-    def get_line_numbers_for_value(self, node_type, value):
-        # type: (str, str) -> Optional[Tuple[int, int]]
+    def get_line_numbers_for_value(
+        self, node_type: str, value: str
+    ) -> Optional[Tuple[int, int]]:
         pass
 
     @property
     @abstractmethod
-    def ignore_all(self):
-        # type: () -> bool
+    def ignore_all(self) -> bool:
         pass
 
     def satisfies_strictness(self, strictness):

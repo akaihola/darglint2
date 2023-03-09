@@ -774,8 +774,7 @@ class DocstringForSphinxTests(TestCase):
 class DocstringForNumpyTest(TestCase):
     MAX_ARG_NUM = 3
 
-    def _get_args(self):
-        # type: () -> List[str]
+    def _get_args(self) -> List[str]:
         return list(
             {
                 choice(string.ascii_lowercase)
@@ -783,16 +782,18 @@ class DocstringForNumpyTest(TestCase):
             }
         )
 
-    def _get_types(self, args):
-        # type: (List[str]) -> List[str]
+    def _get_types(self, args: List[str]) -> List[str]:
         return [choice("AB") for _ in args]
 
-    def _get_argtype_pairs(self, args, types):
-        # type: (List[str], List[str]) -> List[Tuple[str, str]]
+    def _get_argtype_pairs(
+        self, args: List[str], types: List[str]
+    ) -> List[Tuple[str, str]]:
         return list(zip(args, types))
 
-    def _combine(self, argtype_pairs):
-        # type: (List[Tuple[str, str]]) -> Iterator[List[Tuple[List[str], str]]]  # noqa: E501
+    def _combine(
+        self, argtype_pairs: List[Tuple[str, str]]
+    ) -> Iterator[List[Tuple[List[str], str]]]:
+        # noqa: E501
         """Generate some permutations of joinings.
 
         For example, if two consecutive args have the same types,
@@ -844,8 +845,7 @@ class DocstringForNumpyTest(TestCase):
                 j += 1
             i += 1
 
-    def generate_docstring(self, argtypes):
-        # type: (List[Tuple[List[str], str]]) -> str
+    def generate_docstring(self, argtypes: List[Tuple[List[str], str]]) -> str:
         doc = [
             "Short description",
             "",

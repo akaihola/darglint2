@@ -7,8 +7,7 @@ from ..token import Token, TokenType
 from .identifiers import NoqaIdentifier
 
 
-def _is(peaker, token_type, index=1):
-    # type: (Peaker[Token], Optional[TokenType], int) -> bool
+def _is(peaker: Peaker[Token], token_type: Optional[TokenType], index: int = 1) -> bool:
     try:
         token = peaker.peak(lookahead=index)
     except IndexError:
@@ -18,15 +17,13 @@ def _is(peaker, token_type, index=1):
     return bool(token and token.token_type == token_type)
 
 
-def _are(peaker, *token_types):
-    # type: (Peaker[Token], Optional[TokenType]) -> bool
+def _are(peaker: Peaker[Token], *token_types: Optional[TokenType]) -> bool:
     return all(
         [_is(peaker, token_type, i + 1) for i, token_type in enumerate(token_types)]
     )
 
 
-def _parse_noqa_head(peaker):
-    # type: (Peaker[Token]) -> Optional[CykNode]
+def _parse_noqa_head(peaker: Peaker[Token]) -> Optional[CykNode]:
     if not (
         _are(peaker, TokenType.HASH, TokenType.NOQA, TokenType.NEWLINE)
         or _are(peaker, TokenType.HASH, TokenType.NOQA, None)
@@ -46,8 +43,7 @@ def _parse_noqa_head(peaker):
     )
 
 
-def _last_node(node):
-    # type: (CykNode) -> CykNode
+def _last_node(node: CykNode) -> CykNode:
     curr = node
     rchild = curr.rchild
     while rchild:
@@ -85,8 +81,7 @@ def _parse_words_until_newline_or_end(peaker):
     return foldr(join, words, acc)
 
 
-def _parse_noqa(peaker):
-    # type: (Peaker[Token]) -> Optional[CykNode]
+def _parse_noqa(peaker: Peaker[Token]) -> Optional[CykNode]:
     if not (
         _are(peaker, TokenType.HASH, TokenType.NOQA, TokenType.COLON, TokenType.WORD)
     ):
@@ -114,8 +109,7 @@ def _parse_noqa(peaker):
     return head
 
 
-def _parse_long_description(peaker):
-    # type: (Peaker[Token]) -> Optional[CykNode]
+def _parse_long_description(peaker: Peaker[Token]) -> Optional[CykNode]:
     if not peaker.has_next():
         return None
     head = _parse_noqa(peaker) or _parse_noqa_head(peaker)
@@ -149,8 +143,7 @@ def _parse_long_description(peaker):
     return head
 
 
-def parse(tokens):
-    # type: (List[Token]) -> Optional[CykNode]
+def parse(tokens: List[Token]) -> Optional[CykNode]:
     peaker = Peaker((x for x in tokens), lookahead=5)
     if not peaker.has_next():
         return None

@@ -30,27 +30,26 @@ class DarglintError(BaseException):
     # The shortest error message possible.  Should use abbreviated
     # symbols.  Can be combined with the general message to give
     # a more in-depth message.
-    terse_message = None  # type: str
+    terse_message: str = None
 
     # General messages should be general in nature. (They are used
     # at the lowest verbosity setting.)  They should be about
     # the nature of the error, and not about this particular instance.
     # Should not end in any punctuation (and should allow lists of
     # instances -- the terse message -- after it.)
-    general_message = None  # type: str
+    general_message: str = None
 
     # A unique human-readable identifier for this type of error.
     # See the description of error code groups above.
-    error_code = None  # type: str
+    error_code: str = None
 
     # The first and last line numbers where the error occurs.
-    line_numbers = None  # type: Tuple[int, int]
+    line_numbers: Tuple[int, int] = None
 
     # A description of the error itself.
-    description = None  # type: str
+    description: str = None
 
-    def message(self, verbosity=1):
-        # type: (int) -> str
+    def message(self, verbosity: int = 1) -> str:
         """Get the message for this error, according to the verbosity.
 
         Args:
@@ -74,8 +73,11 @@ class DarglintError(BaseException):
         else:
             raise Exception("Unrecognized verbosity setting, {}.".format(verbosity))
 
-    def __init__(self, function, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Create a new exception with a message and line number.
 
         Raises:
@@ -108,8 +110,8 @@ class PythonSyntaxError(DarglintError):
     error_code = "DAR000"
     description = "Failed to parse file due to syntax error."
 
-    def __init__(self, source):
-        # type: (SyntaxError) -> None  # noqa: E501
+    def __init__(self, source: SyntaxError) -> None:
+        # noqa: E501
         """Instantiate the error's message.
 
         Args:
@@ -127,8 +129,13 @@ class GenericSyntaxError(DarglintError):
     error_code = "DAR001"
     description = "The docstring was not parsed correctly due to a syntax error."
 
-    def __init__(self, function, message, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None  # noqa: E501
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        message: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
+        # noqa: E501
         """Instantiate the error's message.
 
         Args:
@@ -152,8 +159,13 @@ class EmptyDescriptionError(DarglintError):
     error_code = "DAR002"
     description = "An argument/exception lacks a description"
 
-    def __init__(self, function, message, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None  # noqa: E501
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        message: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
+        # noqa: E501
         """Instantiate the error's message.
 
         Args:
@@ -178,8 +190,9 @@ class IndentError(DarglintError):
     error_code = "DAR003"
     description = "A line is under-indented or over-indented."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (ast.FunctionDef, Tuple[int, int]) -> None
+    def __init__(
+        self, function: ast.FunctionDef, line_numbers: Tuple[int, int] = None
+    ) -> None:
         """Instantiate the eror's message.
 
         Args:
@@ -202,8 +215,9 @@ class ExcessNewlineError(DarglintError):
     error_code = "DAR004"
     description = "The docstring contains an extra newline where it shouldn't."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (ast.FunctionDef, Tuple[int, int]) -> None
+    def __init__(
+        self, function: ast.FunctionDef, line_numbers: Tuple[int, int] = None
+    ) -> None:
         self.general_message = "Excess newline."
         self.terse_message = "+>"
         super(ExcessNewlineError, self).__init__(
@@ -218,8 +232,13 @@ class EmptyTypeError(DarglintError):
     error_code = "DAR005"
     description = "The item contains a type section (parentheses), but no type."
 
-    def __init__(self, function, message, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None  # noqa: E501
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        message: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
+        # noqa: E501
         """Instantiate the error's message.
 
         Args:
@@ -244,8 +263,12 @@ class MissingParameterError(DarglintError):
     error_code = "DAR101"
     description = "The docstring is missing a parameter in the definition."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -268,8 +291,12 @@ class ExcessParameterError(DarglintError):
     error_code = "DAR102"
     description = "The docstring contains a parameter not in function."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -292,8 +319,14 @@ class ParameterTypeMismatchError(DarglintError):
     error_code = "DAR103"
     description = "The docstring parameter type doesn't match function."
 
-    def __init__(self, function, name, expected, actual, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, str, str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        expected: str,
+        actual: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -325,8 +358,12 @@ class ParameterTypeMissingError(DarglintError):
     error_code = "DAR104"
     description = "The docstring parameter type is not given."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -355,8 +392,12 @@ class ParameterMalformedError(DarglintError):
         "to switch them to brackets.  E.g. `Union[str, int]`."
     )
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         self.general_message = "Parameter type malformed."
         self.terse_message = " #{}: type malformed".format(name)
         self.name = name
@@ -372,8 +413,11 @@ class MissingReturnError(DarglintError):
     error_code = "DAR201"
     description = "The docstring is missing a return from definition."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -396,8 +440,11 @@ class ExcessReturnError(DarglintError):
     error_code = "DAR202"
     description = "The docstring has a return not in definition."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -420,8 +467,13 @@ class ReturnTypeMismatchError(DarglintError):
     error_code = "DAR203"
     description = "The docstring parameter type doesn't match function."
 
-    def __init__(self, function, expected, actual, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        expected: str,
+        actual: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -450,8 +502,11 @@ class MissingYieldError(DarglintError):
     error_code = "DAR301"
     description = "The docstring is missing a yield present in definition."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -474,8 +529,11 @@ class ExcessYieldError(DarglintError):
     error_code = "DAR302"
     description = "The docstring has a yield not in definition."
 
-    def __init__(self, function, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -498,8 +556,12 @@ class MissingRaiseError(DarglintError):
     error_code = "DAR401"
     description = "The docstring is missing an exception raised."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -530,8 +592,12 @@ class ExcessRaiseError(DarglintError):
     error_code = "DAR402"
     description = "The docstring describes an exception not explicitly raised."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:
@@ -555,8 +621,12 @@ class ExcessVariableError(DarglintError):
     error_code = "DAR501"
     description = "The docstring describes a variable which is not defined."
 
-    def __init__(self, function, name, line_numbers=None):
-        # type: (Union[ast.FunctionDef, ast.AsyncFunctionDef], str, Tuple[int, int]) -> None
+    def __init__(
+        self,
+        function: Union[ast.FunctionDef, ast.AsyncFunctionDef],
+        name: str,
+        line_numbers: Tuple[int, int] = None,
+    ) -> None:
         """Instantiate the error's message.
 
         Args:

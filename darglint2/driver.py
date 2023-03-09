@@ -172,12 +172,11 @@ parser.add_argument(
 
 
 def get_error_report(
-    filename,
-    verbosity,
-    raise_errors_for_syntax,
-    message_template=None,
-):
-    # type: (str, int, bool, str) -> str
+    filename: str,
+    verbosity: int,
+    raise_errors_for_syntax: bool,
+    message_template: str = None,
+) -> str:
     """Get the error report for the given file.
 
     Args:
@@ -215,7 +214,7 @@ def get_error_report(
 
 
 def print_error_list():
-    errors = list()  # type: List[str]
+    errors: List[str] = list()
     for name, obj in inspect.getmembers(darglint2.errors, inspect.isclass):
         if (
             issubclass(obj, darglint2.errors.DarglintError)
@@ -230,8 +229,7 @@ def print_version():
     print("1.8.2")
 
 
-def main():
-    # type: () -> None
+def main() -> None:
     """Run darglint2.
 
     Called as a script when setup.py is installed.

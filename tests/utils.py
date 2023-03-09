@@ -32,8 +32,7 @@ def require_python(major=3, minor=8):
     return _wrapper
 
 
-def replace(name=""):
-    # type: (str) -> Callable
+def replace(name: str = "") -> Callable:
     """Decorates a function which must be replaced.
 
     If the above global, REFACTORING_COMPLETE is True,
@@ -48,9 +47,7 @@ def replace(name=""):
 
     """
 
-    def wrapper(fn):
-        # type: (Callable) -> Callable
-
+    def wrapper(fn: Callable) -> Callable:
         def _inner(*args, **kwargs):
             self = args[0]
             if not hasattr(self, name) and REFACTORING_COMPLETE:
@@ -62,8 +59,7 @@ def replace(name=""):
     return wrapper
 
 
-def remove(fn):
-    # type: (Callable) -> Callable
+def remove(fn: Callable) -> Callable:
     """Describes a method which should be removed after refactoring.
 
     Args:
@@ -83,21 +79,21 @@ def remove(fn):
     return _inner
 
 
-def random_string(min_length=1, max_length=20):
-    # type: (int, int) -> str
+def random_string(min_length: int = 1, max_length: int = 20) -> str:
     ret = ""
     for i in range(random.randint(min_length, max_length)):
         ret += random.choice(string.ascii_letters)
     return ret
 
 
-def random_tokens(min_length=1, max_length=20, exclude=set()):
-    # type: (int, int, Set[TokenType]) -> Iterable[Token]
+def random_tokens(
+    min_length: int = 1, max_length: int = 20, exclude: Set[TokenType] = set()
+) -> Iterable[Token]:
     allowable = [x for x in TokenType if x not in exclude]
-    ret = list()  # type: List[Token]
+    ret: List[Token] = list()
     line_number = 0
     for i in range(random.randint(min_length, max_length)):
-        _type = random.choice(allowable)  # type: TokenType
+        _type: TokenType = random.choice(allowable)
         if _type == TokenType.ARGUMENTS:
             value = "Args"
         elif _type == TokenType.COLON:

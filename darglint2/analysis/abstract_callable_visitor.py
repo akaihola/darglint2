@@ -10,23 +10,19 @@ class AbstractCallableVisitor(ast.NodeVisitor):
 
         self.is_abstract = None
 
-    def _is_docstring(self, node):
-        # type: (ast.AST) -> bool
+    def _is_docstring(self, node: ast.AST) -> bool:
         return isinstance(node, ast.Expr) and (
             (isinstance(node.value, ast.Constant) and isinstance(node.value.value, str))
             or (isinstance(node.value, ast.Str))  # Python < 3.8
         )
 
-    def _is_ellipsis(self, node):
-        # type: (ast.AST) -> bool
-
+    def _is_ellipsis(self, node: ast.AST) -> bool:
         return isinstance(node, ast.Expr) and (
             (isinstance(node.value, ast.Constant) and node.value.value is Ellipsis)
             or (isinstance(node.value, ast.Ellipsis))  # Python < 3.8
         )
 
-    def _is_raise_NotImplementedException(self, node):
-        # type: (ast.AST) -> bool
+    def _is_raise_NotImplementedException(self, node: ast.AST) -> bool:
         return isinstance(node, ast.Raise) and (
             (isinstance(node.exc, ast.Name) and node.exc.id == "NotImplementedError")
             or (
@@ -36,16 +32,14 @@ class AbstractCallableVisitor(ast.NodeVisitor):
             )
         )
 
-    def _is_return_NotImplemented(self, node):
-        # type: (ast.AST) -> bool
+    def _is_return_NotImplemented(self, node: ast.AST) -> bool:
         return (
             isinstance(node, ast.Return)
             and isinstance(node.value, ast.Name)
             and node.value.id == "NotImplemented"
         )
 
-    def analyze_pure_abstract(self, node):
-        # type: (ast.AST) -> bool
+    def analyze_pure_abstract(self, node: ast.AST) -> bool:
         assert isinstance(
             node, (ast.FunctionDef, ast.AsyncFunctionDef)
         ), "Assuming this analysis is only called on functions"
@@ -78,12 +72,10 @@ class AbstractCallableVisitor(ast.NodeVisitor):
 
         return False
 
-    def visit_FunctionDef(self, node):
-        # type: (ast.FunctionDef) -> ast.AST
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST:
         self.is_abstract = self.analyze_pure_abstract(node)
         return self.generic_visit(node)
 
-    def visit_AsyncFunctionDef(self, node):
-        # type: (ast.AsyncFunctionDef) -> ast.AST
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> ast.AST:
         self.is_abstract = self.analyze_pure_abstract(node)
         return self.generic_visit(node)

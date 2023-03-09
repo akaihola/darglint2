@@ -23,15 +23,14 @@ from ..token import Token
 from .grammar import BaseGrammar
 
 
-def parse(grammar, tokens):
-    # type: (BaseGrammar, List[Token]) -> Optional[CykNode]
+def parse(grammar: BaseGrammar, tokens: List[Token]) -> Optional[CykNode]:
     if not tokens:
         return None
     n = len(tokens)
     r = len(grammar.productions)
-    P = [
+    P: List[List[List[Optional[CykNode]]]] = [
         [[None for _ in range(r)] for _ in range(n)] for _ in range(n)
-    ]  # type: List[List[List[Optional[CykNode]]]]
+    ]
     lookup = grammar.get_symbol_lookup()
     for s, token in enumerate(tokens):
         for v, production in enumerate(grammar.productions):

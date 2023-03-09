@@ -33,11 +33,11 @@ parser.add_argument(
 
 class Driver(object):
     def __init__(self):
-        self.data = None  # type: Optional[str]
+        self.data: Optional[str] = None
         self.parser = Parser()
         self.validator = Validator()
         self.translator = Translator()
-        self.tree = None  # type: Optional[Node]
+        self.tree: Optional[Node] = None
 
     def read(self, filename: str) -> "Driver":
         with open(filename, "r") as fin:

@@ -17,8 +17,7 @@ from .grammars.google_yields_section_without_type import YieldsWithoutTypeGramma
 from .long_description import parse as long_description_parse
 
 
-def _get_split_end_with_indents(tokens, i):
-    # type: (List[Token], int) -> int
+def _get_split_end_with_indents(tokens: List[Token], i: int) -> int:
     """Return the index of the end of this split, or 0.
 
     Args:
@@ -77,8 +76,7 @@ def _get_split_end_with_indents(tokens, i):
     return 0
 
 
-def top_parse(tokens):
-    # type: (List[Token]) -> List[List[Token]]
+def top_parse(tokens: List[Token]) -> List[List[Token]]:
     all_sections = list()
     curr = 0
     # Strip leading newlines.

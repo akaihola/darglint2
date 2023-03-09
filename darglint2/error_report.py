@@ -13,12 +13,11 @@ class ErrorReport(object):
 
     def __init__(
         self,
-        errors,
-        filename,
-        verbosity=2,
-        message_template=None,
-    ):
-        # type: (List[DarglintError], str, int, str) -> None
+        errors: List[DarglintError],
+        filename: str,
+        verbosity: int = 2,
+        message_template: str = None,
+    ) -> None:
         """Create a new error report.
 
         Args:
@@ -40,12 +39,13 @@ class ErrorReport(object):
         else:
             self.message_template = message_template
 
-    def _sort(self):
-        # type: () -> None
+    def _sort(self) -> None:
         self.errors.sort(key=lambda x: x.function.lineno)
 
-    def _group_errors_by_function(self):
-        # type: () -> Dict[Union[ast.FunctionDef, ast.AsyncFunctionDef], List[DarglintError]]  # noqa: E501
+    def _group_errors_by_function(
+        self,
+    ) -> Dict[Union[ast.FunctionDef, ast.AsyncFunctionDef], List[DarglintError]]:
+        # noqa: E501
         """Sort the current errors by function, and put into an OrderedDict.
 
         Returns:
@@ -53,7 +53,7 @@ class ErrorReport(object):
 
         """
         self._sort()
-        error_dict = OrderedDict()  # type: Dict
+        error_dict: Dict = OrderedDict()
         current = None  # The current function
         for error in self.errors:
             if current != error.function:
@@ -73,7 +73,7 @@ class ErrorReport(object):
 
         return error_dict
 
-    def _get_error_description(self, error):  # type: (DarglintError) -> str
+    def _get_error_description(self, error: DarglintError) -> str:
         """Get the error description.
 
         Args:
@@ -96,7 +96,7 @@ class ErrorReport(object):
             line=line_number,  # error.function.lineno,
         )
 
-    def __str__(self):  # type: () -> str
+    def __str__(self) -> str:
         """Return a string representation of this error report.
 
         Returns:
@@ -111,8 +111,7 @@ class ErrorReport(object):
                 ret.append(self._get_error_description(error))
         return "\n".join(ret)
 
-    def flake8_report(self):
-        # type: () -> Iterator[Tuple[int, int, str]]
+    def flake8_report(self) -> Iterator[Tuple[int, int, str]]:
         # line, col, message
         for function in self.error_dict:
             for error in self.error_dict[function]:

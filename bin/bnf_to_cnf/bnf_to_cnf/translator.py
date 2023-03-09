@@ -64,7 +64,7 @@ class Translator(object):
 
         # Gather all the symbols that start with "start",
         # so we can avoid collisions.
-        start_versions = set()  # type: Set[str]
+        start_versions: Set[str] = set()
         for node in tree.filter(is_start_node):
             assert node.value is not None
             start_versions.add(node.value)
@@ -81,7 +81,7 @@ class Translator(object):
             start_suffix += 1
 
         # Rename the "start" symbol on the LHS.
-        annotations = list()  # type: List[Node]
+        annotations: List[Node] = list()
         for production in tree.filter(is_start_production):
             if Node.has_annotation(production):
                 parent = production.children.pop(0)
@@ -242,7 +242,7 @@ class Translator(object):
         tree.remove(_production_is_empty)
 
     def _get_symbol_production_lookup(self, tree: Node) -> Dict[str, List[Node]]:
-        lookup = dict()  # type: Dict[str, List[Node]]
+        lookup: Dict[str, List[Node]] = dict()
         for production in tree.filter(Node.is_production):
             for symbol in production.filter(Node.is_symbol):
                 assert symbol.value is not None
@@ -502,7 +502,7 @@ class Translator(object):
             A graph of the grammar represented in the BNF.
 
         """
-        graph = dict()  # type: Dict[str, Set[str]]
+        graph: Dict[str, Set[str]] = dict()
         for production in tree.filter(Node.is_production):
             has_annotations = Node.is_annotations(production.children[0])
             if has_annotations:
@@ -530,7 +530,7 @@ class Translator(object):
         graph = self._build_adjacency_matrix(tree)
 
         # Walk the tree, from start, and mark all encountered nodes.
-        encountered = set()  # type: Set[str]
+        encountered: Set[str] = set()
         assert start_symbol.value
         queue = deque([start_symbol.value])
         while queue:

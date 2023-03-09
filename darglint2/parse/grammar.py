@@ -15,8 +15,9 @@ Derivation = Union[NonTerminalDerivation, TerminalDerivation]
 class Production(object):
     """Represents a production in a grammar."""
 
-    def __init__(self, lhs, *rhs, annotations=list()):
-        # type: (str, Derivation, Optional[List[Any]]) -> None
+    def __init__(
+        self, lhs: str, *rhs: Derivation, annotations: Optional[List[Any]] = list()
+    ) -> None:
         """Create a new production.
 
         Args:
@@ -44,20 +45,17 @@ P = Production
 class BaseGrammar(abc.ABC):
     @property
     @abc.abstractmethod
-    def productions(self):
-        # type: () -> List[Production]
+    def productions(self) -> List[Production]:
         pass
 
     @property
     @abc.abstractmethod
-    def start(self):
-        # type: () -> str
+    def start(self) -> str:
         pass
 
     @classmethod
-    def get_symbol_lookup(cls):
-        # type: () -> Dict[str, int]
-        lookup = dict()  # type: Dict[str, int]
+    def get_symbol_lookup(cls) -> Dict[str, int]:
+        lookup: Dict[str, int] = dict()
 
         # We have to tell the type checker that productions is, in fact,
         # a list, since enumerate actually takes a wider type (Iterable),
