@@ -39,8 +39,8 @@ mypy       = "^0.812"
 pydocstyle = "^4.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^5.2"
-tox    = "^3.14"
+pytest = "^7.2.2"
+tox    = "^4.4.6"
 
 [tool.poetry.scripts]
 darglint2 = "darglint2.driver:main"
