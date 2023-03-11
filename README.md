@@ -46,6 +46,11 @@ With a few useful bugfixes and pull requests left out of the final 1.8.1 release
 [@akaihola](https://github.com/akaihola) decided to adopt the package for maintenance,
 but copied and renamed it to `darglint2` at the request of the original author.
 
+For more background about the fork,
+see also [this discussion](/9dogs/darglint/commit/0c8a388715daf4ca8e5a8b76107d7ab8a865ab23#r95373928)
+attached to commit [0c8a3887](/9dogs/darglint/commit/0c8a388715daf4ca8e5a8b76107d7ab8a865ab23)
+in [@9dogs](https://github.com/9dogs)'s fork of the original [terrencepreilly/darglint](/terrencepreilly/darglint).
+
 
 ## Installation
 
