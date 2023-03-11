@@ -1,22 +1,22 @@
 from unittest import TestCase
 
-from darglint.lex import (
+from darglint2.lex import (
     lex,
     condense,
 )
-from darglint.parse.long_description import (
+from darglint2.parse.long_description import (
     parse,
 )
-from darglint.parse.identifiers import (
+from darglint2.parse.identifiers import (
     NoqaIdentifier,
 )
-from darglint.parse.grammars.google_long_description import (
+from darglint2.parse.grammars.google_long_description import (
     LongDescriptionGrammar,
 )
-from darglint.parse.cyk import (
+from darglint2.parse.cyk import (
     parse as cyk_parse,
 )
-from darglint.utils import (
+from darglint2.utils import (
     CykNodeUtils,
 )
 

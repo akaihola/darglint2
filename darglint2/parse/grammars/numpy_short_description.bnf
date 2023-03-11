@@ -1,0 +1,16 @@
+import numpy.bnf
+
+from darglint2.parse.grammar import (
+    BaseGrammar,
+    P,
+)
+
+
+Grammar: ShortDescriptionGrammar
+
+start: <short-description>
+
+
+<short-description>
+    ::= <line>
+    | <line> <newlines>

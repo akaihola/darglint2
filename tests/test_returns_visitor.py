@@ -2,7 +2,7 @@ import ast
 from unittest import (
     TestCase,
 )
-from darglint.analysis.return_visitor import (
+from darglint2.analysis.return_visitor import (
     ReturnVisitor,
 )
 from .utils import (

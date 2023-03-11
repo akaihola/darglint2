@@ -1,6 +1,6 @@
 import ast
 from unittest import TestCase
-from darglint.analysis.raise_visitor import RaiseVisitor
+from darglint2.analysis.raise_visitor import RaiseVisitor
 from unittest.mock import (
     patch,
     Mock,
@@ -273,7 +273,7 @@ class RaiseVisitorTestCase(TestCase):
         ])
         self.assertFound(program, 'MyException')
 
-    @patch('darglint.analysis.raise_visitor.logger')
+    @patch("darglint2.analysis.raise_visitor.logger")
     def test_visits_dynamic_exceptions_with_no_error_logs(self, mock_logger):
         mock_logger.error = Mock()
         program = '\n'.join([

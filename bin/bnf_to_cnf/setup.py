@@ -11,7 +11,7 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     long_description=(
         'A small utility to convert BNF to CNF for use in '
-        'darglint, to ease writing new grammars.'
+        "darglint2, to ease writing new grammars."
     ),
     entry_points={
         'console_scripts': [

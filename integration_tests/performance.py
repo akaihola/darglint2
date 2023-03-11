@@ -1,4 +1,4 @@
-"""A utility for measuring performance characteristics for darglint.
+"""A utility for measuring performance characteristics for darglint2.
 
 Performs performance tests at two levels: the individual docstring,
 and individual files.
@@ -26,13 +26,13 @@ from unittest import (
     TestCase,
 )
 
-from darglint.docstring.base import (
+from darglint2.docstring.base import (
     BaseDocstring,
 )
-from darglint.docstring.docstring import (
+from darglint2.docstring.docstring import (
     Docstring,
 )
-from darglint.driver import (
+from darglint2.driver import (
     print_version,
 )
 from statistics import (
@@ -164,7 +164,7 @@ class Chart(object):
 
 
 class Performance(object):
-    """Measure and report on performance of darglint."""
+    """Measure and report on performance of darglint2."""
 
     def __init__(self, stats=None, module_stats=None):
         # type: (Optional[Stats], Optional[Stats]) -> None
@@ -284,7 +284,7 @@ class Performance(object):
         start = time.time()
         try:
             completed_process = subprocess.run([
-                'darglint',
+                "darglint2",
                 filename
             ], stdout=subprocess.PIPE)
             value = completed_process.stdout.decode('utf8')
@@ -427,7 +427,7 @@ def _record_historical(stats, module_stats, filename='.performance_history'):
 
 
 def _main():
-    print('DARGLINT STATS', end=' ')
+    print("DARGLINT2 STATS", end=" ")
     print_version()
     stats = _read_from_cache()
     perf = Performance(stats)

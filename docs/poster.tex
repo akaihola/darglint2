@@ -35,7 +35,7 @@
         and frustration.
 
         The following example of documentation drift is taken from
-        a convenience method in the project \textit{darglint}.  The parameter
+        a convenience method in the project \textit{darglint2}.  The parameter
         \textit{filename} was added to the function, but the docstring
         was not updated.  In this particular example, it is not entirely
         obvious how \textit{filename} is supposed to be used simply from
@@ -95,11 +95,11 @@
          if they are not used in the function being called, but are passed
          to some other function.)
 
-    \section{Darglint}
+    \section{Darglint2}
 
     \section{General Purpose}
-        \textit{Darglint} was written to provide an alternative to the
-        avoidance strategy.  Darglint helps prevent documentation drift
+        \textit{Darglint2} was written to provide an alternative to the
+        avoidance strategy.  Darglint2 helps prevent documentation drift
         by warning developers when docstrings do not match the actual
         function/method body.
 
@@ -141,11 +141,11 @@
               )
 \end{minted}
 
-            Running \textit{darglint}, below gives us a warning about the missing
+            Running \textit{darglint2}, below gives us a warning about the missing
             parameter:
 
 \begin{minted}{bash}
-  > darglint -v 2 base_error.py
+  > darglint2 -v 2 base_error.py
   base_error.py:message:4: I101: Missing parameter(s)
       in Docstring: - raises
 \end{minted}
@@ -155,7 +155,7 @@
 
     \section{Features}
 
-        \textit{Darglint} includes many features which one would normally expect
+        \textit{Darglint2} includes many features which one would normally expect
         of a linter:
 
         \subsection{Error silencing}
@@ -178,18 +178,18 @@
 \end{minted}
 
         \subsection{Message templating}
-            A template can be passed to \textit{darglint} for formatting error
+            A template can be passed to \textit{darglint2} for formatting error
             messages.  This can be useful for automatic processing.  For
             example, the below call only prints the error number:
 
 \begin{minted}{bash}
-  darglint --message-template "{msg_id}" *.py
+  darglint2 --message-template "{msg_id}" *.py
 \end{minted}
 
         \subsection{Syntax errors}
             Errors will also be raised for problems with syntax.  This
             makes it easier to ensure a consistent format and to make
-            docstrings parsable for \textit{darglint}.
+            docstrings parsable for \textit{darglint2}.
 
         \subsection{Verbosity settings}
             There are two default verbosity settings more or less in-depth
@@ -200,13 +200,13 @@
       ...
             \end{minted}
 
-            Will produce the following output from darglint:
+            Will produce the following output from darglint2:
 
             \begin{minted}{bash}
-  > darglint -v 1 binary_tree.py
+  > darglint2 -v 1 binary_tree.py
   binary_tree.py:insert:11: I101: - item
 
-  > darglint -v 2 binary_tree.py
+  > darglint2 -v 2 binary_tree.py
   binary_tree.py:insert:11: I101: Missing parameter(s) in
       Docstring: - item
 
@@ -237,9 +237,9 @@
 \end{minted}
 
     \section{Disadvantages}
-        The primary disadvantage of \textit{darglint} is that it only warns
+        The primary disadvantage of \textit{darglint2} is that it only warns
         missing or extra parameters, return statments, etc.  If you change how
-        a parameter is used, or its order, then \textit{darglint} is of no help.
+        a parameter is used, or its order, then \textit{darglint2} is of no help.
 
     \section{Alternatives}
         There are many alternative strategies for mitigating documentation
@@ -250,7 +250,7 @@
         not describe intent; it is a more convenient means of viewing the
         function definitions.
 
-        While avoidance is common, and \textit{darglint} attempts to use control
+        While avoidance is common, and \textit{darglint2} attempts to use control
         to prevent documentation drift, there are relatively few attempts
         at using assessment as a preventative/remedial measure.  One possibility
         entertained by a commenter on Reddit (/u/robertmeta) is to use

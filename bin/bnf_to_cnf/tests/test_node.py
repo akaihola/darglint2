@@ -139,7 +139,7 @@ class NodeTest(TestCase):
 
     def test_external_filename_preserved_in_both_python_and_bnf(self):
         external = (
-            'from darglint.parse.identifiers import (\n'
+            "from darglint2.parse.identifiers import (\n"
             '    ArgumentIdentifier,\n'
             '    NoqaIdentifier,\n'
             ')'

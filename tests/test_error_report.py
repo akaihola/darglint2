@@ -3,9 +3,9 @@
 import ast
 from unittest import TestCase
 
-from darglint.error_report import ErrorReport
-from darglint.errors import EmptyDescriptionError
-from darglint.function_description import get_function_descriptions
+from darglint2.error_report import ErrorReport
+from darglint2.errors import EmptyDescriptionError
+from darglint2.function_description import get_function_descriptions
 
 
 def _get_function_description(program):

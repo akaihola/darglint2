@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.0]
+
+### Changed
+
+- Renamed the project to `darglint2` while forking it from the archived
+  [terrencepreilly/darglint](https://github.com/terrencepreilly/darglint) to
+  [akaihola/darglint2](https://github.com/terrencepreilly/darglint2).
+
+
 ## [1.8.1]
 
 ### Added

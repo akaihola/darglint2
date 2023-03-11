@@ -1,16 +1,14 @@
-[![Build Status](https://travis-ci.com/terrencepreilly/darglint.svg?branch=develop)](https://travis-ci.com/terrencepreilly/darglint)
-
-# Darglint
+# Darglint2
 
 A functional docstring linter which checks whether a docstring's
 description matches the actual function/method implementation.
-*Darglint* expects docstrings to be formatted using the
+*Darglint2* expects docstrings to be formatted using the
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html),
 or [Sphinx Style Guide](https://pythonhosted.org/an_example_pypi_project/sphinx.html#function-definitions),
 or [Numpy Style Guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 
 Feel free to submit an issue/pull request if you spot a problem or
-would like a feature in *darglint*.
+would like a feature in *darglint2*.
 
 **Table of Contents**:
 
@@ -29,19 +27,18 @@ would like a feature in *darglint*.
 
 ## Project Status
 
-I no longer work with Python regularly, and I'd like to spend some more
-time on other projects.  So while I'll continue to maintain darglint,
-I likely won't be adding significant new features.  That said, I will
-try to accept pull requests.  See the contribution section for more
-information.  Consider it in maintenance mode.
+This is a renamed fork of the original
+[darglint](https://github.com/terrencepreilly/darglint) by
+[@terrencepreilly](https://github.com/terrencepreilly), and I'm maintaining it
+and accepting bugfixes.
 
 
 ## Installation
 
-To install *darglint*, use pip.
+To install *darglint2*, use pip.
 
 ```bash
-pip install darglint
+pip install darglint2
 ```
 
 Or, clone the repository, `cd` to the directory, and
@@ -52,11 +49,11 @@ pip install .
 
 ## Configuration
 
-*darglint* can be configured using a configuration file.  The configuration
-file must be named either *.darglint*, *setup.cfg*, or *tox.ini*.  It must
-also have a section starting with the section header, `[darglint]`.
+*darglint2* can be configured using a configuration file.  The configuration
+file must be named either *.darglint2*, *.darglint*, *setup.cfg*, or *tox.ini*.  It must
+also have a section starting with the section header, `[darglint2]`.
 Finally, the configuration file must be located either in the directory
-*darglint* is called from, or from a parent directory of that working
+*darglint2* is called from, or from a parent directory of that working
 directory.
 
 Currently, the configuration file allows us to ignore errors, to specify
@@ -67,17 +64,17 @@ exceptions.
 
 If we would like to ignore `ExcessRaiseError`s (because we know that
 an underlying function will raise an exception), then we would add its
-error code to a file named *.darglint*:
+error code to a file named *.darglint2*:
 
 ```ini
-[darglint]
+[darglint2]
 ignore=DAR402
 ```
 
 We can ignore multiple errors by using a comma-separated list:
 
 ```ini
-[darglint]
+[darglint2]
 ignore=DAR402,DAR103
 ```
 
@@ -85,7 +82,7 @@ Instead of specifying error codes to ignore in general one can also specify a
 regex to exclude certain function names from tests. For example, the following 
 configuration would disable linting on all private methods.
 ```ini
-[darglint]
+[darglint2]
 ignore_regex=^_(.*)
 ```
 
@@ -95,7 +92,7 @@ If we would like to specify a message template, we may do so as
 follows:
 
 ```ini
-[darglint]
+[darglint2]
 message_template={msg_id}@{path}:{line}
 ```
 
@@ -105,13 +102,13 @@ Finally, we can specify the docstring style type using `docstring_style`
 ("google" by default):
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=sphinx
 ```
 
 ### Strictness Configuration
 
-Strictness determines how lax darglint will be when checking docstrings.
+Strictness determines how lax darglint2 will be when checking docstrings.
 There are three levels of strictness available:
 
 - short: One-line descriptions are acceptable; anything
@@ -164,7 +161,7 @@ In short, if you want to be able to have single-line docstrings, and check
 all other docstrings against their described parameters, you would specify
 
 ```ini
-[darglint]
+[darglint2]
 strictness=short
 ```
 
@@ -176,21 +173,21 @@ We can specify a list of exceptions that don't need to be documented in the
 raises section of a docstring. For example,
 
 ```ini
-[darglint]
+[darglint2]
 ignore_raise=ValueError,MyCustomError
 ```
 
 ### Logging
 
-When *darglint* fails unexpectedly, you can try to gather more
+When *darglint2* fails unexpectedly, you can try to gather more
 information when submitting a bug by running with logging.
 For example,
 
 ```bash
-darglint --log-level=INFO unexpected_failures.py
+darglint2 --log-level=INFO unexpected_failures.py
 ```
 
-*Darglint* accepts the levels, `DEBUG`, `INFO`, `WARNING`, `ERROR`, and
+*Darglint2* accepts the levels, `DEBUG`, `INFO`, `WARNING`, `ERROR`, and
 `CRITICAL`.
 
 
@@ -203,13 +200,13 @@ Given a python source file, `serializers.py`, you would check the docstrings
 as follows:
 
 ```bash
-darglint serializers.py
+darglint2 serializers.py
 ```
 
-You can give an optional verbosity setting to *darglint*.  For example,
+You can give an optional verbosity setting to *darglint2*.  For example,
 
 ```bash
-darglint -v 2 *.py
+darglint2 -v 2 *.py
 ```
 
 Would give a description of the error along with information as to this
@@ -221,13 +218,13 @@ is a python format string.  For example, if we pass the message
 template
 
 ```bash
-darglint -m "{path}:{line} -> {msg_id}" darglint/driver.py
+darglint2 -m "{path}:{line} -> {msg_id}" darglint2/driver.py
 ```
 
 Then we would get back error messages like
 
 ```bash
-darglint/driver.py :61 -> DAR101
+darglint2/driver.py :61 -> DAR101
 ```
 
 The following attributes can be passed to the format string:
@@ -240,16 +237,16 @@ The following attributes can be passed to the format string:
 The message template can also be specified in the configuration file
 as the value `message_template`.
 
-*darglint* is particularly useful when combined with the utility, `find`.
+*darglint2* is particularly useful when combined with the utility, `find`.
 This allows us to check all of the files in our project at once.  For example,
-when eating my own dogfood (as I tend to do), I invoke *darglint* as follows:
+when eating my own dogfood (as I tend to do), I invoke *darglint2* as follows:
 
 ```bash
-find . -name "*.py" | xargs darglint
+find . -name "*.py" | xargs darglint2
 ```
 
 Where I'm searching all files ending in ".py" recursively from the
-current directory, and calling *darglint* on each one in turn.
+current directory, and calling *darglint2* on each one in turn.
 
 ### Ignoring Errors in a Docstring
 
@@ -325,14 +322,14 @@ have put it on its own line, as `# noqa: DAR402 ZeroDivisionError`.
 
 ### Type Annotations
 
-Darglint parses type annotations in docstrings, and can, optionally,
+Darglint2 parses type annotations in docstrings, and can, optionally,
 compare the documented type to the actual type annotation.  This can
 be useful when migrating a codebase to use type annotations.
 
-In order to make these comparisons, Darglint only accepts types
+In order to make these comparisons, Darglint2 only accepts types
 accepted by Python (see [PEP 484](https://www.python.org/dev/peps/pep-0484/).)
 That is, it does not accept parentheses in type signatures. (If
-parentheses are used in the type signature, Darglint will mark that
+parentheses are used in the type signature, Darglint2 will mark that
 argument as missing.  See Issue #90.)
 
 
@@ -371,23 +368,23 @@ using the `enable` option.  It accepts a comma-separated list of error
 codes.
 
 ```ini
-[darglint]
+[darglint2]
 enable=DAR104
 ```
 
 ## Scope
 
-Darglint's primary focus is to identify incorrect and missing documentationd
+Darglint2's primary focus is to identify incorrect and missing documentationd
 of a function's signature. Checking style is a stretch goal, and is supported
-on a best-effort basis.  Darglint does not check stylistic preferences expressed
+on a best-effort basis.  Darglint2 does not check stylistic preferences expressed
 by tools in the Python Code Quality Authority (through tools such as `pydocstyle`).
-So when using Darglint, it may be a good idea to also use `pydocstyle`, if you
+So when using Darglint2, it may be a good idea to also use `pydocstyle`, if you
 want to enforce style.  (For example, `pydocstyle` requires the short summary
-to be separated from other sections by a line break.  Darglint makes no such check.)
+to be separated from other sections by a line break.  Darglint2 makes no such check.)
 
 ## Sphinx
 
-Darglint can handle sphinx-style docstrings, but imposes some restrictions
+Darglint2 can handle sphinx-style docstrings, but imposes some restrictions
 on top of the Sphinx style. For example, all fields (such as `:returns:`)
 must be the last items in the docstring.  They must be together, and all
 indents should be four spaces.  These restrictions may be loosened at a
@@ -396,33 +393,33 @@ later date.
 To analyze Sphinx-style docstrings, pass the style flag to the command:
 
 ```bash
-darglint -s sphinx example.py
-darglint --docstring-style sphinx example.py
+darglint2 -s sphinx example.py
+darglint2 --docstring-style sphinx example.py
 ```
 
 Alternatively, you can specify the style in the configuration file using
 the setting, "docstring\_style":
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=sphinx
 ```
 
 ## Numpy
 
-Darglint now has an initial implementation for Numpy-style docstrings.
+Darglint2 now has an initial implementation for Numpy-style docstrings.
 Similarly to Sphinx-style docstrings, you can pass a style flag to the
 command:
 
 ```bash
-darglint -s numpy example.py
-darglint --docstring-style numpy example.py
+darglint2 -s numpy example.py
+darglint2 --docstring-style numpy example.py
 ```
 
 Or set it in a configuration file:
 
 ```ini
-[darglint]
+[darglint2]
 docstring_style=numpy
 ```
 
@@ -433,13 +430,13 @@ Add issues or suggestions to the tracking bug, Issue #69.
 
 ### Flake8
 
-Darglint can be used in conjunction with Flake8 as a plugin.  The only
-setup necessary is to install Flake8 and Darglint in the same environment.
-Darglint will pull its configuration from Flake8. So, if you would like to
+Darglint2 can be used in conjunction with Flake8 as a plugin.  The only
+setup necessary is to install Flake8 and Darglint2 in the same environment.
+Darglint2 will pull its configuration from Flake8. So, if you would like to
 lint Sphinx-style comments, then you should have `docstring_style=sphinx` in a
 Flake8 configuration file in the project directory.  The settings would
 be entered under the flake8 configuration, not a separate configuration
-for Darglint.  E.g.:
+for Darglint2.  E.g.:
 
 ```ini
 [flake8]
@@ -451,12 +448,14 @@ To see which options are exposed through Flake8, you can check the Flake8
 tool:
 
 ```bash
-flake8 --help | grep --before-context=2 Darglint
+flake8 --help | grep --before-context=2 Darglint2
 ```
 
 ### SublimeLinter
 
-A plugin for SublimeLinter can be found [here](https://github.com/raddessi/SublimeLinter-contrib-darglint)
+A plugin for SublimeLinter can be found [here](https://github.com/raddessi/SublimeLinter-contrib-darglint).
+Note that it was built for the original `darglint`, not `darglint2`, and its
+compatibility with `darglint2` is yet to be verified.
 
 ### Pre-commit
 
@@ -466,29 +465,32 @@ to `.pre-commit-config.yaml` in your repository:
 
 ```yaml
 repos:
--   repo: https://github.com/terrencepreilly/darglint
+-   repo: https://github.com/akaihola/darglint2
     rev: master
     hooks:
-    - id: darglint
+    - id: darglint2
 ```
 
 Then run `pre-commit install` and you're ready to go. Before commiting,
-`darglint` will be run on the staged files. If it finds any errors, the user
+`darglint2` will be run on the staged files. If it finds any errors, the user
 is notified and the commit is aborted. Store necessary configuration (such as
-error formatting) in `.darglint`, `setup.cfg` or `tox.ini`.
+error formatting) in `.darglint2`, `.darglint`, `setup.cfg` or `tox.ini`.
 
 
 ## Roadmap
 
-Below are some of the current features or efforts.  Where a milestone or
+Below are some of the features or efforts from the original `darglint` project
+at the time of forking in February 2023.  Where a milestone or
 issue is associated with the idea, it will be mentioned.  Some of these
-ideas are moonshots and may not get implemented.  They are ordered
-roughly according to current priority/feasibility.
+ideas were moonshots and may not get implemented.  They are ordered
+roughly according to priority/feasibility stated by the original author.
 
 - [ ] Expose command-line options through sphinx.
-- [ ] Robust logging for errors caused/encountered by *darglint*.
-- [ ] Check class docstrings (See Issue #25).
-- [ ] Autoformatting docstrings.  (See Milestone #3).
+- [ ] Robust logging for errors caused/encountered by *darglint2*.
+- [ ] Check class docstrings (See
+      [darglint#25](https://github.com/terrencepreilly/darglint/issues/25)).
+- [ ] Autoformatting docstrings. (See
+      [darglint milestone #3](https://github.com/terrencepreilly/darglint/milestone/3)).
 - [ ] Optional aggressive style checking through command line flag.
 - [ ] ALE support.
 - [ ] Syntastic support. (Syntastic is not accepting new checkers until
@@ -499,16 +501,16 @@ their next API stabilizes, so this may take some time.)
 
 ### Development Setup
 
-Install `darglint`. First, clone the repository:
+Install `darglint2`. First, clone the repository:
 
 ```bash
-git clone https://github.com/terrencepreilly/darglint.git
+git clone https://github.com/akaihola/darglint2.git
 ```
 
 `cd` into the directory, create a virtual environment (optional), then setup:
 
 ```bash
-cd darglint/
+cd darglint2/
 virtualenv -p python3.6 .env
 source .env/bin/activate
 pip install -e .
@@ -535,7 +537,7 @@ pytest
 ```
 
 This project tries to conform by the styles imposed by `pycodestyle`
-and `pydocstyle`, as well as by `darglint` itself.
+and `pydocstyle`, as well as by `darglint2` itself.
 
 
 A dockerfile exists for testing with Python3.4.  Although it's not
@@ -545,9 +547,9 @@ test using something like
 
 ```bash
 pushd docker-build
-docker build -t darglint-34 -f Dockerfile.test34 .
+docker build -t darglint2-34 -f Dockerfile.test34 .
 popd
-docker run -it --rm -v $(pwd):/code darglint-34 pytest
+docker run -it --rm -v $(pwd):/code darglint2-34 pytest
 ```
 
 ### Contribution
@@ -558,4 +560,4 @@ be accepted through pull requests.  New features should include unit tests,
 and, of course, properly formatted documentation.
 
 Also, check out the wiki prior to updating the grammar.  It includes a
-description of darglint's parsing pipline.
+description of darglint2's parsing pipline.

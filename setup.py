@@ -48,24 +48,26 @@ flake8_entry_point = 'flake8.extension'
 
 
 setup(
-    name="darglint",
-    version="1.8.1",
+    name="darglint2",
+    version="1.8.2",
     author="Terrence Reilly",
     author_email="terrencepreilly@gmail.com",
+    maintainer="Antti Kaihola",
+    maintainer_email="13725+akaihola@users.noreply.github.com",
     description=("A utility for ensuring Google-style docstrings "
                  "stay up to date with the source code."),
     license="MIT",
     keywords="documentation linter development",
-    url="http://github.com/terrencepreilly/darglint",
+    url="http://github.com/akaihola/darglint2",
     packages=find_packages(exclude=('tests', 'docs')),
     long_description=read_full_documentation('README.md'),
     long_description_content_type="text/markdown",
     entry_points={
         'console_scripts': [
-            'darglint = darglint.driver:main',
+            "darglint2 = darglint2.driver:main",
         ],
         flake8_entry_point: [
-            'DAR = darglint.flake8_entry:DarglintChecker',
+            "DAR = darglint2.flake8_entry:DarglintChecker",
         ],
     },
     install_requires=requirements,

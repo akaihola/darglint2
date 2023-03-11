@@ -1,6 +1,6 @@
 from unittest import TestCase
-from darglint.token import TokenType
-from darglint.lex import (
+from darglint2.token import TokenType
+from darglint2.lex import (
     condense,
     lex,
 )

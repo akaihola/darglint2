@@ -1,6 +1,6 @@
 import ast
 from unittest import TestCase
-from darglint.function_description import get_function_descriptions
+from darglint2.function_description import get_function_descriptions
 from .utils import (
     require_python,
     reindent,

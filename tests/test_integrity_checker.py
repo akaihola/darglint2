@@ -4,15 +4,15 @@ from unittest import (
     skip,
 )
 
-from darglint.strictness import Strictness
-from darglint.docstring.style import DocstringStyle
-from darglint.integrity_checker import (
+from darglint2.strictness import Strictness
+from darglint2.docstring.style import DocstringStyle
+from darglint2.integrity_checker import (
     IntegrityChecker,
 )
-from darglint.function_description import (
+from darglint2.function_description import (
     get_function_descriptions,
 )
-from darglint.errors import (
+from darglint2.errors import (
     EmptyDescriptionError,
     EmptyTypeError,
     ExcessParameterError,
@@ -30,7 +30,7 @@ from darglint.errors import (
     ParameterMalformedError,
     ReturnTypeMismatchError,
 )
-from darglint.utils import (
+from darglint2.utils import (
     ConfigurationContext,
 )
 

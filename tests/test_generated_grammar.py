@@ -55,10 +55,10 @@ Original grammar:
 
 from unittest import TestCase
 
-from darglint.parse.grammar import BaseGrammar
-from darglint.parse.grammar import Production as P
-from darglint.parse.cyk import parse
-from darglint.token import (
+from darglint2.parse.grammar import BaseGrammar
+from darglint2.parse.grammar import Production as P
+from darglint2.parse.cyk import parse
+from darglint2.token import (
     BaseTokenType,
     Token,
 )

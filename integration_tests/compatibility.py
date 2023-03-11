@@ -15,11 +15,11 @@ ERROR = re.compile(r'[A-Z]{1,3}\d{3}')
 
 
 class CompatibilityTest(TestCase):
-    """A simple compatibility test for Darglint.
+    """A simple compatibility test for Darglint2.
 
     This test attempts to ensure that the error
-    checks with darglint are a superset of the errors
-    reported without darglint. (That is, darglint
+    checks with darglint2 are a superset of the errors
+    reported without darglint2. (That is, darglint2
     does not hide any errors.)
 
     """
@@ -28,8 +28,8 @@ class CompatibilityTest(TestCase):
 
     def create_darglint_setup(self, strictness=None):
         try:
-            with open('.darglint', 'w') as fout:
-                fout.write('[darglint]\n')
+            with open(".darglint2", "w") as fout:
+                fout.write("[darglint2]\n")
                 if strictness:
                     fout.write('strictness={}\n'.format(strictness))
         except Exception:
@@ -48,8 +48,8 @@ class CompatibilityTest(TestCase):
 
     def create_no_darglint_setup(self):
         try:
-            with open('.darglint', 'w') as fout:
-                fout.write('[darglint]\nignore=*\n')
+            with open(".darglint2", "w") as fout:
+                fout.write("[darglint2]\nignore=*\n")
         except Exception:
             # Do Nothing.
             pass
@@ -57,7 +57,7 @@ class CompatibilityTest(TestCase):
     @classmethod
     def remove_configs(cls):
         try:
-            os.remove('.darglint')
+            os.remove(".darglint2")
             os.remove('.flake8')
         except Exception:
             # Do Nothing.
@@ -102,7 +102,7 @@ class CompatibilityTest(TestCase):
 
     def record_darglint_errors(self, collection, filename):
         proc = subprocess.run([
-            'darglint',
+            "darglint2",
             filename,
         ], stdout=subprocess.PIPE)
         result = proc.stdout.decode('utf8')
@@ -132,7 +132,7 @@ class CompatibilityTest(TestCase):
         flake8_errors = defaultdict(lambda: set())
         self.record_errors(flake8_errors, self.STRICTNESS_FILE, config='.flake8')
 
-        # The error D100, which isn't a part of darglint,
+        # The error D100, which isn't a part of darglint2,
         # appears in flake8 with the use of a config file.
         # So, we need to remove it.
         flake8_errors[self.STRICTNESS_FILE].discard('D100')
@@ -153,7 +153,7 @@ class CompatibilityTest(TestCase):
         flake8_errors = defaultdict(lambda: set())
         self.record_errors(flake8_errors, self.STRICTNESS_FILE, config='.flake8')
 
-        # The error D100, which isn't a part of darglint,
+        # The error D100, which isn't a part of darglint2,
         # appears in flake8 with the use of a config file.
         # So, we need to remove it.
         flake8_errors[self.STRICTNESS_FILE].discard('D100')
