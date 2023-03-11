@@ -31,6 +31,22 @@ This is a renamed fork of the original
 [@terrencepreilly](https://github.com/terrencepreilly), and I'm maintaining it
 and accepting bugfixes.
 
+For the 1.8.1 version of `darglint`, [@terrencepreilly](https://github.com/terrencepreilly) added a
+[Project Status](https://github.com/terrencepreilly/darglint/blob/master/README.md#project-status) section
+in the `README` in October 2021:
+
+>I no longer work with Python regularly, and I'd like to spend some more
+>time on other projects.  So while I'll continue to maintain darglint,
+>I likely won't be adding significant new features.  That said, I will
+>try to accept pull requests.  See the contribution section for more
+>information.  Consider it in maintenance mode.
+
+Later, in December 2022, the `darglint` repository was archived and maintenance was ceased.
+With a few useful bugfixes and pull requests left out of the final 1.8.1 release,
+[@akaihola](https://github.com/akaihola) decided to adopt the package for maintenance,
+but copied and renamed it to `darglint2` at the request of the original author.
+
+
 ## Installation
 
 To install _darglint2_, use pip.
