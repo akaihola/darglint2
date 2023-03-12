@@ -433,6 +433,9 @@ class Translator(object):
                     let p ∈ U
                     Simplify(p.lhs)
 
+        Args:
+            tree (Node): The tree do remove productions from.
+
         """
 
         def is_unit_sequence(x: Node) -> bool:

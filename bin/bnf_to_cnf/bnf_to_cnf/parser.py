@@ -76,7 +76,7 @@ class Parser(object):
         Args:
             value: The string to parse.
 
-        Throws:
+        Raises:
             Exception: If there is more than a single production in the
                 value.
 
