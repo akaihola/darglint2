@@ -111,6 +111,7 @@ class Configuration(object):
             indentation: The number of spaces to count as an indent.
             assert_style: The assert style to use (e.g. log on failed
                 assertions, or raise exception on failed assertions.)
+            log_level: Minimum level to log. All other log entries will be filtered out.
 
         """
         self._enable = enable

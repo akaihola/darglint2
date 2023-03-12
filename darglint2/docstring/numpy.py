@@ -62,6 +62,9 @@ class Docstring(BaseDocstring):
     def _discover(self, node: Optional[CykNode] = None) -> Dict[str, List[CykNode]]:
         """Walk the tree, finding all non-terminal nodes.
 
+        Args:
+            node: root node to walk from
+
         Returns:
             A lookup table for compound Nodes by their NodeType.
 
