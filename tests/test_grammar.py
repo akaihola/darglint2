@@ -25,19 +25,17 @@ class GrammarTest(TestCase):
     def test_only_productions_and_start_necessary(self):
         class GoodGrammar(BaseGrammar):
             productions = []
-            start = ''
+            start = ""
 
         GoodGrammar()
 
 
 class ProductionTest(TestCase):
-
     def test_can_create_production(self):
-        P('sentence', ('verb', 'noun'))
+        P("sentence", ("verb", "noun"))
 
     def test_can_create_production_with_annotations(self):
-
         class OutOfOrder(BaseException):
             pass
 
-        P.with_annotations('sentence', [OutOfOrder], ('noun', 'verb'))
+        P.with_annotations("sentence", [OutOfOrder], ("noun", "verb"))

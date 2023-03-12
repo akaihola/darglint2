@@ -1,18 +1,7 @@
-from collections import (
-    deque,
-)
-from typing import (
-    Any,
-    Iterator,
-    Optional,
-    List,
-    Tuple,
-)
+from collections import deque
+from typing import Any, Iterator, List, Optional, Tuple
 
-from .token import (
-    Token,
-    TokenType,
-)
+from .token import Token, TokenType
 
 WHITESPACE = {TokenType.INDENT, TokenType.NEWLINE}
 
@@ -25,20 +14,22 @@ MAX_TREE_HEIGHT = 300
 class CykNode(object):
     """A node for use in a cyk parse."""
 
-    def __init__(self,
-                 symbol,
-                 lchild=None,
-                 rchild=None,
-                 value=None,
-                 annotations=list(),
-                 weight=0):
-        # type: (str, Optional[CykNode], Optional[CykNode], Optional[Token], List[Any], int) -> None  # noqa: E501
+    def __init__(
+        self,
+        symbol: str,
+        lchild: Optional["CykNode"] = None,
+        rchild: Optional["CykNode"] = None,
+        value: Optional[Token] = None,
+        annotations: List[Any] = list(),
+        weight: int = 0,
+    ) -> None:
+        # noqa: E501
         self.symbol = symbol
         self.lchild = lchild
         self.rchild = rchild
         self.value = value
         self.annotations = annotations
-        self._line_number_cache = None  # type: Optional[Tuple[int, int]]
+        self._line_number_cache: Optional[Tuple[int, int]] = None
 
         # If there is an explicit weight, we definitely want to use
         # that (there was probably a good reason it was given.)
@@ -49,40 +40,41 @@ class CykNode(object):
         if weight:
             self.weight = weight
         else:
-            self.weight = max([
-                0,
-                self.lchild.weight if self.lchild else 0,
-                self.rchild.weight if self.rchild else 0,
-            ])
+            self.weight = max(
+                [
+                    0,
+                    self.lchild.weight if self.lchild else 0,
+                    self.rchild.weight if self.rchild else 0,
+                ]
+            )
 
     def __repr__(self):
-        if hasattr(self.value, 'token_type'):
-            return '<{}: {}>'.format(
+        if hasattr(self.value, "token_type"):
+            return "<{}: {}>".format(
                 self.symbol,
-                str(self.value.token_type)[10:] if self.value else '',
+                str(self.value.token_type)[10:] if self.value else "",
             )
-        return '<{}>'.format(self.value)
+        return "<{}>".format(self.value)
 
     def __str__(self, indent=0):
         if self.value:
             ret = (
-                ' ' * indent
+                " " * indent
                 + str(self.value.token_type)
-                + ': '
+                + ": "
                 + repr(self.value.value)
             )
         else:
-            ret = ' ' * indent + self.symbol
+            ret = " " * indent + self.symbol
         if self.annotations:
-            ret += ': ' + ', '.join([str(x) for x in self.annotations])
+            ret += ": " + ", ".join([str(x) for x in self.annotations])
         if self.lchild:
-            ret += '\n' + self.lchild.__str__(indent + 2)
+            ret += "\n" + self.lchild.__str__(indent + 2)
         if self.rchild:
-            ret += '\n' + self.rchild.__str__(indent + 2)
+            ret += "\n" + self.rchild.__str__(indent + 2)
         return ret
 
-    def in_order_traverse(self):
-        # type: () -> Iterator[CykNode]
+    def in_order_traverse(self) -> Iterator["CykNode"]:
         if self.lchild:
             yield from self.lchild.in_order_traverse()
         yield self
@@ -99,19 +91,16 @@ class CykNode(object):
             if curr.rchild:
                 queue.appendleft(curr.rchild)
 
-    def first_instance(self, symbol):
-        # type: (str) -> Optional['CykNode']
+    def first_instance(self, symbol: str) -> Optional["CykNode"]:
         for node in self.breadth_first_walk():
             if node.symbol == symbol:
                 return node
         return None
 
-    def walk(self):
-        # type: () -> Iterator['CykNode']
+    def walk(self) -> Iterator["CykNode"]:
         yield from self.in_order_traverse()
 
-    def equals(self, other):
-        # type: (Optional['CykNode']) -> bool
+    def equals(self, other: Optional["CykNode"]) -> bool:
         if other is None:
             return False
         if self.symbol != other.symbol:
@@ -124,8 +113,7 @@ class CykNode(object):
             return False
         return True
 
-    def reconstruct_string(self, strictness=0):
-        # type: (int) -> str
+    def reconstruct_string(self, strictness: int = 0) -> str:
         """Reconstruct the docstring.
 
         This method should rebuild the docstring while fixing style
@@ -146,7 +134,7 @@ class CykNode(object):
         # to apply between characters, we use a 3-token sliding
         # window.
         window_size = 3
-        window = deque(maxlen=window_size)  # type: deque
+        window: deque = deque(maxlen=window_size)
         source = self.in_order_traverse()
 
         # Fill the buffer.
@@ -159,21 +147,20 @@ class CykNode(object):
                 window.append(node.value)
 
         if not window:
-            return ''
+            return ""
 
         ret = window[0].value
 
         # Slide the window, filling the return value.
         while len(window) > 1:
             is_whitespace = (
-                window[0].token_type in WHITESPACE
-                or window[1].token_type in WHITESPACE
+                window[0].token_type in WHITESPACE or window[1].token_type in WHITESPACE
             )
             is_colon = window[1].token_type == TokenType.COLON
             if is_whitespace or is_colon:
                 ret += window[1].value
             else:
-                ret += ' ' + window[1].value
+                ret += " " + window[1].value
 
             found_token = False
             for node in source:
@@ -185,17 +172,18 @@ class CykNode(object):
                 break
 
         if len(window) == 3:
-            if (window[1].token_type in WHITESPACE
-                    or window[2].token_type in WHITESPACE
-                    or window[2].token_type == TokenType.COLON):
+            if (
+                window[1].token_type in WHITESPACE
+                or window[2].token_type in WHITESPACE
+                or window[2].token_type == TokenType.COLON
+            ):
                 ret += window[2].value
             else:
-                ret += ' ' + window[2].value
+                ret += " " + window[2].value
 
         return ret
 
-    def _get_line_numbers_cached(self, recurse=0):
-        # type: (int) -> Tuple[int, int]
+    def _get_line_numbers_cached(self, recurse: int = 0) -> Tuple[int, int]:
         if recurse > MAX_TREE_HEIGHT:
             return (-1, -1)
         if self.value:
@@ -212,6 +200,5 @@ class CykNode(object):
         return self._line_number_cache or (-1, -1)
 
     @property
-    def line_numbers(self):
-        # type: () -> Tuple[int, int]
+    def line_numbers(self) -> Tuple[int, int]:
         return self._get_line_numbers_cached()

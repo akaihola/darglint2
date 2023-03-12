@@ -1,16 +1,10 @@
-from unittest import (
-    TestCase,
-)
-from bnf_to_cnf.validate import (
-    Validator,
-)
-from bnf_to_cnf.parser import (
-    Parser,
-)
+from unittest import TestCase
+
+from bnf_to_cnf.parser import Parser
+from bnf_to_cnf.validate import Validator
 
 
 class ValidateCnfTests(TestCase):
-
     def setUp(self):
         self.parser = Parser()
 
@@ -28,15 +22,13 @@ class ValidateCnfTests(TestCase):
         for production in valid_productions:
             self.assertTrue(
                 Validator().validate(self._p(production)),
-                '"{}" should not be valid'.format(production)
+                '"{}" should not be valid'.format(production),
             )
 
     def test_escaped_characters_okay(self):
         """Make sure that special characters are okay if escaped."""
-        for c in ', +*()[]|':
+        for c in ", +*()[]|":
             self.assertTrue(
-                Validator().validate(
-                    self._p('<SOMETHING> ::= "A\\{}B"'.format(c))
-                ),
+                Validator().validate(self._p('<SOMETHING> ::= "A\\{}B"'.format(c))),
                 'Escaping "{}" should allow it.'.format(c),
             )

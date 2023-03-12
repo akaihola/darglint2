@@ -1,23 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+        <script src="/main.js" defer></script>
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <script src="/main.js" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const app = Elm.Main.init({
+                    node: document.getElementById("app"),
+                });
+            });
+        </script>
+    </head>
 
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const app = Elm.Main.init({
-      node: document.getElementById('app')
-    });
-})
-    </script>
-</head>
-
-
-<body>
-    <div id="app"></div>
-</body>
-
+    <body>
+        <div id="app"></div>
+    </body>
 </html>

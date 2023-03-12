@@ -1,18 +1,11 @@
 """Defines a custom assert function for darglint2."""
 
-from .config import (
-    get_logger,
-    get_config,
-    AssertStyle,
-)
+from typing import Any, Optional
 
-from typing import (
-    Any,
-    Optional,
-)
+from .config import AssertStyle, get_config, get_logger
 
 
-def Assert(expr, message):  # type: (Any, Optional[str]) -> None
+def Assert(expr: Any, message: Optional[str]) -> None:
     """Asserts that the given expression is true.
 
     Args:
@@ -35,4 +28,4 @@ def Assert(expr, message):  # type: (Any, Optional[str]) -> None
         raise AssertionError(message)
     elif style == AssertStyle.LOG:
         logger = get_logger()
-        logger.error(message or 'Failed assertion')
+        logger.error(message or "Failed assertion")

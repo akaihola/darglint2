@@ -16,32 +16,21 @@ article, https://en.wikipedia.org/wiki/CYK_algorithm.
 
 """
 
-from typing import (
-    Optional,
-    List,
-)
+from typing import List, Optional
 
-from .grammar import (
-    BaseGrammar,
-)
-from ..token import (
-    Token,
-)
-from ..node import (
-    CykNode,
-)
+from ..node import CykNode
+from ..token import Token
+from .grammar import BaseGrammar
 
 
-def parse(grammar, tokens):
-    # type: (BaseGrammar, List[Token]) -> Optional[CykNode]
+def parse(grammar: BaseGrammar, tokens: List[Token]) -> Optional[CykNode]:
     if not tokens:
         return None
     n = len(tokens)
     r = len(grammar.productions)
-    P = [
-        [[None for _ in range(r)] for _ in range(n)]
-        for _ in range(n)
-    ]  # type: List[List[List[Optional[CykNode]]]]
+    P: List[List[List[Optional[CykNode]]]] = [
+        [[None for _ in range(r)] for _ in range(n)] for _ in range(n)
+    ]
     lookup = grammar.get_symbol_lookup()
     for s, token in enumerate(tokens):
         for v, production in enumerate(grammar.productions):
@@ -57,7 +46,7 @@ def parse(grammar, tokens):
                         value=token,
                         weight=weight,
                     )
-    for l in range(2, n + 1):
+    for l in range(2, n + 1):  # noqa: E741
         for s in range(n - l + 2):
             for p in range(l):
                 for a, production in enumerate(grammar.productions):

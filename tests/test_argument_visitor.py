@@ -1,18 +1,12 @@
 import ast
 from unittest import TestCase
 
-from darglint2.analysis.argument_visitor import (
-    ArgumentVisitor,
-)
+from darglint2.analysis.argument_visitor import ArgumentVisitor
 
-from .utils import (
-    reindent,
-    require_python,
-)
+from .utils import reindent, require_python
 
 
 class ArgumentVisitorTests(TestCase):
-
     def assertFound(self, program, *args):
         """Assert that the given arguments were found.
 
@@ -39,96 +33,93 @@ class ArgumentVisitorTests(TestCase):
         return visitor
 
     def test_no_arguments(self):
-        program = '''
+        program = """
             def f():
                 return 3
-        '''
+        """
         self.assertFound(program)
 
     def test_one_argument(self):
-        program = '''
+        program = """
             def f(x):
                 return x * 2
-        '''
-        self.assertFound(program, 'x')
+        """
+        self.assertFound(program, "x")
 
     def test_many_arguments(self):
-        program = '''
+        program = """
             def f(a, b, c, d, e, f):
                 return a + b + c + d + e + f
-        '''
+        """
         self.assertFound(
             program,
-            'a', 'b', 'c', 'd', 'e', 'f',
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
         )
 
     def test_keyword_arguments(self):
-        program = '''
+        program = """
             def f(x = 3, y = "hello"):
                 return y * x
-        '''
+        """
         self.assertFound(
             program,
-            'x', 'y',
+            "x",
+            "y",
         )
 
     def test_keyword_only_arguments(self):
-        program = '''
+        program = """
             def f(x, y, *, z):
                 return "{}: {}".format(x * y, z)
-        '''
-        self.assertFound(
-            program,
-            'x', 'y', 'z'
-        )
+        """
+        self.assertFound(program, "x", "y", "z")
 
     @require_python(3, 8)
     def test_order_only_arguments(self):
-        program = '''
+        program = """
             def f(x, y, /, z):
                 return f'{x * y}: {z}'
-        '''
-        self.assertFound(
-            program,
-            'x', 'y', 'z'
-        )
+        """
+        self.assertFound(program, "x", "y", "z")
 
     @require_python(3, 8)
     def test_order_and_keyword_arguments(self):
-        program = '''
+        program = """
             def f(x, y, /, z, *, q):
                 return x + y + z + q
-        '''
-        self.assertFound(
-            program,
-            'x', 'y', 'z', 'q'
-        )
+        """
+        self.assertFound(program, "x", "y", "z", "q")
 
     def test_method(self):
-        program = '''
+        program = """
             class A(object):
                 def f(self):
                     return  "hello"
-        '''
-        self.assertFound(program, 'self')
+        """
+        self.assertFound(program, "self")
 
     def test_argument_type_inline(self):
-        program = '''
+        program = """
             def f(x: int) -> float:
                 return x * 0.5
-        '''
-        self.assertTypesFound(program, 'int')
+        """
+        self.assertTypesFound(program, "int")
 
     def test_no_argument_type(self):
-        program = '''
+        program = """
             def f(x) -> str:
                 return "{}'s".format(x)
-        '''
+        """
         self.assertTypesFound(program, None)
 
     def test_multiple_types_ordered(self):
-        program = '''
+        program = """
             def f(x: int, y: str) -> str:
                 return y * x
-        '''
-        self.assertTypesFound(program, 'int', 'str')
+        """
+        self.assertTypesFound(program, "int", "str")

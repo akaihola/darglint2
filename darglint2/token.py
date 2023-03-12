@@ -64,11 +64,7 @@ KEYWORDS = {
 class Token(object):
     """A token representing anything which can appear in a docstring."""
 
-    def __init__(self,
-                 value: str,
-                 token_type: TokenType,
-                 line_number: int
-                 ) -> None:
+    def __init__(self, value: str, token_type: TokenType, line_number: int) -> None:
         """Create a new Token.
 
         Args:
@@ -89,7 +85,7 @@ class Token(object):
             A readable representation for debugging.
 
         """
-        return '<Token {} {}>'.format(repr(self.value), self.token_type)
+        return "<Token {} {}>".format(repr(self.value), self.token_type)
 
     def __repr__(self):
         """Return readable representation for debugging.

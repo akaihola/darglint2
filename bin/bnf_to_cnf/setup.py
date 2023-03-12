@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="bnf_to_cnf",
@@ -8,28 +8,28 @@ setup(
     description=("A utility for converting bnf to cnf."),
     license="MIT",
     keywords="grammar bnf cnf",
-    packages=find_packages(exclude=('tests', 'docs')),
+    packages=find_packages(exclude=("tests", "docs")),
     long_description=(
-        'A small utility to convert BNF to CNF for use in '
+        "A small utility to convert BNF to CNF for use in "
         "darglint2, to ease writing new grammars."
     ),
     entry_points={
-        'console_scripts': [
-            'bnf_to_cnf = bnf_to_cnf.driver:main',
+        "console_scripts": [
+            "bnf_to_cnf = bnf_to_cnf.driver:main",
         ],
     },
     install_requires=[
-        'lark-parser==0.7.8',
+        "lark-parser==0.7.8",
     ],
     setup_requires=[],
-    tests_require=['pytest'],
-    python_requires='>=3.7',
+    tests_require=["pytest"],
+    python_requires=">=3.7",
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Topic :: Software Development :: Code Generators',
-        'Topic :: Software Development :: Compilers',
-        'License :: OSI pproved :: MIT License',
-        'Programming Language :: Python :: 3.7',
-        'Intended Audience :: Developers',
+        "Development Status :: 2 - Pre-Alpha",
+        "Topic :: Software Development :: Code Generators",
+        "Topic :: Software Development :: Compilers",
+        "License :: OSI pproved :: MIT License",
+        "Programming Language :: Python :: 3.7",
+        "Intended Audience :: Developers",
     ],
 )

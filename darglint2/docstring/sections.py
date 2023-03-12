@@ -10,4 +10,3 @@ class Sections(enum.Enum):
     RETURNS_SECTION = 8
     VARIABLES_SECTION = 10
     NOQAS = 13
-

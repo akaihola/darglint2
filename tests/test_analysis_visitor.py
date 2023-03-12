@@ -1,13 +1,12 @@
 import ast
 from unittest import TestCase
 
-from .utils import reindent
-
 from darglint2.analysis.analysis_visitor import AnalysisVisitor
+
+from .utils import reindent
 
 
 class AnalysisVisitorTests(TestCase):
-
     def assertFound(self, program, attribute, args, transform=None):
         """Assert that the given attribute values were found.
 
@@ -50,16 +49,16 @@ class AnalysisVisitorTests(TestCase):
                 yield None
                 return ret
         '''
-        self.assertFound(program, 'arguments', ['x'])
-        self.assertFound(program, 'types', ['int'])
-        self.assertFound(program, 'exceptions', {'Exception'})
+        self.assertFound(program, "arguments", ["x"])
+        self.assertFound(program, "types", ["int"])
+        self.assertFound(program, "exceptions", {"Exception"})
 
         # Just check that an assert is present by registering a number.
-        self.assertFound(program, 'asserts', [1], lambda x: 1)
-        self.assertFound(program, 'returns', [1], lambda x: 1)
+        self.assertFound(program, "asserts", [1], lambda x: 1)
+        self.assertFound(program, "returns", [1], lambda x: 1)
 
-        self.assertFound(program, 'variables', ['ret'], lambda x: x.id)
-        self.assertFound(program, 'yields', [1], lambda x: 1)
+        self.assertFound(program, "variables", ["ret"], lambda x: x.id)
+        self.assertFound(program, "yields", [1], lambda x: 1)
 
     def test_only_current_function_checked(self):
         program = r'''
@@ -72,7 +71,7 @@ class AnalysisVisitorTests(TestCase):
                     return r
                 return _inner()
         '''
-        self.assertFound(program, 'returns', [1], lambda x: 1)
+        self.assertFound(program, "returns", [1], lambda x: 1)
 
     def test_finds_abstract(self):
         program = r'''
@@ -84,7 +83,7 @@ class AnalysisVisitorTests(TestCase):
         function = ast.parse(reindent(program))
         visitor = AnalysisVisitor()
         visitor.visit(function)
-        self.assertTrue(visitor.is_abstract, 'Should have been marked abstract.')
+        self.assertTrue(visitor.is_abstract, "Should have been marked abstract.")
 
     def test_finds_not_abstract(self):
         program = r'''
@@ -95,4 +94,4 @@ class AnalysisVisitorTests(TestCase):
         function = ast.parse(reindent(program))
         visitor = AnalysisVisitor()
         visitor.visit(function)
-        self.assertFalse(visitor.is_abstract, 'Should have been marked abstract.')
+        self.assertFalse(visitor.is_abstract, "Should have been marked abstract.")

@@ -8,24 +8,17 @@ updated only prior to spawning any threads.
 """
 
 import configparser
-from enum import Enum
 import logging
-from logging import (  # noqa
-    Logger,
-)
 import os
-
-from typing import (  # noqa
-    Iterable,
-    List,
-    Optional,
-)
+from enum import Enum
+from logging import Logger  # noqa
+from typing import Iterable, List, Optional  # noqa
 
 from .docstring.style import DocstringStyle
 from .strictness import Strictness
 
 
-def get_logger():  # type: () -> Logger
+def get_logger() -> Logger:
     """Get the default logger for darglint2.
 
     Returns:
@@ -37,16 +30,17 @@ def get_logger():  # type: () -> Logger
 
 POSSIBLE_CONFIG_FILENAMES = (
     ".darglint2",
-    '.darglint',
-    'setup.cfg',
-    'tox.ini',
+    ".darglint",
+    "setup.cfg",
+    "tox.ini",
 )
 
-DEFAULT_DISABLED = {'DAR104'}
+DEFAULT_DISABLED = {"DAR104"}
 
 
 class AssertStyle(Enum):
     """Describes how to handle assertions."""
+
     RAISE = 1
     LOG = 2
 
@@ -60,6 +54,7 @@ class LogLevel(Enum):
     as other options.
 
     """
+
     CRITICAL = logging.CRITICAL
     ERROR = logging.ERROR
     WARNING = logging.WARNING
@@ -67,32 +62,38 @@ class LogLevel(Enum):
     DEBUG = logging.DEBUG
 
     @classmethod
-    def from_string(cls, level):
-        # type: (str) -> LogLevel
+    def from_string(cls, level: str) -> "LogLevel":
         normalized_level = level.lower().strip()
-        if normalized_level == 'critical':
+        if normalized_level == "critical":
             return cls.CRITICAL
-        elif normalized_level == 'error':
+        elif normalized_level == "error":
             return cls.ERROR
-        elif normalized_level == 'warning':
+        elif normalized_level == "warning":
             return cls.WARNING
-        elif normalized_level == 'info':
+        elif normalized_level == "info":
             return cls.INFO
-        elif normalized_level == 'debug':
+        elif normalized_level == "debug":
             return cls.DEBUG
         else:
-            raise ValueError('Unrecognized log level, "{}"'.format(
-                level
-            ))
+            raise ValueError('Unrecognized log level, "{}"'.format(level))
 
 
 class Configuration(object):
-
-    def __init__(self, ignore, message_template, style, strictness,
-                 ignore_regex=None, ignore_raise=[], ignore_properties=False, enable=[],
-                 indentation=4, assert_style=AssertStyle.LOG,
-                 log_level=LogLevel.CRITICAL):
-        # type: (List[str], Optional[str], DocstringStyle, Strictness, Optional[str], List[str], bool, List[str], int, AssertStyle, LogLevel) -> None  # noqa: E501
+    def __init__(
+        self,
+        ignore: List[str],
+        message_template: Optional[str],
+        style: DocstringStyle,
+        strictness: Strictness,
+        ignore_regex: Optional[str] = None,
+        ignore_raise: List[str] = [],
+        ignore_properties: bool = False,
+        enable: List[str] = [],
+        indentation: int = 4,
+        assert_style: AssertStyle = AssertStyle.LOG,
+        log_level: LogLevel = LogLevel.CRITICAL,
+    ) -> None:
+        # noqa: E501
         """Initialize the configuration object.
 
         Args:
@@ -110,6 +111,7 @@ class Configuration(object):
             indentation: The number of spaces to count as an indent.
             assert_style: The assert style to use (e.g. log on failed
                 assertions, or raise exception on failed assertions.)
+            log_level: Minimum level to log. All other log entries will be filtered out.
 
         """
         self._enable = enable
@@ -126,28 +128,27 @@ class Configuration(object):
         self.log_level = log_level
 
     @property
-    def log_level(self):
-        # type: () -> LogLevel
+    def log_level(self) -> LogLevel:
         return self._log_level
 
     @log_level.setter
-    def log_level(self, log_level):
-        # type: (LogLevel) -> None
+    def log_level(self, log_level: LogLevel) -> None:
         self._log_level = log_level
         logger = get_logger()
         logger.setLevel(log_level.value)
 
-    def __str__(self):
-        # type: () -> str
-        return '\n'.join([
-            'message_template={message_template}',
-            'style={style}',
-            'strictness={strictness}',
-            'indentation={indentation}',
-            'ignore={errors_to_ignore}',
-            'ignore_regex={ignore_regex}',
-            'ignore_raise={ignore_raise}',
-        ]).format(**self.__dict__)
+    def __str__(self) -> str:
+        return "\n".join(
+            [
+                "message_template={message_template}",
+                "style={style}",
+                "strictness={strictness}",
+                "indentation={indentation}",
+                "ignore={errors_to_ignore}",
+                "ignore_regex={ignore_regex}",
+                "ignore_raise={ignore_raise}",
+            ]
+        ).format(**self.__dict__)
 
     @classmethod
     def get_default_instance(cls):
@@ -159,29 +160,24 @@ class Configuration(object):
         )
 
     @property
-    def enable(self):
-        # type: () -> List[str]
+    def enable(self) -> List[str]:
         return self._enable
 
     @enable.setter
-    def enable(self, errors):
-        # type: (List[str]) -> None
+    def enable(self, errors: List[str]) -> None:
         self._enable = errors
         self.errors_to_ignore = self._get_errors_to_ignore()
 
     @property
-    def ignore(self):
-        # type: () -> List[str]
+    def ignore(self) -> List[str]:
         return self._ignore
 
     @ignore.setter
-    def ignore(self, errors):
-        # type: (List[str]) -> None
+    def ignore(self, errors: List[str]) -> None:
         self._ignore = errors
         self.errors_to_ignore = self._get_errors_to_ignore()
 
-    def _get_errors_to_ignore(self):
-        # type: () -> List[str]
+    def _get_errors_to_ignore(self) -> List[str]:
         """Update the errors to ignore, accounding for defaults.
 
         For use in constructing a cached `errors_to_ignore` value.
@@ -196,7 +192,7 @@ class Configuration(object):
         return self._ignore + list(disabled)
 
 
-def load_config_file(filename):  # type: (str) -> Configuration
+def load_config_file(filename: str) -> Configuration:
     """Load the config file located at the filename.
 
     Args:
@@ -224,11 +220,11 @@ def load_config_file(filename):  # type: (str) -> Configuration
     if "darglint2" in config.sections():
         if "ignore" in config["darglint2"]:
             errors = config["darglint2"]["ignore"]
-            for error in errors.split(','):
+            for error in errors.split(","):
                 ignore.append(error.strip())
         if "enable" in config["darglint2"]:
             to_enable = config["darglint2"]["enable"]
-            for error in to_enable.split(','):
+            for error in to_enable.split(","):
                 enable.append(error.strip())
         if "message_template" in config["darglint2"]:
             message_template = config["darglint2"]["message_template"]
@@ -236,7 +232,7 @@ def load_config_file(filename):  # type: (str) -> Configuration
             ignore_regex = config["darglint2"]["ignore_regex"]
         if "ignore_raise" in config["darglint2"]:
             to_ignore_raise = config["darglint2"]["ignore_raise"]
-            for exception in to_ignore_raise.split(','):
+            for exception in to_ignore_raise.split(","):
                 ignore_raise.append(exception.strip())
         if "ignore_properties" in config["darglint2"]:
             ignore_properties = bool(config["darglint2"]["ignore_properties"])
@@ -253,8 +249,8 @@ def load_config_file(filename):  # type: (str) -> Configuration
                 indentation = int(config["darglint2"]["indentation"])
             except ValueError:
                 raise Exception(
-                    'Unrecognized value for indentation.  Expected '
-                    'a non-zero, positive integer, but received {}'.format(
+                    "Unrecognized value for indentation.  Expected "
+                    "a non-zero, positive integer, but received {}".format(
                         config["darglint2"]["indentation"]
                     )
                 )
@@ -271,10 +267,11 @@ def load_config_file(filename):  # type: (str) -> Configuration
         ignore_properties=ignore_properties,
         enable=enable,
         indentation=indentation,
+        log_level=log_level,
     )
 
 
-def walk_path():  # type: () -> Iterable[str]
+def walk_path() -> Iterable[str]:
     """Yield directories from the current to root.
 
     Yields:
@@ -295,7 +292,7 @@ def walk_path():  # type: () -> Iterable[str]
         next_path = os.path.dirname(next_path)
 
 
-def find_config_file_in_path(path):  # type: (str) -> Optional[str]
+def find_config_file_in_path(path: str) -> Optional[str]:
     """Return the config path, if it is correct, or None.
 
     Args:
@@ -319,13 +316,13 @@ def find_config_file_in_path(path):  # type: (str) -> Optional[str]
                 if "darglint2" in config.sections():
                     return fully_qualified_path
             except configparser.ParsingError:
-                get_logger().error('Unable to parse file {}'.format(
-                    fully_qualified_path
-                ))
+                get_logger().error(
+                    "Unable to parse file {}".format(fully_qualified_path)
+                )
     return None
 
 
-def find_config_file():  # type: () -> Optional[str]
+def find_config_file() -> Optional[str]:
     """Return the location of the config file.
 
     Returns:
@@ -341,7 +338,7 @@ def find_config_file():  # type: () -> Optional[str]
     return None
 
 
-def get_config_from_file():  # type: () -> Configuration
+def get_config_from_file() -> Configuration:
     """Locate the configuration file and return its Configuration.
 
     Returns:

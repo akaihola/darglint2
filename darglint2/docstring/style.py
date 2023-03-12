@@ -9,16 +9,15 @@ class DocstringStyle(enum.Enum):
     @classmethod
     def from_string(cls, style):
         style = style.lower().strip()
-        if style == 'google':
+        if style == "google":
             return cls.GOOGLE
-        if style == 'sphinx':
+        if style == "sphinx":
             return cls.SPHINX
-        if style == 'numpy':
+        if style == "numpy":
             return cls.NUMPY
 
         raise Exception(
-                'Unrecognized style "{}".  Should be one of {}'.format(
-                    style,
-                    [x.name for x in DocstringStyle]
-                )
+            'Unrecognized style "{}".  Should be one of {}'.format(
+                style, [x.name for x in DocstringStyle]
             )
+        )

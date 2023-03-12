@@ -2,9 +2,7 @@
 
 import ast
 
-from darglint2.function_description import (
-    get_function_descriptions,
-)
+from darglint2.function_description import get_function_descriptions
 
 
 def extract(contents: str):

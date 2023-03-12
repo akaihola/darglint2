@@ -1,5 +1,3 @@
-
-
 def frobscottle(x):
     """Frobscottlize.
 

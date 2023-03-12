@@ -1,4 +1,3 @@
-
 def problematic_function(arg1):
     """Returns double the value of the first argument.
 

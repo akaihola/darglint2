@@ -1,0 +1,93 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9 # frozen: v4.4.0
+    hooks:
+      # check file system problems
+      - id: check-case-conflict
+      - id: check-symlinks
+      - id: destroyed-symlinks
+
+      # unify whitespace and line ending
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+
+      # sort requirements.txt files
+      - id: requirements-txt-fixer
+
+      # check more
+      - id: check-yaml
+      - id: check-toml
+      - id: check-xml
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+
+  - repo: https://github.com/python-poetry/poetry
+    rev: "7fe4678f92dcab48a35169db6567cbb3f5a7e3ef" # frozen: 1.4.0
+    hooks:
+      - id: poetry-check
+      - id: poetry-lock
+        args: ["--no-update"]
+
+  - repo: https://github.com/floatingpurr/sync_with_poetry
+    rev: 6fd6194c7bbd629b18a7bcd7a4a38a57f128b451 # 0.4.0
+    hooks:
+      - id: sync_with_poetry
+        files: ^\.pre-commit-config\.yaml|poetry\.lock$
+        pass_filenames: false
+        args:
+          - "poetry.lock"
+
+  - repo: https://github.com/pycqa/isort
+    rev: dbf82f2dd09ae41d9355bcd7ab69187a19e6bf2f # frozen: 5.12.0
+    hooks:
+      - id: isort
+        name: isort (python)
+
+  - repo: https://github.com/psf/black
+    rev: b0d1fba7ac3be53c71fb0d3211d911e629f8aecb # frozen: 23.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "6f3cb139ef36133b6f903b97facc57b07cef57c9" # frozen: v3.0.0-alpha.6
+    hooks:
+      - id: prettier
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: cc27459d0f843a9333dd181e7451a8d041591a25 # frozen: v0.12.1
+    hooks:
+      - id: validate-pyproject
+        files: pyproject.toml$
+
+  # linters: flake8, mypy, pydocstyle,darglint2
+  - repo: https://github.com/pycqa/flake8
+    rev: "3.9.2" # frozen: 6.0.0
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/akaihola/darglint2
+    rev: 7d5a99253ae80435824463c9f36256e870041258 # frozen: v1.8.2
+    hooks:
+      - id: darglint2
+        exclude: ^(tests|integration_tests)
+
+# configuration for the pre-commit.ci bot
+# only relevant when actually using the bot
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci, https://pre-commit.com and
+    the `.pre-commit-config.yaml` file in this repository.
+
+  autofix_prs: true # default
+  autoupdate_branch: "develop"
+  autoupdate_commit_msg: |
+    [pre-commit.ci] Autoupdate pre-commit hook versions.
+
+    for more information, see https://pre-commit.ci, https://pre-commit.com and
+    the `.pre-commit-config.yaml` file in this repository.
+
+  submodules: false # default

@@ -1,44 +1,34 @@
 """Defines a function for lexing a comment, `lex`."""
 
-from typing import (
-    Iterator,
-    List,
-    Optional,
-)
+from typing import Iterator, List, Optional
+
+from .config import get_config
 from .custom_assert import Assert
 from .peaker import Peaker
 from .token import Token, TokenType
-from .config import (
-    get_config,
-)
 
 # These convenience functions take an optional string
 # because the peaker could return None when at the end
 # of the stream.
 
 
-def _is_space(char):
-    # type: (Optional[str]) -> bool
-    return char == ' '
+def _is_space(char: Optional[str]) -> bool:
+    return char == " "
 
 
-def _is_newline(char):
-    # type: (Optional[str]) -> bool
-    return char == '\n'
+def _is_newline(char: Optional[str]) -> bool:
+    return char == "\n"
 
 
-def _is_colon(char):
-    # type: (Optional[str]) -> bool
-    return char == ':'
+def _is_colon(char: Optional[str]) -> bool:
+    return char == ":"
 
 
-def _is_hash(char):
-    # type: (Optional[str]) -> bool
-    return char == '#'
+def _is_hash(char: Optional[str]) -> bool:
+    return char == "#"
 
 
-def _is_separator(char):
-    # type: (Optional[str]) -> bool
+def _is_separator(char: Optional[str]) -> bool:
     """Check whether if `char` is a separator other than newline or space.
 
     Args:
@@ -53,36 +43,33 @@ def _is_separator(char):
     return char.isspace() and not (_is_space(char) or _is_newline(char))
 
 
-def _is_lparen(char):
-    # type: (Optional[str]) -> bool
-    return char == '('
+def _is_lparen(char: Optional[str]) -> bool:
+    return char == "("
 
 
-def _is_rparen(char):
-    # type: (Optional[str]) -> bool
-    return char == ')'
+def _is_rparen(char: Optional[str]) -> bool:
+    return char == ")"
 
 
-def _is_hyphen(char):
-    # type: (Optional[str]) -> bool
-    return char == '-'
+def _is_hyphen(char: Optional[str]) -> bool:
+    return char == "-"
 
 
-def _is_word(char):
-    # type: (str) -> bool
-    return not any([
-        _is_space(char),
-        _is_newline(char),
-        _is_colon(char),
-        _is_separator(char),
-        _is_hash(char),
-        _is_lparen(char),
-        _is_rparen(char),
-    ])
+def _is_word(char: str) -> bool:
+    return not any(
+        [
+            _is_space(char),
+            _is_newline(char),
+            _is_colon(char),
+            _is_separator(char),
+            _is_hash(char),
+            _is_lparen(char),
+            _is_rparen(char),
+        ]
+    )
 
 
-def lex(program):
-    # type: (str) -> Iterator[Token]
+def lex(program: str) -> Iterator[Token]:
     """Create a stream of tokens from the string.
 
     Args:
@@ -92,7 +79,7 @@ def lex(program):
         Tokens lexed from the string.
 
     """
-    extra = ''  # Extra characters which are pulled but unused from a check.
+    extra = ""  # Extra characters which are pulled but unused from a check.
     peaker = Peaker((x for x in program or []))  # the stream
     line_number = 0
 
@@ -103,9 +90,9 @@ def lex(program):
         # Each of the following conditions must move the stream
         # forward and -- excepting separators -- yield a token.
         if _is_space(peaker.peak()):
-            spaces = ''.join(peaker.take_while(_is_space))
+            spaces = "".join(peaker.take_while(_is_space))
             for _ in range(len(spaces) // config.indentation):
-                yield Token(' ' * 4, TokenType.INDENT, line_number)
+                yield Token(" " * 4, TokenType.INDENT, line_number)
         elif _is_newline(peaker.peak()):
             value = peaker.next()
             yield Token(value, TokenType.NEWLINE, line_number)
@@ -125,16 +112,16 @@ def lex(program):
             value = peaker.next()
             yield Token(value, TokenType.RPAREN, line_number)
         elif _is_hyphen(peaker.peak()):
-            value = ''.join(peaker.take_while(_is_word))
-            if value.count('-') == len(value):
+            value = "".join(peaker.take_while(_is_word))
+            if value.count("-") == len(value):
                 yield Token(value, TokenType.HEADER, line_number)
             else:
                 yield Token(value, TokenType.WORD, line_number)
         else:
-            value = ''.join(peaker.take_while(_is_word))
-            if extra != '':
+            value = "".join(peaker.take_while(_is_word))
+            if extra != "":
                 value = extra + value
-                extra = ''
+                extra = ""
             Assert(
                 len(value) > 0,
                 "There should be non-special characters.",
@@ -143,45 +130,44 @@ def lex(program):
 
 
 KEYWORDS = {
-    'Args': TokenType.ARGUMENTS,
-    'Arguments': TokenType.ARGUMENTS,
-    'Yields': TokenType.YIELDS,
-    'Raises': TokenType.RAISES,
-    'Returns': TokenType.RETURNS,
-    'noqa': TokenType.NOQA,
-    'param': TokenType.ARGUMENTS,
-    'parameter': TokenType.ARGUMENTS,
-    'Parameters': TokenType.ARGUMENTS,
-    'arg': TokenType.ARGUMENTS,
-    'argument': TokenType.ARGUMENTS,
-    'key': TokenType.VARIABLES,
-    'keyword': TokenType.VARIABLES,
-    'var': TokenType.VARIABLES,
-    'ivar': TokenType.VARIABLES,
-    'cvar': TokenType.VARIABLES,
-    'type': TokenType.ARGUMENT_TYPE,
-    'vartype': TokenType.VARIABLE_TYPE,
-    'raises': TokenType.RAISES,
-    'yield': TokenType.YIELDS,
-    'yields': TokenType.YIELDS,
-    'ytype': TokenType.YIELD_TYPE,
-    'return': TokenType.RETURNS,
-    'returns': TokenType.RETURNS,
-    'rtype': TokenType.RETURN_TYPE,
-    'Other': TokenType.OTHER,
-    'Receives': TokenType.RECEIVES,
-    'Warns': TokenType.WARNS,
-    'Warnings': TokenType.WARNS,
-    'See': TokenType.SEE,
-    'Also': TokenType.ALSO,
-    'Notes': TokenType.NOTES,
-    'Examples': TokenType.EXAMPLES,
-    'References': TokenType.REFERENCES,
+    "Args": TokenType.ARGUMENTS,
+    "Arguments": TokenType.ARGUMENTS,
+    "Yields": TokenType.YIELDS,
+    "Raises": TokenType.RAISES,
+    "Returns": TokenType.RETURNS,
+    "noqa": TokenType.NOQA,
+    "param": TokenType.ARGUMENTS,
+    "parameter": TokenType.ARGUMENTS,
+    "Parameters": TokenType.ARGUMENTS,
+    "arg": TokenType.ARGUMENTS,
+    "argument": TokenType.ARGUMENTS,
+    "key": TokenType.VARIABLES,
+    "keyword": TokenType.VARIABLES,
+    "var": TokenType.VARIABLES,
+    "ivar": TokenType.VARIABLES,
+    "cvar": TokenType.VARIABLES,
+    "type": TokenType.ARGUMENT_TYPE,
+    "vartype": TokenType.VARIABLE_TYPE,
+    "raises": TokenType.RAISES,
+    "yield": TokenType.YIELDS,
+    "yields": TokenType.YIELDS,
+    "ytype": TokenType.YIELD_TYPE,
+    "return": TokenType.RETURNS,
+    "returns": TokenType.RETURNS,
+    "rtype": TokenType.RETURN_TYPE,
+    "Other": TokenType.OTHER,
+    "Receives": TokenType.RECEIVES,
+    "Warns": TokenType.WARNS,
+    "Warnings": TokenType.WARNS,
+    "See": TokenType.SEE,
+    "Also": TokenType.ALSO,
+    "Notes": TokenType.NOTES,
+    "Examples": TokenType.EXAMPLES,
+    "References": TokenType.REFERENCES,
 }
 
 
-def condense(tokens):
-    # type: (Iterator[Token]) -> List[Token]
+def condense(tokens: Iterator[Token]) -> List[Token]:
     """Condense the stream of tokens into a list consumable by CYK.
 
     This servers two purposes:
@@ -202,7 +188,7 @@ def condense(tokens):
         representation as possible.
 
     """
-    ret = list()  # type: List[Token]
+    ret: List[Token] = list()
     try:
         curr = next(tokens)
     except StopIteration:
@@ -216,7 +202,7 @@ def condense(tokens):
     for token in tokens:
         if token.token_type == TokenType.WORD and token.value in KEYWORDS:
             ret.append(curr)
-            if token.value == 'noqa':
+            if token.value == "noqa":
                 encountered_noqa = True
             curr = Token(
                 token.value,
@@ -225,7 +211,7 @@ def condense(tokens):
             )
         elif token.token_type == TokenType.WORD:
             if curr.token_type == TokenType.WORD and not encountered_noqa:
-                curr.value += ' {}'.format(token.value)
+                curr.value += " {}".format(token.value)
             else:
                 ret.append(curr)
                 curr = token
