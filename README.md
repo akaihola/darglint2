@@ -330,7 +330,7 @@ In order to make these comparisons, Darglint2 only accepts types
 accepted by Python (see [PEP 484](https://www.python.org/dev/peps/pep-0484/).)
 That is, it does not accept parentheses in type signatures. (If
 parentheses are used in the type signature, Darglint2 will mark that
-argument as missing.  See Issue #90.)
+argument as missing.  See issue [darglint#90](https://github.com/terrencepreilly/darglint/issues/90).)
 
 
 ### Error Codes
