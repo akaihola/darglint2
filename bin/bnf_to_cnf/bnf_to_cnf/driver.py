@@ -1,5 +1,6 @@
 import argparse
-from typing import Dict, Iterator, Optional
+from pathlib import Path
+from typing import Dict, Iterator, Optional, Union
 
 from .node import Node
 from .parser import Parser
@@ -9,8 +10,7 @@ from .validate import Validator
 parser = argparse.ArgumentParser(description="Convert BNF grammar to CNF")
 parser.add_argument(
     "file",
-    nargs=1,
-    type=str,
+    type=Path,
     help=("The file to read the grammar from."),
 )
 parser.add_argument(
@@ -39,7 +39,7 @@ class Driver(object):
         self.translator = Translator()
         self.tree: Optional[Node] = None
 
-    def read(self, filename: str) -> "Driver":
+    def read(self, filename: Union[str, Path]) -> "Driver":
         with open(filename, "r") as fin:
             self.data = fin.read()
         return self
@@ -83,30 +83,41 @@ class Driver(object):
         self.tree.merge(driver.tree)
 
 
-def load_script(filename: str, cache: Dict[str, Driver] = dict()):
+def load_script(filepath: Path, cache: Dict[str, Driver] = None):
     """Recursively load a script, parsing it and adding dependencies.
 
     Args:
-        filename: The name of the file to open.
+        filepath: The path of the file to open.
         cache: A cache to avoid duplicate work.
 
     Returns:
         The fully parsed grammar.
 
+    Raises:
+        ValueError: If `filepath` is in `cache` already.
+
     """
-    assert filename not in cache
-    driver = Driver().read(filename).parse()
-    cache[filename] = driver
+    if cache is None:
+        cache = {}
+
+    filepath = filepath.resolve()
+    filepath_str = str(filepath)
+
+    if filepath_str in cache:
+        raise ValueError(f"File {filepath_str} was already imported.")
+
+    driver = Driver().read(filepath).parse()
+    cache[filepath_str] = driver
+    directory = filepath.parent
 
     # We know that merging doesn't introduce new imports,
     # so it's safe to immediately merge subgrammars.
-    for filename in driver.get_imports():
-        if filename in cache:
+    for imported_file in driver.get_imports():
+        imported_path = (directory / imported_file).resolve()
+        if str(imported_path) not in cache:
             # We skip already imported scripts, to avoid
             # having multiple copies of the productions.
-            continue
-        else:
-            subdriver = load_script(filename, cache)
+            subdriver = load_script(imported_path, cache)
             driver.merge(subdriver)
 
     return driver
@@ -114,7 +125,7 @@ def load_script(filename: str, cache: Dict[str, Driver] = dict()):
 
 def main():
     args = parser.parse_args()
-    driver = load_script(args.file[0])
+    driver = load_script(args.file)
     translated = driver.translate().validate().write(args.format)
 
     if args.output:
