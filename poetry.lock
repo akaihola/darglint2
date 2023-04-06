@@ -84,6 +84,23 @@ files = [
 ]
 
 [[package]]
+name = "doc-extract"
+version = "0.0.1"
+description = "Extracts docstrings from a repo and allows annotating them."
+category = "dev"
+optional = false
+python-versions = "^3.7"
+files = []
+develop = false
+
+[package.dependencies]
+darglint2 = {path = "../.."}
+
+[package.source]
+type = "directory"
+url = "bin/doc_extract"
+
+[[package]]
 name = "exceptiongroup"
 version = "1.1.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -521,4 +538,4 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=4.6)", "pytest-black (
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "26ed8faf153ce757a1796a8a37333b076ba75d5991701651ad09426ade61a458"
+content-hash = "7a449c5e8c15f21071a8aa9529f46103e17f957f27d2ffa47e7776b7f8dfa7ac"

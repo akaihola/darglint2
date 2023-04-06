@@ -34,7 +34,8 @@ readme = "README.md"
 python = "^3.7"
 
 [tool.poetry.group.dev.dependencies]
-bnf-to-cnf = { path = "bin/bnf_to_cnf" }
+bnf-to-cnf  = { path = "bin/bnf_to_cnf" }
+doc_extract = { path = "bin/doc_extract" }
 
 [tool.poetry.group.lint.dependencies]
 flake8     = "^3.7"
