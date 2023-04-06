@@ -58,7 +58,7 @@ class Driver(object):
             except Exception as ex:
                 print(f"Failed to open sourcefile {ex}")
         else:
-            paths = sys.stdin.readlines()
+            paths = [x.strip() for x in sys.stdin.readlines()]
 
         contents: List[Dict[str, Any]] = list()
 
