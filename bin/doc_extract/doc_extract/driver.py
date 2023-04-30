@@ -90,14 +90,11 @@ class Driver(object):
         if self.shuffle:
             random.shuffle(contents)
 
-        if self.output:
-            try:
-                with open(self.output, "w") as fout:
-                    json.dump(contents, fout)
-            except Exception as ex:
-                print(f"Unable to write to output {ex}")
-        else:
-            print(contents, file=sys.stdout)
+        try:
+            with open(self.output, "w") if self.output else sys.stdout as fout:
+                json.dump(contents, fout)
+        except Exception as ex:
+            print(f"Unable to write to output {ex}")
 
 
 def main():
