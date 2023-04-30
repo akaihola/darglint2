@@ -3,6 +3,7 @@
 import ast
 from unittest import TestCase
 
+from darglint2.config import Configuration
 from darglint2.error_report import ErrorReport
 from darglint2.errors import EmptyDescriptionError
 from darglint2.function_description import get_function_descriptions
@@ -51,13 +52,9 @@ class ErrorReportMessageTemplateTest(TestCase):
             message,
         )
         filename = "/Some/File/Discarded.py"
-        message_template = ""
-        error_report = ErrorReport(
-            errors=[error],
-            filename=filename,
-            message_template=message_template,
-        )
-        self.assertEqual(str(error_report), "")
+        with Configuration(message_template="").context():
+            error_report = ErrorReport(errors=[error], filename=filename)
+            self.assertEqual(str(error_report), "")
 
     def test_format_string_only_msg_id(self):
         """Ensure that message template can have one item."""
@@ -67,11 +64,9 @@ class ErrorReportMessageTemplateTest(TestCase):
             message,
         )
         filename = "/Users/ronald_vermillion/great_donuts.ijs"
-        message_template = "{msg_id}"
-        error_report = ErrorReport(
-            errors=[error], filename=filename, message_template=message_template
-        )
-        self.assertEqual(str(error_report), EmptyDescriptionError.error_code)
+        with Configuration(message_template="{msg_id}").context():
+            error_report = ErrorReport(errors=[error], filename=filename)
+            self.assertEqual(str(error_report), EmptyDescriptionError.error_code)
 
     def test_format_can_include_string_constants(self):
         """Ensure that string constants can be in message."""
@@ -81,11 +76,11 @@ class ErrorReportMessageTemplateTest(TestCase):
             message,
         )
         filename = "./some_filename.py"
-        message_template = "({msg}) :)"
-        error_report = ErrorReport(
-            errors=[error], filename=filename, message_template=message_template
-        )
-        self.assertEqual(str(error_report), "(Empty description: e The Message!) :)")
+        with Configuration(message_template="({msg}) :)").context():
+            error_report = ErrorReport(errors=[error], filename=filename)
+            self.assertEqual(
+                str(error_report), "(Empty description: e The Message!) :)"
+            )
 
     def test_all_attributes(self):
         """Test against all possible attributes."""
@@ -104,35 +99,9 @@ class ErrorReportMessageTemplateTest(TestCase):
                 "{obj}",
             ]
         )
-        error_report = ErrorReport(
-            errors=[error],
-            filename=filename,
-            message_template=message_template,
-        )
+        with Configuration(message_template=message_template).context():
+            error_report = ErrorReport(errors=[error], filename=filename)
 
-        # This will raise an error if the template
-        # parameters are incorrect.
-        str(error_report)
-
-    def test_message_template_is_none_uses_default(self):
-        message = "My Message"
-        error = EmptyDescriptionError(
-            self.function_description,
-            message,
-        )
-        filename = "./data/datum.py"
-        error_report = ErrorReport(
-            errors=[error],
-            filename=filename,
-            message_template=None,
-        )
-        error_repr = str(error_report)
-        self.assertTrue(
-            all(
-                [
-                    message in error_repr,
-                    filename in error_repr,
-                    EmptyDescriptionError.error_code in error_repr,
-                ]
-            )
-        )
+            # This will raise an error if the template
+            # parameters are incorrect.
+            str(error_report)

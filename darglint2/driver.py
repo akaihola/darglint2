@@ -176,7 +176,6 @@ def get_error_report(
     filename: str,
     verbosity: int,
     raise_errors_for_syntax: bool,
-    message_template: str = None,
 ) -> str:
     """Get the error report for the given file.
 
@@ -187,8 +186,6 @@ def get_error_report(
             to propagate up (crashing darglint2.)  This is useful
             if we are developing on darglint2 -- we can get the stack
             trace and know exactly where darglint2 failed.
-        message_template: A python format string for specifying
-            how the message should appear to the user.
 
     Returns:
         An error report for the file.
@@ -206,11 +203,10 @@ def get_error_report(
         return checker.get_error_report_string(
             verbosity,
             filename,
-            message_template=message_template,
         )
     except SyntaxError as e:
         error = darglint2.errors.PythonSyntaxError(e)
-        report = ErrorReport([error], filename, verbosity, message_template)
+        report = ErrorReport([error], filename, verbosity)
         return str(report)
 
 
@@ -294,13 +290,15 @@ def main() -> None:
         if args.ignore_properties:
             config.ignore_properties = args.ignore_properties
 
+        if args.message_template:
+            config.message_template = args.message_template
+
         raise_errors_for_syntax = args.raise_syntax or False
         for filename in files:
             error_report = get_error_report(
                 filename,
                 args.verbosity,
                 raise_errors_for_syntax,
-                message_template=args.message_template,
             )
             if error_report:
                 print(error_report + "\n")
