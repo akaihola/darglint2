@@ -1,0 +1,92 @@
+name: Bug Report Form
+description: Report a bug or a similiar issue.
+labels:
+  - needs:triage
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue. Please fill out the below template with as much detail as possible. Incomplete bug reports are likely to be closed without comment.
+
+        If you want to suggest a feature use the
+        [Feature Request template](https://github.com/akaihola/darglint2/issues/new?template=feature_request.md)
+        instead.
+
+  - type: checkboxes
+    id: checklist-existing-issues
+    attributes:
+      label: Existing Issues
+      description: |
+        Please  do not create a new issue for a problem that was already reported but use the existing thread.
+        However issues that only exist in the original [darglint](https://github.com/terrencepreilly/darglint)
+        repository may be reported again in this one.
+        Please link all issues that might relate to this report below.
+      options:
+        - label: |
+            I have searched the [darglint2 issue tracker](https://github.com/akaihola/darglint2/issues?q=is%3Aissue)
+            for open and closed issues to avoid duplicates.
+          required: true
+        - label: |
+            I have searched the [darglint issue tracker](https://github.com/terrencepreilly/darglint/issues?q=is%3Aissue)
+            for open and closed issues.
+          required: true
+
+  - type: textarea
+    id: related-issues
+    attributes:
+      label: Related issues
+      description: Link all issues that might relate to this report.
+      placeholder: |
+        - #14
+        - terrencepreilly/darglint#78
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please describe your issue and its context in a clear and concise way.
+        Please create a minimal, reproducible example (MRE) that you have actually tested to work.
+        Please also use a minimal configuration and make sure that you don't overlook any config files in your working directory.
+        Here are some tips for providing a minimal example: https://stackoverflow.com/help/mcve
+        Please exclose the minimal example and the corresponding output.
+
+        Use code blocks with `py`, `pytb`, `dosini` or `toml` highlighting where applicable.
+      placeholder: |
+        I encountered a bug.
+
+        ```
+        minimal example (MRE)
+        ```
+
+        Steps to reproduce:
+        1. Save MRE to `somefile`
+        2. Run `some command` in bash
+        3. See error
+
+        ```
+        some output
+        ```
+
+        ```pytb
+        Error message
+        ```
+
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Run `darglint2 --version` to find out.
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      description: Operating system where useful (e.g. in case of OSErrors)
+      placeholder: <os> <version>
