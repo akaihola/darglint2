@@ -2,13 +2,12 @@
 
 from typing import Iterator, Tuple
 
+from . import __version__
 from .config import get_config
 from .docstring.style import DocstringStyle
 from .function_description import get_function_descriptions
 from .integrity_checker import IntegrityChecker
 from .strictness import Strictness
-
-__version__ = "1.8.2"
 
 
 class DarglintChecker(object):
