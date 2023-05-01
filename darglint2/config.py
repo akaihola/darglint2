@@ -10,9 +10,10 @@ updated only prior to spawning any threads.
 import configparser
 import logging
 import os
+from contextlib import contextmanager
 from enum import Enum
-from logging import Logger  # noqa
-from typing import Iterable, List, Optional  # noqa
+from logging import Logger
+from typing import Iterable, List, Optional, Set
 
 from .docstring.style import DocstringStyle
 from .strictness import Strictness
@@ -78,27 +79,50 @@ class LogLevel(Enum):
             raise ValueError('Unrecognized log level, "{}"'.format(level))
 
 
-class Configuration(object):
+class Configuration:
+    """
+    A dataclass representing a configuration.
+
+    Attributes:
+        ignore: A list of error codes to ignore.
+        message_template: The template with which to format the errors.
+        style: The style of docstring.
+        strictness: The minimum strictness to allow.
+        ignore_regex: A regular expression which enables ignoring
+            functions/methods by name.
+        ignore_raise: A list of exceptions that don't need to be
+            documented.
+        ignore_properties: Bool indicating whether to ignore properties functions
+            or not.
+        enable: Enable error codes that are normally disabled by default.
+        indentation: The number of spaces to count as an indent.
+        assert_style: The assert style to use (e.g. log on failed
+            assertions, or raise exception on failed assertions.)
+        log_level: Minimum level to log. All other log entries will be filtered out.
+
+    """
+
     def __init__(
         self,
-        ignore: List[str],
-        message_template: Optional[str],
-        style: DocstringStyle,
-        strictness: Strictness,
+        *,
+        ignore: List[str] = None,
+        message_template: str = "{path}:{obj}:{line}: {msg_id}: {msg}",
+        style: DocstringStyle = DocstringStyle.GOOGLE,
+        strictness: Strictness = Strictness.FULL_DESCRIPTION,
         ignore_regex: Optional[str] = None,
-        ignore_raise: List[str] = [],
+        ignore_raise: List[str] = None,
         ignore_properties: bool = False,
-        enable: List[str] = [],
+        enable: List[str] = None,
         indentation: int = 4,
         assert_style: AssertStyle = AssertStyle.LOG,
         log_level: LogLevel = LogLevel.CRITICAL,
-    ) -> None:
-        # noqa: E501
-        """Initialize the configuration object.
+    ):
+        """
+        Init.
 
         Args:
             ignore: A list of error codes to ignore.
-            message_template: the template with which to format the errors.
+            message_template: The template with which to format the errors.
             style: The style of docstring.
             strictness: The minimum strictness to allow.
             ignore_regex: A regular expression which enables ignoring
@@ -107,21 +131,19 @@ class Configuration(object):
                 documented.
             ignore_properties: Bool indicating whether to ignore properties functions
                 or not.
-            enable: A list of of error codes that are disabled by default.
+            enable: Enable error codes that are normally disabled by default.
             indentation: The number of spaces to count as an indent.
             assert_style: The assert style to use (e.g. log on failed
                 assertions, or raise exception on failed assertions.)
             log_level: Minimum level to log. All other log entries will be filtered out.
-
         """
-        self._enable = enable
-        self._ignore = ignore
+        self.enable = enable or []
+        self.ignore = ignore or []
         self.message_template = message_template
         self.style = style
         self.strictness = strictness
-        self.errors_to_ignore = self._get_errors_to_ignore()
         self.ignore_regex = ignore_regex
-        self.ignore_raise = ignore_raise
+        self.ignore_raise = ignore_raise or []
         self.ignore_properties = ignore_properties
         self.indentation = indentation
         self.assert_style = assert_style
@@ -136,6 +158,21 @@ class Configuration(object):
         self._log_level = log_level
         logger = get_logger()
         logger.setLevel(log_level.value)
+
+    @property
+    def errors_to_ignore(self) -> Set[str]:
+        """Update the errors to ignore, accounding for defaults.
+
+        For use in constructing a cached `errors_to_ignore` value.
+        Since this value could be used frequently, it makes
+        sense to cache this value.
+
+        Returns:
+            The errors to ignore, including the default errors.
+
+        """
+        disabled = DEFAULT_DISABLED - set(self.enable)
+        return set(self.ignore) | disabled
 
     def __str__(self) -> str:
         return "\n".join(
@@ -159,37 +196,14 @@ class Configuration(object):
             strictness=Strictness.FULL_DESCRIPTION,
         )
 
-    @property
-    def enable(self) -> List[str]:
-        return self._enable
-
-    @enable.setter
-    def enable(self, errors: List[str]) -> None:
-        self._enable = errors
-        self.errors_to_ignore = self._get_errors_to_ignore()
-
-    @property
-    def ignore(self) -> List[str]:
-        return self._ignore
-
-    @ignore.setter
-    def ignore(self, errors: List[str]) -> None:
-        self._ignore = errors
-        self.errors_to_ignore = self._get_errors_to_ignore()
-
-    def _get_errors_to_ignore(self) -> List[str]:
-        """Update the errors to ignore, accounding for defaults.
-
-        For use in constructing a cached `errors_to_ignore` value.
-        Since this value could be used frequently, it makes
-        sense to cache this value.
-
-        Returns:
-            The errors to ignore, including the default errors.
-
+    @contextmanager
+    def context(self):
         """
-        disabled = DEFAULT_DISABLED - set(self._enable)
-        return self._ignore + list(disabled)
+        Get a contextmanager for applying this configuration globally.
+        """
+        old_config = set_config(self)
+        yield
+        set_config(old_config)
 
 
 def load_config_file(filename: str) -> Configuration:
@@ -209,7 +223,7 @@ def load_config_file(filename: str) -> Configuration:
     config.read(filename)
     ignore = list()
     enable = list()
-    message_template = None
+    message_template = "{path}:{obj}:{line}: {msg_id}: {msg}"
     ignore_regex = None
     ignore_raise = list()
     ignore_properties = False
@@ -354,6 +368,24 @@ def get_config_from_file() -> Configuration:
 
 # The global instance of the config file to use.
 _config = get_config_from_file()
+
+
+def set_config(config: Configuration) -> Configuration:
+    """
+    Override the global configuration object.
+
+    Args:
+        config (Configuration):
+            The new configuration.
+
+    Returns:
+        Configuration
+            The overridden configuration.
+    """
+    global _config
+    old_config = _config
+    _config = config
+    return old_config
 
 
 def get_config():
