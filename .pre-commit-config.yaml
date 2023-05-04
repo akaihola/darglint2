@@ -34,7 +34,7 @@ repos:
     rev: 6fd6194c7bbd629b18a7bcd7a4a38a57f128b451 # 0.4.0
     hooks:
       - id: sync_with_poetry
-        files: ^\.pre-commit-config\.yaml|poetry\.lock$
+        files: ^(\.pre-commit-config\.yaml|poetry\.lock)$
         pass_filenames: false
         args:
           - "poetry.lock"
@@ -54,6 +54,7 @@ repos:
     rev: "6f3cb139ef36133b6f903b97facc57b07cef57c9" # frozen: v3.0.0-alpha.6
     hooks:
       - id: prettier
+        exclude: ^docs/source/(_polyversion/|_)templates/
 
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: cc27459d0f843a9333dd181e7451a8d041591a25 # frozen: v0.12.1
@@ -71,7 +72,7 @@ repos:
     rev: 7d5a99253ae80435824463c9f36256e870041258 # frozen: v1.8.2
     hooks:
       - id: darglint2
-        exclude: ^(tests|integration_tests)
+        exclude: ^(docs|tests|integration_tests)
 
 # configuration for the pre-commit.ci bot
 # only relevant when actually using the bot

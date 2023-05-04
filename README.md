@@ -1,5 +1,7 @@
 # Darglint2
 
+<!-- description -->
+
 A functional docstring linter which checks whether a docstring's
 description matches the actual function/method implementation.
 _Darglint2_ expects docstrings to be formatted using the
@@ -9,6 +11,8 @@ or [Numpy Style Guide](https://numpydoc.readthedocs.io/en/latest/format.html).
 
 Feel free to submit an issue/pull request if you spot a problem or
 would like a feature in _darglint2_.
+
+<!-- end description -->
 
 **Table of Contents**:
 
@@ -35,11 +39,11 @@ For the 1.8.1 version of `darglint`, [@terrencepreilly](https://github.com/terre
 [Project Status](https://github.com/terrencepreilly/darglint/blob/master/README.md#project-status) section
 in the `README` in October 2021:
 
->I no longer work with Python regularly, and I'd like to spend some more
->time on other projects.  So while I'll continue to maintain darglint,
->I likely won't be adding significant new features.  That said, I will
->try to accept pull requests.  See the contribution section for more
->information.  Consider it in maintenance mode.
+> I no longer work with Python regularly, and I'd like to spend some more
+> time on other projects. So while I'll continue to maintain darglint,
+> I likely won't be adding significant new features. That said, I will
+> try to accept pull requests. See the contribution section for more
+> information. Consider it in maintenance mode.
 
 Later, in December 2022, the `darglint` repository was archived and maintenance was ceased.
 With a few useful bugfixes and pull requests left out of the final 1.8.1 release,
@@ -50,7 +54,6 @@ For more background about the fork,
 see also [this discussion](/9dogs/darglint/commit/0c8a388715daf4ca8e5a8b76107d7ab8a865ab23#r95373928)
 attached to commit [0c8a3887](/9dogs/darglint/commit/0c8a388715daf4ca8e5a8b76107d7ab8a865ab23)
 in [@9dogs](https://github.com/9dogs)'s fork of the original [terrencepreilly/darglint](/terrencepreilly/darglint).
-
 
 ## Installation
 
@@ -349,7 +352,7 @@ In order to make these comparisons, Darglint2 only accepts types
 accepted by Python (see [PEP 484](https://www.python.org/dev/peps/pep-0484/).)
 That is, it does not accept parentheses in type signatures. (If
 parentheses are used in the type signature, Darglint2 will mark that
-argument as missing.  See issue [darglint#90](https://github.com/terrencepreilly/darglint/issues/90).)
+argument as missing. See issue [darglint#90](https://github.com/terrencepreilly/darglint/issues/90).)
 
 ### Error Codes
 

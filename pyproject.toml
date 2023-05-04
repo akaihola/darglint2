@@ -46,6 +46,19 @@ pydocstyle = "^4.0"
 pytest = "^7.2.2"
 tox    = "^4.4.6"
 
+[tool.poetry.group.docs.dependencies]
+sphinx                           = "^5.3.0"
+sphinx-argparse                  = "^0.3.2"
+sphinx-rtd-theme-github-versions = "^1.1"
+sphinx-rtd-theme                 = "^1.2.0"
+myst-parser                      = "^1.0.0"
+sphinx-notfound-page             = "^0.8.3"
+sphinx-copybutton                = "^0.5.2"
+furo                             = "^2023.3.27"
+sphinxext-opengraph              = "^0.8.2"
+sphinx-autobuild                 = "^2021.3.14"
+sphinx-design                    = "^0.4.1"
+
 [tool.poetry.scripts]
 darglint2 = "darglint2.driver:main"
 
