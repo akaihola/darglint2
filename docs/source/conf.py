@@ -3,21 +3,49 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-
 import glob
 import importlib
 import inspect
+import json
 import os
-import subprocess
+import sys
 import time
 
 import darglint2
 
+# -- Polyversion script ------------------------------------------------------
+
+mock_version = os.getenv("MOCK_VERSION")
+polyversion_path = os.getenv("POLYVERSION_PATH")
+polyversion_raw = os.getenv("POLYVERSION_DATA")
+
+# mock building docs with sphinx-multiversion
+branch = "undefined"
+if mock_version:
+    html_context = {
+        "current": {"name": mock_version},
+        "latest": {"name": "v1.8.3"},
+        "tags": [{"name": "v1.8.3"}, {"name": "v1.5"}],
+        "branches": [{"name": "docs"}, {"name": "main"}],
+    }
+    branch = mock_version
+
+# import polyversion
+if polyversion_path:
+    sys.path.append(polyversion_path)
+    from sphinx_polyversion import GitRefDecoder
+
+    if polyversion_raw:
+        # load and process polyversion data, set html_context
+        polyversion_data = json.loads(polyversion_raw, cls=GitRefDecoder)
+        html_context = polyversion_data
+        refs = polyversion_data["tags"] or polyversion_data["branches"]
+        html_context["latest"] = max(refs, key=lambda r: r.date)
+        branch = polyversion_data["current"].name
+
+
 # -- Dynamic fields ----------------------------------------------------------
 
-branch = subprocess.check_output(
-    ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=os.path.dirname(__file__)
-).decode()
 year = time.strftime("%Y")
 version = darglint2.__version__
 
@@ -81,7 +109,6 @@ myst_enable_extensions = [
     "tasklist",
 ]
 
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
@@ -90,7 +117,6 @@ html_static_path = ["_static"]
 
 # the html title is used for contructing the title show for the browser tab
 html_title = f"{project} {release}"
-
 
 html_css_files = [
     # add markers to external links
@@ -145,19 +171,6 @@ locale_dirs = []
 
 # sphinx_copybutton
 copybutton_exclude = ".linenos, .gp"  # exclude these elements from being copied
-
-
-# mock building docs with sphinx-multiversion
-mock_version = os.getenv("MOCK_VERSION")
-if mock_version:
-    html_context = {
-        "current_version": {"name": mock_version},
-        "latest_version": {"name": "v1.8.3"},
-        "versions": {
-            "tags": [{"name": "v1.8.3"}, {"name": "v1.5"}],
-            "branches": [{"name": "docs"}, {"name": "main"}],
-        },
-    }
 
 # sphinx-opengraph
 ogp_site_url = url
@@ -231,13 +244,13 @@ def edit_html(app, exception):
         raise exception
 
     for file in glob.glob(f"{app.outdir}/**/*.html", recursive=True):
-        with open(file, "r") as f:
+        with open(file, "r", errors="surrogateescape") as f:
             text = f.read()
 
         text = text.replace(
             '<a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>\'s', ""
         )
-        with open(file, "w") as f:
+        with open(file, "w", errors="surrogateescape") as f:
             f.write(text)
 
 

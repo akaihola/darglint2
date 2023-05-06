@@ -1,0 +1,17 @@
+<!doctype html>
+{# Determine latest tag / latest branch if no tags are available #}
+{% if tags %} {% set latest = tags|max(attribute='date') %} {% else %} {% set
+latest = branches|max(attribute='date') %} {% endif %}
+
+{# Redirect to the subdirectory of the latest version #}
+<html>
+    <head>
+        <title>Redirecting to master branch</title>
+        <meta charset="utf-8" />
+        <meta
+            http-equiv="refresh"
+            content="0; url=./{{ latest.name }}/index.html"
+        />
+        <link rel="canonical" href="./{{ latest.name }}/index.html" />
+    </head>
+</html>

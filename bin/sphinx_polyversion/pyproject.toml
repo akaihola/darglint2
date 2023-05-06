@@ -1,0 +1,26 @@
+[build-system]
+requires      = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "sphinx_polyversion"
+version = "0.0.1"
+description = "Build multiple versions of your sphinx docs into one website"
+authors = ["yfprojects <real-yfprojects@users.noreply.github.com>"]
+license = "MIT"
+repository = "https://github.com/akaihola/darglint2"
+keywords = ["utils", "documentation", "sphinx"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI pproved :: MIT License",
+    "Programming Language :: Python :: 3.7",
+    "Intended Audience :: Developers",
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+jinja2 = "^3"
+
+[tool.poetry.scripts]
+sphinx_polyversion = "sphinx_polyversion:run"

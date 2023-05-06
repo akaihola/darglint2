@@ -1,9 +1,9 @@
 {# Add version selector This generates a version selector similar to the rtd
 version selector using the data exposed by `sphinx-multiversion` through
-current_version, latest_version and versions. It uses the same classes and ids
-as the version picker provided by the theme for use with readthedocs.io The css
-styling can be found in `css/version-selector.css`. The template doesn't fail
-when the needed data isn't provided but the result doesn't work as expected. #}
+current, latest_version and versions. It uses the same classes and ids as the
+version picker provided by the theme for use with readthedocs.io The css styling
+can be found in `css/version-selector.css`. The template doesn't fail when the
+needed data isn't provided but the result doesn't work as expected. #}
 
 <div
     id="furo-readthedocs-versions"
@@ -19,27 +19,27 @@ when the needed data isn't provided but the result doesn't work as expected. #}
         {# git icon indicating the version selector #}
         <i class="bi bi-git"></i>
         {# show current version; prepend `v` in case of branches #} {% if not
-        current_version or not current_version.name.startswith("v") %} v: {%
-        endif %} {{ current_version.name if current_version else "undefined" }}
+        current or not current.name.startswith("v") %} v: {% endif %} {{
+        current.name if current else "undefined" }}
     </span>
-    {% if versions %} {# This item lists the avaible versions grouped into
-    branches and tags. The item is hidden by default but appears when the user
-    hovers over the version selector. #}
+    {% if tags or branches %} {# This item lists the avaible versions grouped
+    into branches and tags. The item is hidden by default but appears when the
+    user hovers over the version selector. #}
     <div class="rst-other-versions">
-        {% if versions.tags %} {# List of tags #}
+        {% if tags %} {# List of tags #}
         <dl>
             <dt>
                 <i class="bi bi-tags-fill version-header"></i>{{ _('Tags') }}
             </dt>
-            {% for item in versions.tags %}
-            <dd><a href="{{ item.url }}">{{ item.name }}</a></dd>
+            {% for item in tags %}
+            <dd><a href="../{{ item.name }}/index.html">{{ item.name }}</a></dd>
             {% endfor %}
         </dl>
-        {% endif %} {% if versions.branches %} {# List of branches #}
+        {% endif %} {% if branches %} {# List of branches #}
         <dl>
             <dt><i class="bi bi-git version-header"></i>{{ _('Branches') }}</dt>
-            {% for item in versions.branches %}
-            <dd><a href="{{ item.url }}">{{ item.name }}</a></dd>
+            {% for item in branches %}
+            <dd><a href="../{{ item.name }}/index.html">{{ item.name }}</a></dd>
             {% endfor %}
         </dl>
         {% endif %}

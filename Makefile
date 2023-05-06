@@ -3,6 +3,10 @@ MOCK_VERSION ?= v1.5
 docs:
 	MOCK_VERSION=$(MOCK_VERSION) poetry run sphinx-build -a -v docs/source docs/build
 
+.PHONY: docs-polyversion
+docs-polyversion:
+	poetry run sphinx_polyversion -a -v docs/source docs/build --poetry-groups docs
+
 .PHONY: lint
 lint:
 	poetry run pre-commit run --all-files
