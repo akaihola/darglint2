@@ -1,0 +1,8 @@
+contact_links:
+  - name: Documentation
+    url: https://akaihola.github.io/darglint2/
+    about: Documentation on installing, using and contributing to Vorta.
+
+  - name: Support
+    url: https://github.com/akaihola/darglint2/discussions/categories/faq
+    about: Please ask for support in the Discussions FAQ.
