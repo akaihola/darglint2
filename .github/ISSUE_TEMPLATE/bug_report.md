@@ -44,7 +44,7 @@ Please describe your issue and its context in a clear and concise way.
 Please create a minimal, reproducible example (MRE) that you have actually tested to work.
 Please also use a minimal configuration and make sure that you don't overlook any config files in your working directory.
 Here are some tips for providing a minimal example: https://stackoverflow.com/help/mcve
-Please exclose the minimal example and the corresponding output.
+Please enclose the minimal example and the corresponding output.
 
 Use code blocks with `py`, `pytb`, `dosini` or `toml` highlighting where applicable.
 -->
