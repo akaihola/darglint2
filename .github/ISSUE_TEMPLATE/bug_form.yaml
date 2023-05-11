@@ -56,13 +56,13 @@ body:
       placeholder: |
         I encountered a bug.
 
-        ```
-        minimal example (MRE)
+        ```py
+        # minimal example (MRE)
         ```
 
         Steps to reproduce:
-        1. Save MRE to `somefile`
-        2. Run `some command` in bash
+        1. Save MRE to `somefile.py`
+        2. Run `darglint2 <options>` in bash
         3. See error
 
         ```
