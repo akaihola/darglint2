@@ -538,7 +538,7 @@ async def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # poetry args used for building
-    poetry_args = ["--only", ",".join(options.poetry_groups)]
+    poetry_args = ["--only", ",".join(options.poetry_groups), "--sync"]
 
     # build local version
     local_build = identity(True)
