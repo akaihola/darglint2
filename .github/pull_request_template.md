@@ -7,9 +7,10 @@
 ### Related Issue
 
 <!---
-This project only accepts pull requests related to open issues
-If suggesting a new feature or change, please discuss it in an issue first
-If fixing a bug, there should be an issue describing it with steps to reproduce
+It is usually good practice to open an issue first before creating a PR.
+If suggesting a new feature or change, please discuss it in an issue first.
+If fixing a bug, there should be an issue describing it with steps to reproduce.
+However we won't turn your PR down just because such an issue is missing.
 Please link to the issue here. E.g.:
 
 Fixes #12

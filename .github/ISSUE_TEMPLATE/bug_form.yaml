@@ -30,7 +30,7 @@ body:
         - label: |
             I have searched the [darglint issue tracker](https://github.com/terrencepreilly/darglint/issues?q=is%3Aissue)
             for open and closed issues.
-          required: true
+          required: false
 
   - type: textarea
     id: related-issues

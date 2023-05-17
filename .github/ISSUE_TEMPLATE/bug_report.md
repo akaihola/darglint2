@@ -26,7 +26,7 @@ Please link all issues that might relate to this report below.
 -->
 
 -   [ ] I have searched the [darglint2 issue tracker](https://github.com/akaihola/darglint2/issues?q=is%3Aissue) for open and closed issues to avoid duplicates.
--   [ ] I have searched the [darglint issue tracker](https://github.com/terrencepreilly/darglint/issues?q=is%3Aissue) for open and closed issues.
+-   [ ] I have searched the [darglint issue tracker](https://github.com/terrencepreilly/darglint/issues?q=is%3Aissue) for open and closed issues. (optional)
 
 I have found the following related issues:
 
