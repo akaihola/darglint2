@@ -13,7 +13,7 @@ maintainers = [
 ]
 license = "MIT"
 repository = "http://github.com/akaihola/darglint2"
-documentation = "https://raw.githubusercontent.com/akaihola/darglint2/master/docs/poster.pdf"
+documentation = "https://akaihola.github.io/darglint2"
 keywords = ["documentation", "linter", "development"]
 classifiers = [
     'Intended Audience :: Developers',
