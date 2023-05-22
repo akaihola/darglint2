@@ -37,10 +37,16 @@ python = "^3.7"
 bnf-to-cnf  = { path = "bin/bnf_to_cnf", develop = true }
 doc_extract = { path = "bin/doc_extract", develop = true }
 
+[tool.poetry.group.lint]
+optional = true
+
 [tool.poetry.group.lint.dependencies]
 flake8     = "^3.7"
 mypy       = "^0.812"
 pydocstyle = "^4.0"
+
+[tool.poetry.group.test]
+optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.2"
@@ -51,6 +57,9 @@ optional = true
 
 [tool.poetry.group.polyversion.dependencies]
 sphinx_polyversion = { path = "bin/sphinx_polyversion", develop = true }
+
+[tool.poetry.group.docs]
+optional = true
 
 [tool.poetry.group.docs.dependencies]
 sphinx                           = "^5.3.0"
