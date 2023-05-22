@@ -9,6 +9,7 @@ from typing import List
 import darglint2.errors
 from darglint2.error_report import ErrorReport
 
+from . import __version__
 from .config import LogLevel, get_config, get_logger
 from .docstring.style import DocstringStyle
 from .function_description import get_function_descriptions, read_program
@@ -226,7 +227,7 @@ def print_error_list():
 
 
 def print_version():
-    print("1.8.2")
+    print(__version__)
 
 
 def main() -> None:

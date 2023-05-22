@@ -1,0 +1,127 @@
+# Builds multiple versions of the Docs using the polyversion script
+name: Publish Docs
+
+on:
+  push:
+    branches:
+      - "master"
+
+  workflow_dispatch:
+    inputs:
+      branch-regex:
+        description: Python regex matching the branches to build the docs for
+        type: string
+      tag-regex:
+        description: Python regex matching the tags to build the docs for
+        type: string
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# We may cancel in-progress runs as their results would be overidden any ways.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Checkout current ref to get the current version of the build script
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Install poetry
+      - name: Install poetry
+        run: pipx install poetry
+        shell: bash
+
+      # Load cache
+      - name: Determine poetry venv location
+        run: echo venv_path="$(poetry config virtualenvs.path)" >> $GITHUB_ENV
+
+      - name: Retrieve cache
+        uses: actions/cache/restore@v3
+        id: cache-restore
+        with:
+          path: ${{ env.venv_path }}
+          key: "nocache"
+          restore-keys: publish-docs|poetry|
+
+      # Setup python + poetry
+      - name: Setup build deps
+        uses: ./.github/actions/setup
+        with:
+          install-options: --only polyversion --sync --no-root
+          cache-python: false
+
+      # Configure pages provides deployment URL
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      # Prepare
+      - name: Fetch tags and branches
+        run: git fetch -t origin
+
+      - name: Retrieve CPU core count
+        shell: python
+        continue-on-error: true
+        run: |
+          import os
+          with open(os.getenv('GITHUB_ENV'), 'a') as f:
+            f.write('cpu_cores=' + str(len(os.sched_getaffinity(0))))
+
+      # Set default values for inputs that may be provided via workflow_dispatch
+      - name: Process args
+        run: |
+          branch_regex='${{ inputs.branch-regex }}'
+          tag_regex='${{ inputs.tag-regex }}'
+          if [ -z "$tag_regex" ]; then tag_regex='v\d+.\d+.\d+'; fi
+          if [ -z "$branch_regex" ]; then branch_regex='master'; fi
+          echo branch_regex="$branch_regex" >> "$GITHUB_ENV"
+          echo tag_regex="$tag_regex" >> "$GITHUB_ENV"
+
+      # Build in a reproducible location (allows caching)
+      - name: Build using `sphinx_polyversion`
+        run: >
+          poetry run sphinx_polyversion
+          -a -v
+          docs/source
+          build
+          --temp_dir tmp
+          --poetry-groups docs
+          --tag_regex "${{ env.tag_regex }}"
+          --branch_regex "${{ env.branch_regex }}"
+
+      # Upload cache
+      - name: Hash venv dir
+        shell: bash
+        run: |
+          echo 'cache_key=publish-docs|poetry|'"$(find ${{ env.venv_path }} -type f -exec sha256sum {} \; | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+
+      - name: Upload new cache
+        uses: actions/cache/save@v3
+        continue-on-error: true
+        if: steps.cache-restore.outputs.cache-matched-key != env.cache_key
+        with:
+          path: ${{ env.venv_path }}
+          key: ${{ env.cache_key }}
+
+      # Upload built docs
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "build"
+          retention-days: 7
+
+      # Deploy uploaded artifact
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
