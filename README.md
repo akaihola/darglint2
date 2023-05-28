@@ -62,6 +62,29 @@ see also [this discussion](https://github.com/9dogs/darglint/commit/0c8a388715da
 attached to commit [0c8a3887](https://github.com/9dogs/darglint/commit/0c8a388715daf4ca8e5a8b76107d7ab8a865ab23)
 in [@9dogs](https://github.com/9dogs)'s fork of the original [terrencepreilly/darglint](https://github.com/terrencepreilly/darglint).
 
+## Recommended alternatives
+
+`darglint2` is often prohibitively slow. Here are some alternatives:
+- [pydoclint](https://github.com/jsh9/pydoclint) together with
+  [pydocstyle](https://www.pydocstyle.org/) or [ruff](https://pypi.org/project/ruff/)
+- Pylint's [docparams extension](https://pylint.pycqa.org/en/latest/user_guide/checkers/extensions.html#parameter-documentation-checker)
+- [flake8-docstrings-complete](https://pypi.org/project/flake8-docstrings-complete/)
+- [pydoctest](https://pypi.org/project/pydoctest/)
+- [docsig](https://pypi.org/project/docsig/)
+
+Also related:
+- [flake8-rst-docstrings](https://pypi.org/project/flake8-rst-docstrings/)
+  checks ReStructuredText format in docstrings
+- [flake8-rst](https://pypi.org/project/flake8-rst/)
+  runs `flake8` on code snippets in docstrings
+- [docsweeper](https://pypi.org/project/docsweeper/)
+  compares changes to docstrings and related source code in version control
+- [pydocstring](https://pypi.org/project/pydocstring/)
+  auto-generates docstrings
+- [docstring-utils](https://pypi.org/project/docstring-utils/)
+  and [docstring_parser](https://pypi.org/project/docstring-parser/) are libraries
+  which implement simple parsers for Numpy, Sphinx and Google-style docstrings.
+
 ## Installation
 
 To install _darglint2_, use pip.
