@@ -600,6 +600,48 @@ popd
 docker run -it --rm -v $(pwd):/code darglint2-34 pytest
 ```
 
+### Tooling and tests
+
+The `bin/` folder hold various development utilities for Darglint2.
+`bnf_to_cnf` is a utility to convert BNF grammars to CNF grammars),
+and `doc_extract` extracts docstrings from repositories and annotates them
+for use in integration tests.
+
+Note: The order of items in generated Python grammar files may change between runs.
+It's ok for the CYK parsing algorithm since it will identify all possible parse trees.
+If we ever change the parsing algorithm (e.g. LR or LL(K)),
+we may need to change this method to ensure the order of items is consistent.
+
+There is an integration test framework. Test fixtures are ignored in Git,
+since the integration tests are only relevant for local development (and
+even then, mostly just release). The integration tests are as follows:
+
+- `goldens.py`: Tests against goldens for individual docstrings.
+  This attempts to ensure that parsed docstrings always contain
+  the expected sections after development.
+  Goldens are generated using the `doc_extract` utility in the `bin/` folder,
+  mostly from large Open Source projects like Django.
+  The format is recorded in the return value of `docstringEncoder`
+  in `bin/doc_extract/static/src/Main.elm`.
+  To run, `doc_extract -s repos.txt -o docstrings.json` accepts local Git repo paths
+  in `repos.txt` and writes docstrings and metadata into `docstrings.json`.
+  The Elm webapp (which currently has a radio button bug)
+  accepts `docstrings.json`, lets you interactively choose the type of each docstring,
+  discard docstrings, and save the result back into `output.json`
+  which can then be used for integration tests.
+  It's absent from the repo to avoid needing to handle possible license issues.
+
+- `grammar_size.py`: Tests that the grammar size doesn't increase significantly.
+  Larger grammars will result in longer parse times, and it could be relatively easy
+  to accidentally introduce a much larger grammar.
+
+- `performance.py`: Tests performance of the parser against individual docstrings
+  to make sure we don't introduce a performance regression.
+  Also tests performance for individual files in some repositories.
+
+- TODO: We still need to add some tests against multiple configurations,
+  and against entire repositories.
+
 ### Contribution
 
 If you would like to tackle an issue or feature, email me or comment on the

@@ -351,6 +351,13 @@ class Node(object):
         )
 
     def to_python(self, start_symbol: Optional[str] = None) -> str:
+        """Convert the tree into a grammar for use with Darglint2
+
+        Note: The order of items may change between runs. This is ok for the CYK parsing
+        algorithm since it will identify all possible parse trees. If we ever change the
+        parsing algorithm (e.g. LR or LL(K)), we may need to change this method to
+        ensure the order of items is consistent.
+        """
         if self.node_type == NodeType.TERMINAL:
             # Terminals are encoded as token types, so
             # they should not be quoted.
