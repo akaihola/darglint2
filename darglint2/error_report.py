@@ -2,7 +2,9 @@
 
 import ast  # noqa
 from collections import OrderedDict
-from typing import Dict, Iterator, List, Tuple, Union  # noqa
+from typing import Dict, Iterator, List, Tuple, Union
+
+from darglint2.config import get_config  # noqa
 
 from .errors import DarglintError  # noqa
 from .function_description import get_line_number_from_function
@@ -16,7 +18,6 @@ class ErrorReport(object):
         errors: List[DarglintError],
         filename: str,
         verbosity: int = 2,
-        message_template: str = None,
     ) -> None:
         """Create a new error report.
 
@@ -25,19 +26,12 @@ class ErrorReport(object):
             filename: The name of the file the error came from.
             verbosity: A number in the set, {1, 2}, representing low
                 and high verbosity.
-            message_template: A python format string for specifying
-                how the string representation of this ErrorReport
-                should appear.
 
         """
         self.filename = filename
         self.verbosity = verbosity
         self.errors = errors
         self.error_dict = self._group_errors_by_function()
-        if message_template is None:
-            self.message_template = "{path}:{obj}:{line}: {msg_id}: {msg}"
-        else:
-            self.message_template = message_template
 
     def _sort(self) -> None:
         self.errors.sort(key=lambda x: x.function.lineno)
@@ -88,7 +82,7 @@ class ErrorReport(object):
             line_number += len(error.function.decorator_list)
         if error.line_numbers:
             line_number += error.line_numbers[0] + 1
-        return self.message_template.format(
+        return get_config().message_template.format(
             msg_id=error.error_code,
             msg=error.message(verbosity=self.verbosity),
             path=self.filename,

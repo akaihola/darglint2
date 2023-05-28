@@ -49,6 +49,7 @@ class IntegrityChecker(object):
         self._sorted = True
         self.config = get_config()
         self.raise_errors = raise_errors
+        self.errors_to_ignore = self.config.errors_to_ignore
 
         # TODO: Move max workers into a configuration option.
         # A thread pool for handling checks.  Tasks are added to the
@@ -384,7 +385,7 @@ class IntegrityChecker(object):
 
         """
         error_code = error.error_code
-        if error_code in self.config.errors_to_ignore:
+        if error_code in self.errors_to_ignore:
             return True
         noqa_lookup = docstring.get_noqas()
         inline_error = error_code in noqa_lookup
@@ -497,31 +498,24 @@ class IntegrityChecker(object):
             self.errors.sort(key=lambda x: x.function.lineno)
             self._sorted = True
 
-    def get_error_report(
-        self, verbosity: int, filename: str, message_template: str = None
-    ) -> ErrorReport:
+    def get_error_report(self, verbosity: int, filename: str) -> ErrorReport:
         self.executor.shutdown()
         return ErrorReport(
             errors=self.errors,
             filename=filename,
             verbosity=verbosity,
-            message_template=message_template or self.config.message_template,
         )
 
-    def get_error_report_string(
-        self, verbosity: int, filename: str, message_template: str = None
-    ) -> str:
+    def get_error_report_string(self, verbosity: int, filename: str) -> str:
         """Return a string representation of the errors.
 
         Args:
             verbosity: The level of verbosity.  Should be an integer
                 in the range [1,3].
             filename: The filename of where the error occurred.
-            message_template: A python format string for describing
-                how the error reports should look to the user.
 
         Returns:
             A string representation of the errors.
 
         """
-        return str(self.get_error_report(verbosity, filename, message_template))
+        return str(self.get_error_report(verbosity, filename))
