@@ -35,6 +35,13 @@ This is a renamed fork of the original
 [@terrencepreilly](https://github.com/terrencepreilly), and I'm maintaining it
 and accepting bugfixes.
 
+**Important:** `darglint2` is very slow compared to alternatives
+due to its parser design.
+`darglint2` is only intended as a low-effort replacement for `darglint`
+for those old `darglint` users who need bugfixes and critical features
+but don't want to spend the trouble of migrating to a better alternative.
+See e.g. [this discussion](https://github.com/jsh9/pydoclint/discussions/9) for details.
+
 For the 1.8.1 version of `darglint`, [@terrencepreilly](https://github.com/terrencepreilly) added a
 [Project Status](https://github.com/terrencepreilly/darglint/blob/master/README.md#project-status) section
 in the `README` in October 2021:
