@@ -161,15 +161,14 @@ class Configuration:
 
     @property
     def errors_to_ignore(self) -> Set[str]:
-        """Update the errors to ignore, accounding for defaults.
+        """
+        Get the errors to ignore, accounting for defaults.
 
-        For use in constructing a cached `errors_to_ignore` value.
-        Since this value could be used frequently, it makes
-        sense to cache this value.
+        This property will calculate the set from `ignore` and `enable`.
+        It makes sense to cache this value when using it frequently.
 
         Returns:
-            The errors to ignore, including the default errors.
-
+            The error codes to ignore.
         """
         disabled = DEFAULT_DISABLED - set(self.enable)
         return set(self.ignore) | disabled

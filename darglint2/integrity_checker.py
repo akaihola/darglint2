@@ -49,6 +49,7 @@ class IntegrityChecker(object):
         self._sorted = True
         self.config = get_config()
         self.raise_errors = raise_errors
+        self.errors_to_ignore = self.config.errors_to_ignore
 
         # TODO: Move max workers into a configuration option.
         # A thread pool for handling checks.  Tasks are added to the
@@ -384,7 +385,7 @@ class IntegrityChecker(object):
 
         """
         error_code = error.error_code
-        if error_code in self.config.errors_to_ignore:
+        if error_code in self.errors_to_ignore:
             return True
         noqa_lookup = docstring.get_noqas()
         inline_error = error_code in noqa_lookup
