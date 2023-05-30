@@ -1,0 +1,49 @@
+digraph G {
+  node [shape="rect"];
+  source [label="source", shape="tab"];
+  parse [label="Parse", shape="oval"];
+  CykNode;
+  Identifier;
+  DarglintError;
+  IntegrityChecker [shape="plaintext", label=<
+    <table border="0" cellborder="1" cellspacing="0">
+      <tr><td colspan="2">IntegrityChecker</td></tr>
+      <tr>
+        <td>
+          <table border="0" cellborder="0" cellspacing="0">
+            <tr>
+              <td align="left">schedule(function: FunctionDescription):</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td align="left">run_checks(function: FunctionDescription): </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td align="left">get_error_report(verbosity: int, filename: str, message_template: str):</td>
+              <td>ErrorReport</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  >];
+  BaseDocstring;
+  ErrorReport;
+  FunctionDefinition;
+
+  // Input/Output
+  edge [style="dashed", arrowhead="vee"];
+  source -> { parse, FunctionDefinition };
+  parse -> CykNode;
+  { BaseDocstring, FunctionDefinition } -> IntegrityChecker -> ErrorReport;
+
+
+  // Is-A
+  edge [style="solid", arrowhead="onormal"];
+
+  // Has-A
+  edge [dir="both", arrowhead="none", arrowtail="odiamond"];
+  CykNode -> { Identifier, DarglintError };
+  BaseDocstring -> CykNode;
+}
